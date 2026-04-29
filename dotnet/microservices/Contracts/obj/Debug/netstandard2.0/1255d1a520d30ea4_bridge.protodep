@@ -1,0 +1,2 @@
+obj/Debug/netstandard2.0/Protos/Bridge.cs \
+obj/Debug/netstandard2.0/Protos/BridgeGrpc.cs: Protos/bridge.proto

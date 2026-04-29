@@ -1,0 +1,28 @@
+{
+  "name": "client-side-new",
+  "version": "1.0.0",
+  "description": "RAGE MP client-side scripts (TypeScript)",
+  "type": "commonjs",
+  "scripts": {
+    "build": "webpack-cli --config ./webpack.config.js --mode=production",
+    "dev": "webpack-cli --config ./webpack.config.js --mode=development --watch",
+    "lint": "eslint src --ext .ts --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "@prisma/client": "^7.8.0",
+    "rage-rpc": "^0.4.0",
+    "typescript-eslint": "^8.59.1"
+  },
+  "devDependencies": {
+    "@ragempcommunity/types-client": "^2.1.9",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.6.0",
+    "webpack": "^5.97.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

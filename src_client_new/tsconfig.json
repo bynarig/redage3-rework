@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    // RAGE MP client-side V8 is approximately ES2017 / Chrome 67 era.
+    // Webpack + ts-loader transpile everything down before shipping.
+    "target": "ES2017",
+    "module": "commonjs",
+    // Do NOT include DOM lib — RAGE MP client has no browser context.
+    // Do NOT include DOM.Iterable — same reason.
+    "lib": ["ES2017", "ES2018.Promise", "ES2019.Array", "ES2020.BigInt"],
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    // Pull in RAGE MP client-side global types (mp, gm, etc.)
+    "types": ["@ragempcommunity/types-client"]
+  },
+  "include": ["**/*.ts", "types/**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}
