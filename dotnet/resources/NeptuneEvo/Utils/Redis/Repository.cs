@@ -2,23 +2,22 @@
 using GTANetworkAPI;
 using NeptuneEvo.Utils.Redis.Models;
 using Newtonsoft.Json;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 using StackExchange.Redis;
 
 namespace NeptuneEvo.Utils.Redis
 {
     public class Repository
     {
-        private static nLog Log = new nLog("Utils.Redis");
+        private static readonly nLog Log = new nLog("Utils.Redis");
 
         private static ConnectionMultiplexer RedisInstance;
 
-        private static string ConfirmEmail = $"{Main.ServerNumber}_confirmEmail";
-        private static string Global = $"{Main.ServerNumber}_global";
-        
+        private static readonly string ConfirmEmail = $"{Main.ServerNumber}_confirmEmail";
+        private static readonly string Global = $"{Main.ServerNumber}_global";
+
         public static void Init()
         {
-            
             try
             {
                 var configurationOptions = new ConfigurationOptions
@@ -32,14 +31,13 @@ namespace NeptuneEvo.Utils.Redis
 
                 sub.Subscribe(ConfirmEmail, ConfirmEmailHandler);
                 sub.Subscribe(Global, GlobalHandler);
-            
-                Log.Write($"Start: All ok. For server: {Main.ServerNumber}", nLog.Type.Info);
+
+                Log.Write($"Start: All ok. For server: {Main.ServerNumber}");
             }
             catch (Exception e)
             {
-                Log.Write($"StartWork Exception: {e.ToString()}");
+                Log.Write($"StartWork Exception: {e}");
             }
-            
         }
 
         private static void ConfirmEmailHandler(RedisChannel channel, RedisValue message)
@@ -47,15 +45,18 @@ namespace NeptuneEvo.Utils.Redis
             try
             {
                 var confirmEmailVerification = JsonConvert.DeserializeObject<ConfirmEmailVerification>(message);
-            
-                Accounts.Email.Registration.Repository.VerificationConfirm(confirmEmailVerification.Hash, confirmEmailVerification.Ga);
-                Accounts.Email.Confirmation.Repository.VerificationConfirm(confirmEmailVerification.Hash, confirmEmailVerification.Ga);
+
+                Accounts.Email.Registration.Repository.VerificationConfirm(confirmEmailVerification.Hash,
+                    confirmEmailVerification.Ga);
+                Accounts.Email.Confirmation.Repository.VerificationConfirm(confirmEmailVerification.Hash,
+                    confirmEmailVerification.Ga);
             }
             catch (Exception e)
             {
-                Log.Write($"ConfirmEmailHandler Exception: {e.ToString()}");
+                Log.Write($"ConfirmEmailHandler Exception: {e}");
             }
         }
+
         private static void GlobalHandler(RedisChannel channel, RedisValue message)
         {
             NAPI.Chat.SendChatMessageToAll(message);

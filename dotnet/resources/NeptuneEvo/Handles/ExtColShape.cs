@@ -5,10 +5,12 @@ namespace NeptuneEvo.Handles
 {
     public class ExtColShape : ColShape
     {
+        public ExtColShapeData ColShapeData;
+
         public ExtColShape(NetHandle handle) : base(handle)
         {
         }
-        public ExtColShapeData ColShapeData;
+
         public void SetColShapeData(ExtColShapeData сolShapeData)
         {
             ColShapeData = сolShapeData;

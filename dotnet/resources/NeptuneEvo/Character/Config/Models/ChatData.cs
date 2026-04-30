@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeptuneEvo.Character.Config.Models
+﻿namespace NeptuneEvo.Character.Config.Models
 {
     public class ChatData
     {

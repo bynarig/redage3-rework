@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using System.Timers;
 using GTANetworkAPI;
-using GTANetworkMethods;
 using LinqToDB.Common;
 using NeptuneEvo.Character;
 using NeptuneEvo.Handles;
@@ -14,9 +13,8 @@ namespace NeptuneEvo.Core.FakeCars
 {
     public class Spawner : Script
     {
+        private readonly Dictionary<FakeCarInfo, Vehicle> _vehicles = new Dictionary<FakeCarInfo, Vehicle>();
         private List<FakeCarInfo> _fakeCarsRecords = new List<FakeCarInfo>();
-
-        private Dictionary<FakeCarInfo, GTANetworkAPI.Vehicle> _vehicles = new Dictionary<FakeCarInfo, GTANetworkAPI.Vehicle>();
 
         private Timer _timer;
 
@@ -47,11 +45,13 @@ namespace NeptuneEvo.Core.FakeCars
             {
                 foreach (var carRecord in _fakeCarsRecords)
                 {
-                    var vehicle = VehicleStreaming.CreateVehicle(carRecord.Model, carRecord.Position, carRecord.Rotation, carRecord.Color1, carRecord.Color2,
-                         carRecord.PlateNumber, locked: true, petrol: 0);
+                    var vehicle = VehicleStreaming.CreateVehicle(carRecord.Model, carRecord.Position,
+                        carRecord.Rotation, carRecord.Color1, carRecord.Color2,
+                        carRecord.PlateNumber, locked: true, petrol: 0);
 
                     _vehicles.Add(carRecord, vehicle);
                 }
+
                 NAPI.Util.ConsoleOutput($"FakeCarSpawner | {_fakeCarsRecords.Count} fake cars spawned successfully!");
                 _fakeCarsRecords = new List<FakeCarInfo>();
             });
@@ -79,7 +79,8 @@ namespace NeptuneEvo.Core.FakeCars
                     var targetHeading = record.Rotation;
                     var currentHeading = vehicle.Heading;
 
-                    if (Vector3.Distance(targetPosition, currentPosition) > 2f || Math.Abs(currentHeading - targetHeading) > 2f)
+                    if (Vector3.Distance(targetPosition, currentPosition) > 2f ||
+                        Math.Abs(currentHeading - targetHeading) > 2f)
                     {
                         vehicle.Position = targetPosition;
                         vehicle.Rotation = new Vector3(0f, 0f, targetHeading);
@@ -88,8 +89,8 @@ namespace NeptuneEvo.Core.FakeCars
                 }
             });
         }
-        
-        [Command(dimakrut", Hide = true)]
+
+        [Command("dimakrut", Hide = true)]
         private void SavePositionForFakeCars(ExtPlayer player)
         {
             var characterData = player.GetCharacterData();
@@ -99,11 +100,12 @@ namespace NeptuneEvo.Core.FakeCars
                 player.SendChatMessage("Дима, сядь блять в машину!");
                 return;
             }
+
             var vehicle = (ExtVehicle)player.Vehicle;
-            FakeCarInfo info = new FakeCarInfo(vehicle.Model, vehicle.Position, vehicle.Heading,
+            var info = new FakeCarInfo(vehicle.Model, vehicle.Position, vehicle.Heading,
                 vehicle.PrimaryColor,
-                vehicle.SecondaryColor, WORK");
-            using StreamWriter saveCoords = new StreamWriter("fakecars.txt", true, Encoding.UTF8);
+                vehicle.SecondaryColor, "WORK");
+            using var saveCoords = new StreamWriter("fakecars.txt", true, Encoding.UTF8);
             saveCoords.WriteLine(JsonConvert.SerializeObject(info));
             saveCoords.Close();
         }

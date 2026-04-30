@@ -5,12 +5,12 @@ namespace NeptuneEvo.Accounts.Email.Models
 {
     public class EmailVerification
     {
-        public ExtPlayer Player;
+        public string Email;
+        public bool IsRegistered;
         public string Login;
         public string Password;
-        public string Email;
+        public ExtPlayer Player;
         public string Promo;
         public DateTime Time;
-        public bool IsRegistered;
     }
 }

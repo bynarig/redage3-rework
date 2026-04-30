@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using GTANetworkAPI;
 using NeptuneEvo.Core;
-using NeptuneEvo.GUI;
 using NeptuneEvo.Handles;
 using NeptuneEvo.Players.Models;
 using NeptuneEvo.Players.Phone.Models;
@@ -17,9 +16,10 @@ namespace NeptuneEvo.Players
         {
             if (player is null)
                 return false;
-            
+
             return player.SessionData != null;
         }
+
         public static bool GetLoginIn(this ExtPlayer player)
         {
             if (player != null && player.IsSessionData())
@@ -27,6 +27,7 @@ namespace NeptuneEvo.Players
 
             return false;
         }
+
         public static SessionData GetSessionData(this ExtPlayer player)
         {
             if (player != null)
@@ -35,7 +36,7 @@ namespace NeptuneEvo.Players
             return null;
         }
         //
-        
+
         public static PlayerCustomization GetCustomization(this ExtPlayer player)
         {
             if (player != null)
@@ -43,9 +44,9 @@ namespace NeptuneEvo.Players
 
             return null;
         }
-        
+
         //
-        
+
         public static PlayerQuestModel GetQuest(this ExtPlayer player)
         {
             if (player != null)
@@ -53,9 +54,9 @@ namespace NeptuneEvo.Players
 
             return null;
         }
-        
+
         //
-        
+
         public static List<ExtColShapeData> GetColShapesData(this ExtPlayer player)
         {
             if (player != null)
@@ -63,7 +64,7 @@ namespace NeptuneEvo.Players
 
             return null;
         }
-        
+
         public static ExtColShapeData GetLastColShapeData(this ExtPlayer player)
         {
             var colShapesData = player.GetColShapesData();
@@ -72,7 +73,7 @@ namespace NeptuneEvo.Players
 
             return null;
         }
-        
+
         //
         public static ExtColShapeData GetColShapeData(this ExtColShape shape)
         {
@@ -81,10 +82,10 @@ namespace NeptuneEvo.Players
 
             return null;
         }
-        
+
         //
 
-        
+
         public static void setSkin(this ExtPlayer player, PedHash model)
         {
             if (player != null)
@@ -102,6 +103,7 @@ namespace NeptuneEvo.Players
                 Disconnect.Repository.OnPlayerDisconnect(player, DisconnectionType.Kicked, text);
             });
         }
+
         public static void setBan(this ExtPlayer player, string text)
         {
             Trigger.SetMainTask(() =>
@@ -110,20 +112,20 @@ namespace NeptuneEvo.Players
                 Disconnect.Repository.OnPlayerDisconnect(player, DisconnectionType.Kicked, text);
             });
         }
-        
-        
+
+
         //New Phone
-        
+
         public static PhoneData getPhoneData(this ExtPlayer player)
         {
             if (player != null)
                 return player.PhoneData;
-            
+
             return null;
         }
-        
+
         //
-        
+
         public static KeyClampData GetKeyClampData(this ExtPlayer player)
         {
             if (player != null)
@@ -131,19 +133,18 @@ namespace NeptuneEvo.Players
 
             return null;
         }
-        
+
         //
         public static Vector3 GetPosition(this ExtPlayer player)
         {
-            if (player != null && Thread.CurrentThread.Name == Main")
+            if (player != null && Thread.CurrentThread.Name == "Main")
             {
                 var position = player.Position;
-                
+
                 return new Vector3(position.X, position.Y, position.Z);
             }
-            
+
             return new Vector3();
         }
-        
     }
 }

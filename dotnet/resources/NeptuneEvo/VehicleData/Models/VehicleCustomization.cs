@@ -4,6 +4,7 @@ namespace NeptuneEvo.VehicleData.Models
 {
     public class VehicleCustomization
     {
+        public Color NeonColor = new Color(0, 0, 0, 0);
         public Color PrimColor { get; set; } = new Color(0, 0, 0);
         public Color SecColor { get; set; } = new Color(0, 0, 0);
 
@@ -28,7 +29,9 @@ namespace NeptuneEvo.VehicleData.Models
         public int WindowTint { get; set; } = 0;
         public int Suspension { get; set; } = -1;
         public int Brakes { get; set; } = -1;
+
         public int Headlights { get; set; } = -1;
+
         //public int HeadlightColor { get; set; } = 0;
         public int NumberPlate { get; set; } = 0;
 
@@ -36,14 +39,12 @@ namespace NeptuneEvo.VehicleData.Models
         public int WheelsType { get; set; } = 0;
         public int WheelsColor { get; set; } = 0;
 
-        public Color NeonColor = new Color(0, 0, 0, 0);
-
         public int ColorAdditional { get; set; } = 0;
         public int Cover { get; set; } = 0;
-        public int CoverColor { get; set; } = 1;            
+        public int CoverColor { get; set; } = 1;
         public int Frame { get; set; } = -1;
         public int NeonIndex { get; set; } = -1;
-            
+
         public uint Hash { get; set; }
         //public string Model { get; set; }
     }

@@ -1,20 +1,20 @@
 ﻿using NeptuneEvo.Handles;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.PedSystem.LivingCity.Models
 {
     public class LivingPed
     {
+        public ExtPlayer Controller;
+        private string InitTimer;
+        public bool IsSpawned;
         public ExtPed Ped;
         public ExtVehicle Vehicle;
-        public ExtPlayer Controller;
-        public bool IsSpawned = false;
-        private string InitTimer = null;
 
         public LivingPed(ExtPed ped, ExtVehicle vehicle, ExtPlayer controller)
         {
             Ped = ped;
-            Ped.SetSharedData(LCNPC", vehicle.Value);
+            Ped.SetSharedData("LCNPC", vehicle.Value);
             Vehicle = vehicle;
             Controller = controller;
             InitTimer = Timers.StartOnce(2500, () =>
@@ -44,10 +44,11 @@ namespace NeptuneEvo.PedSystem.LivingCity.Models
         private void DestroyPed()
         {
             if (Ped == null) return;
-            Ped.SetSharedData(LCNPC", 0);
+            Ped.SetSharedData("LCNPC", 0);
             Ped.Delete();
             Ped = null;
         }
+
         private void DestroyVehicle()
         {
             if (Vehicle == null) return;

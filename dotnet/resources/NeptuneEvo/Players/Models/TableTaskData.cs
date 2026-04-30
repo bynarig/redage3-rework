@@ -4,6 +4,5 @@
     {
         public bool IsPatrolling = false;
         public int PatrollingIndex = 0;
-        
     }
 }

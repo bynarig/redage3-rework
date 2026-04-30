@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NeptuneEvo.Character;
 using NeptuneEvo.Handles;
 using Newtonsoft.Json;
 
@@ -8,21 +9,16 @@ namespace NeptuneEvo.Fractions.LSNews.LiveStream
 {
     public class LiveStream
     {
-        private class Events
-        {
-            public const string UpdateHud = "client.livestream.updateHud";
-        }
+        private static readonly int LsNewsFracid = 15;
+        private readonly List<ExtPlayer> _callers = new List<ExtPlayer>();
 
-        private ExtPlayer _owner;
+        private readonly List<Message> _messages = new List<Message>();
+
+        private readonly ExtPlayer _owner;
         private ExtPlayer _cooperator;
-
-        private DateTime _ownerLastMessageTime = DateTime.Now;
         private DateTime _coopLastMessageTime = DateTime.Now;
 
-        private List<Message> _messages = new List<Message>();
-        private List<ExtPlayer> _callers = new List<ExtPlayer>();
-
-        private static int LsNewsFracid = 15;
+        private DateTime _ownerLastMessageTime = DateTime.Now;
 
         public LiveStream(ExtPlayer owner)
         {
@@ -41,7 +37,7 @@ namespace NeptuneEvo.Fractions.LSNews.LiveStream
 
         public void SendMessage(ExtPlayer player, string msg)
         {
-            _messages.Add(new Message(111", msg, IsOwner(player)));
+            _messages.Add(new Message("111", msg, IsOwner(player)));
             SendMessageToListeners(GetListeners(), msg, IsOwner(player));
             UpdateStreamInfo();
         }
@@ -57,12 +53,11 @@ namespace NeptuneEvo.Fractions.LSNews.LiveStream
         {
             if (_cooperator == player) DisableCaller(player);
             if (_callers.Remove(player)) UpdateStreamInfo();
-            
         }
 
         public void AcceptCaller(ExtPlayer player)
         {
-            if (_callers.Contains(player) == false) return;
+            if (!_callers.Contains(player)) return;
             _cooperator = player;
             UpdateStreamInfo();
         }
@@ -73,15 +68,26 @@ namespace NeptuneEvo.Fractions.LSNews.LiveStream
             RemoveFromCallersList(player);
         }
 
-        public bool IsOwner(ExtPlayer player) => (player == _owner);
-        public bool IsCooperator(ExtPlayer player) => (player == _cooperator);
-        public bool IsInLiveStream(ExtPlayer player) => (IsOwner(player) || IsCooperator(player));
+        public bool IsOwner(ExtPlayer player)
+        {
+            return player == _owner;
+        }
+
+        public bool IsCooperator(ExtPlayer player)
+        {
+            return player == _cooperator;
+        }
+
+        public bool IsInLiveStream(ExtPlayer player)
+        {
+            return IsOwner(player) || IsCooperator(player);
+        }
 
         private void SendMessageToListeners(IEnumerable<ExtPlayer> listeners, string msg, bool isOwner)
         {
             foreach (var listener in listeners)
             {
-                string prefix = isOwner ? "#FAFAD2 [Weazel News] Ведущий: " : " #FAFAD2 [Weazel News] Гость: ";
+                var prefix = isOwner ? "#FAFAD2 [Weazel News] Ведущий: " : " #FAFAD2 [Weazel News] Гость: ";
                 listener.SendChatMessage(prefix + msg);
             }
         }
@@ -101,8 +107,13 @@ namespace NeptuneEvo.Fractions.LSNews.LiveStream
 
         private IEnumerable<ExtPlayer> GetListeners()
         {
-            var players = Character.Repository.GetPlayers();
+            var players = Repository.GetPlayers();
             return players;
+        }
+
+        private class Events
+        {
+            public const string UpdateHud = "client.livestream.updateHud";
         }
     }
 }

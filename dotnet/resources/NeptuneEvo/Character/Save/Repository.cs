@@ -1,26 +1,21 @@
-﻿using Database;
-using GTANetworkAPI;
-using NeptuneEvo.Handles;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Database;
 using LinqToDB;
-using NeptuneEvo.Chars.Models;
 using NeptuneEvo.Core;
-using NeptuneEvo.Houses;
+using NeptuneEvo.Handles;
 using NeptuneEvo.MoneySystem;
 using NeptuneEvo.Quests;
 using Newtonsoft.Json;
-using NeptuneEvoSDK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Character.Save
 {
     public class Repository
     {
         private static readonly nLog Log = new nLog("Core.Character.Save");
+
         public static async Task SaveSql(ServerBD db, ExtPlayer player)
         {
             try
@@ -31,7 +26,7 @@ namespace NeptuneEvo.Character.Save
                 var missionData = player.GetMissionData();
 
                 Bank.SetSave(characterData.Bank);
-                
+
                 await Customization.SaveCharacter(db, player, characterData.UUID);
 
                 await qMain.Save(db, player, characterData.UUID);
@@ -39,11 +34,11 @@ namespace NeptuneEvo.Character.Save
                 await BindConfig.Repository.Save(db, player, characterData.UUID);
 
                 await Config.Repository.Save(db, player, characterData.UUID);
-                
+
                 await BattlePass.Repository.Save(db, player, characterData.UUID);
 
                 await Players.Phone.Repository.SaveSettings(db, player, characterData.UUID);
-                
+
 
                 await db.Characters
                     .Where(v => v.Uuid == characterData.UUID)
@@ -98,16 +93,16 @@ namespace NeptuneEvo.Character.Save
                     .Set(v => v.FractionTasksData, JsonConvert.SerializeObject(player.FractionTasksData))
                     .Set(v => v.IsLucky, characterData.IsLucky)
                     .UpdateAsync();
-                
+
                 if (Admin.IsServerStoping)
                     player.IsRestartSaveCharacterData = true;
             }
             catch (Exception e)
             {
-                Log.Write($"SaveSql Exception: {e.ToString()}");
+                Log.Write($"SaveSql Exception: {e}");
             }
         }
-        
+
         public static void SaveBiz(ExtPlayer player)
         {
             Trigger.SetTask(async () =>
@@ -115,10 +110,10 @@ namespace NeptuneEvo.Character.Save
                 try
                 {
                     var characterData = player.GetCharacterData();
-                    if (characterData == null) 
+                    if (characterData == null)
                         return;
-                
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                     await db.Characters
                         .Where(v => v.Uuid == characterData.UUID)
@@ -131,6 +126,7 @@ namespace NeptuneEvo.Character.Save
                 }
             });
         }
+
         public static void SaveName(ExtPlayer player)
         {
             Trigger.SetTask(async () =>
@@ -138,10 +134,10 @@ namespace NeptuneEvo.Character.Save
                 try
                 {
                     var characterData = player.GetCharacterData();
-                    if (characterData == null) 
+                    if (characterData == null)
                         return;
-                
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                     await db.Characters
                         .Where(v => v.Uuid == characterData.UUID)
@@ -155,13 +151,14 @@ namespace NeptuneEvo.Character.Save
                 }
             });
         }
+
         public static void SaveName(int uuid, string firstName, string lastName)
         {
             Trigger.SetTask(async () =>
             {
                 try
                 {
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                     await db.Characters
                         .Where(v => v.Uuid == uuid)
@@ -175,13 +172,14 @@ namespace NeptuneEvo.Character.Save
                 }
             });
         }
+
         public static void SaveAdminLvl(int uuid, int lvl)
         {
             Trigger.SetTask(async () =>
             {
                 try
                 {
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                     await db.Characters
                         .Where(v => v.Uuid == uuid)
@@ -194,13 +192,14 @@ namespace NeptuneEvo.Character.Save
                 }
             });
         }
+
         public static void SaveUnMute(int uuid, int minute)
         {
             Trigger.SetTask(async () =>
             {
                 try
                 {
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                     await db.Characters
                         .Where(v => v.Uuid == uuid)
@@ -213,26 +212,25 @@ namespace NeptuneEvo.Character.Save
                 }
             });
         }
+
         public static void AddMoney(int uuid, int money)
         {
             Trigger.SetTask(async () =>
             {
                 try
                 {
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
-                    var character = await db.Characters 
-                        .Select(c => new {c.Uuid, c.Money}) 
-                        .Where(c => c.Uuid == uuid) 
+                    var character = await db.Characters
+                        .Select(c => new { c.Uuid, c.Money })
+                        .Where(c => c.Uuid == uuid)
                         .FirstOrDefaultAsync();
 
                     if (character != null)
-                    {
-                        await db.Characters 
-                            .Where(c => c.Uuid == character.Uuid) 
-                            .Set(c => c.Money, character.Money + money) 
-                            .UpdateAsync(); 
-                    }
+                        await db.Characters
+                            .Where(c => c.Uuid == character.Uuid)
+                            .Set(c => c.Money, character.Money + money)
+                            .UpdateAsync();
                 }
                 catch (Exception e)
                 {
@@ -240,9 +238,10 @@ namespace NeptuneEvo.Character.Save
                 }
             });
         }
+
         public static async Task ResetLuckyWheel()
         {
-            await using var db = new ServerBD(MainDB");
+            await using var db = new ServerBD("MainDB");
 
             await db.Characters
                 .Set(c => c.IsLucky, false)

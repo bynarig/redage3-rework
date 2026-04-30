@@ -2,7 +2,7 @@
 {
     public class TableTaskHistoryPlayerData
     {
-        public TableTaskId Id;
         public int Count;
+        public TableTaskId Id;
     }
 }

@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeptuneEvo.Quests.Models
+﻿namespace NeptuneEvo.Quests.Models
 {
-    class ShowQuestToHudModel
+    internal class ShowQuestToHudModel
     {
-        public string ActorName { set; get; }
-        public int Line { set; get; }
-        public sbyte Stage { set; get; }
-
         public ShowQuestToHudModel(string ActorName, int Line, sbyte Stage)
         {
             this.ActorName = ActorName;
             this.Line = Line;
             this.Stage = Stage;
         }
+
+        public string ActorName { get; set; }
+        public int Line { get; set; }
+        public sbyte Stage { get; set; }
     }
 }

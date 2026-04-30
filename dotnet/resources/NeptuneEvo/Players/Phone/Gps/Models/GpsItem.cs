@@ -10,19 +10,20 @@ namespace NeptuneEvo.Players.Phone.Gps.Models
 
         public GpsItem(string name, float posX, float posY)
         {
-            this.Name = name;
-            this.Pos = new List<float>
+            Name = name;
+            Pos = new List<float>
             {
                 posX,
                 posY
             };
-            this.PosList = null;
+            PosList = null;
         }
+
         public GpsItem(string name, List<List<object>> posList)
         {
-            this.Name = name;
-            this.Pos = null;
-            this.PosList = posList;
+            Name = name;
+            Pos = null;
+            PosList = posList;
         }
     }
 }

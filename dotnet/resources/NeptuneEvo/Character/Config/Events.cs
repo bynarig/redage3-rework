@@ -1,19 +1,15 @@
-﻿using GTANetworkAPI;
+﻿using System;
+using GTANetworkAPI;
 using NeptuneEvo.Handles;
-using NeptuneEvo.Accounts;
-using NeptuneEvoSDK;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Character.Config
 {
-    class Events : Script
+    internal class Events : Script
     {
         private static readonly nLog Log = new nLog("Core.Character.Config");
 
-        [RemoteEvent(chatConfigSave")]
+        [RemoteEvent("chatConfigSave")]
         public void Save(ExtPlayer player, string chatData)
         {
             try
@@ -22,7 +18,7 @@ namespace NeptuneEvo.Character.Config
             }
             catch (Exception e)
             {
-                Log.Write($"bindConfigSave Exception: {e.ToString()}");
+                Log.Write($"bindConfigSave Exception: {e}");
             }
         }
     }

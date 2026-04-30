@@ -19,6 +19,6 @@
         BuyDrugs,
         BizWar,
         SellCar,
-        BuyCar,
+        BuyCar
     }
 }

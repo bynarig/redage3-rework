@@ -6,10 +6,10 @@ using NeptuneEvo.Chars;
 using NeptuneEvo.Functions;
 using NeptuneEvo.GUI;
 using NeptuneEvo.Players;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 using System;
 using System.Collections.Generic;
-using Localization;
+using NeptuneEvo.Localization;
 
 namespace NeptuneEvo.Events
 {
@@ -42,7 +42,7 @@ namespace NeptuneEvo.Events
 
                 Chars.Repository.ItemsClose(player, true);
 
-                if (!FunctionsAccess.IsWorking(UseBoombox"))
+                if (!FunctionsAccess.IsWorking("UseBoombox"))
                 {
                     Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                     return;
@@ -60,7 +60,7 @@ namespace NeptuneEvo.Events
                     return;
                 }
 
-                Trigger.ClientEvent(player, openInput", "Бумбокс", "Ваша ссылка на трек", 256, boombox");
+                Trigger.ClientEvent(player, "openInput", "Бумбокс", "Ваша ссылка на трек", 256, "boombox");
             }
             catch (Exception e)
             {
@@ -68,7 +68,7 @@ namespace NeptuneEvo.Events
             }
         }
 
-        [RemoteEvent(setFirstBoomboxURL")]
+        [RemoteEvent("setFirstBoomboxURL")]
         public static void SetFirstBoomboxURL(ExtPlayer player, string url)
         {
             try
@@ -79,7 +79,7 @@ namespace NeptuneEvo.Events
                 var sessionData = player.GetSessionData();
                 if (sessionData == null) return;
 
-                if (!FunctionsAccess.IsWorking(SetFirstBoomboxURL"))
+                if (!FunctionsAccess.IsWorking("SetFirstBoomboxURL"))
                 {
                     Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                     return;
@@ -112,12 +112,12 @@ namespace NeptuneEvo.Events
                     MusicURL = url,
                     BoomboxPlayStatus = false,
                     BoomboxShape = CustomColShape.CreateSphereColShape(player.Position, 10f, UpdateData.GetPlayerDimension(player), ColShapeEnums.BoomboxShape, player.Value),
-                    BoomboxObject = (ExtObject)NAPI.Object.CreateObject(NAPI.Util.GetHashKey(prop_ghettoblast_01"), pos + new Vector3(0.0, 0.0, -0.92), player.Rotation, 255, dim),
+                    BoomboxObject = (ExtObject)NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_ghettoblast_01"), pos + new Vector3(0.0, 0.0, -0.92), player.Rotation, 255, dim),
                     BoomboxLabel = (ExtTextLabel)(ExtTextLabel) NAPI.TextLabel.CreateTextLabel(Main.StringToU16($"Бумбокс\n~g~(( {player.Name.Replace('_', ' ')} ))"), pos + new Vector3(0.0, 0.0, -0.92), 10F, 0.5F, 0, new Color(255, 255, 255), true, 0),
                     BoomboxPosition = player.Position
                 });
 
-                Trigger.ClientEvent(player, setBoomboxInfo", true, player.Position);
+                Trigger.ClientEvent(player, "setBoomboxInfo", true, player.Position);
                 Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter, "Вы поставили бумбокс. Нажмите Е для взаимодействия с бумбоксом.", 3000);
 
                 foreach (ExtPlayer foreachPlayer in Main.GetPlayersInRadiusOfPosition(player.Position, 10f, UpdateData.GetPlayerDimension(player)))
@@ -135,7 +135,7 @@ namespace NeptuneEvo.Events
             }
         }
 
-        [RemoteEvent(boomboxManageMenu")]
+        [RemoteEvent("boomboxManageMenu")]
         public static void BoomboxManageMenu(ExtPlayer player)
         {
             try
@@ -148,27 +148,27 @@ namespace NeptuneEvo.Events
                 if (sessionData.IsInBoomboxShape != -1 && BoomboxSpots.ContainsKey(sessionData.IsInBoomboxShape))
                 {
                     if (BoomboxSpots[sessionData.IsInBoomboxShape].OwnerID != player.Value) return;
-                    
-                    Menu menu = new Menu(boomboxmenu", false, false);
+
+                    Menu menu = new Menu("boomboxmenu", false, false);
                     menu.Callback = callback_BoomboxManageMenu;
 
-                    Menu.Item menuItem = new Menu.Item(header", Menu.MenuItem.Header);
+                    Menu.Item menuItem = new Menu.Item("header", Menu.MenuItem.Header);
                     menuItem.Text = "Управление бумбоксом";
                     menu.Add(menuItem);
 
-                    menuItem = new Menu.Item(update_boombox_status", Menu.MenuItem.Button);
+                    menuItem = new Menu.Item("update_boombox_status", Menu.MenuItem.Button);
                     menuItem.Text = BoomboxSpots[sessionData.IsInBoomboxShape].BoomboxPlayStatus == false ? "Включить" : "Выключить" + " бумбокс";
                     menu.Add(menuItem);
 
-                    menuItem = new Menu.Item(update_boombox_url", Menu.MenuItem.Button);
+                    menuItem = new Menu.Item("update_boombox_url", Menu.MenuItem.Button);
                     menuItem.Text = "Изменить трек";
                     menu.Add(menuItem);
 
-                    menuItem = new Menu.Item(take_boombox", Menu.MenuItem.Button);
+                    menuItem = new Menu.Item("take_boombox", Menu.MenuItem.Button);
                     menuItem.Text = "Убрать бумбокс";
                     menu.Add(menuItem);
 
-                    menuItem = new Menu.Item(close", Menu.MenuItem.Button);
+                    menuItem = new Menu.Item("close", Menu.MenuItem.Button);
                     menuItem.Text = LangFunc.GetText(LangType.Ru, DataName.Close);
                     menu.Add(menuItem);
 
@@ -186,9 +186,9 @@ namespace NeptuneEvo.Events
             try
             {
                 if (!player.IsCharacterData()) return;
-                
+
                 MenuManager.Close(player);
-                if (item.ID == close") return;
+                if (item.ID == "close") return;
 
                 var sessionData = player.GetSessionData();
                 if (sessionData == null) return;
@@ -197,7 +197,7 @@ namespace NeptuneEvo.Events
                 {
                     if (BoomboxSpots[sessionData.IsInBoomboxShape].OwnerID != player.Value) return;
 
-                    if (item.ID == update_boombox_status")
+                    if (item.ID == "update_boombox_status")
                     {
                         if (BoomboxSpots[sessionData.IsInBoomboxShape].BoomboxPlayStatus == true)
                         {
@@ -206,7 +206,7 @@ namespace NeptuneEvo.Events
                             foreach (ExtPlayer foreachPlayer in Main.GetPlayersInRadiusOfPosition(BoomboxSpots[sessionData.IsInBoomboxShape].BoomboxPosition, 10f, UpdateData.GetPlayerDimension(player)))
                             {
                                 if (!foreachPlayer.IsCharacterData()) continue;
-                                Trigger.ClientEvent(foreachPlayer, stopBoomboxMusic");
+                                Trigger.ClientEvent(foreachPlayer, "stopBoomboxMusic");
                             }
 
                             Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, "Вы выключили бумбокс.", 3000);
@@ -218,15 +218,15 @@ namespace NeptuneEvo.Events
                             foreach (ExtPlayer foreachPlayer in Main.GetPlayersInRadiusOfPosition(BoomboxSpots[sessionData.IsInBoomboxShape].BoomboxPosition, 10f, UpdateData.GetPlayerDimension(player)))
                             {
                                 if (!foreachPlayer.IsCharacterData()) continue;
-                                Trigger.ClientEvent(foreachPlayer, playBoomboxMusic", BoomboxSpots[sessionData.IsInBoomboxShape].MusicURL);
+                                Trigger.ClientEvent(foreachPlayer, "playBoomboxMusic", BoomboxSpots[sessionData.IsInBoomboxShape].MusicURL);
                             }
 
                             Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, "Вы включили бумбокс.", 3000);
                         }
                     }
-                    else if (item.ID == update_boombox_url") 
-                        Trigger.ClientEvent(player, openInput", "Бумбокс", "Ваша ссылка на трек", 256, update_boombox_url");
-                    else if (item.ID == take_boombox") 
+                    else if (item.ID == "update_boombox_url")
+                        Trigger.ClientEvent(player, "openInput", "Бумбокс", "Ваша ссылка на трек", 256, "update_boombox_url");
+                    else if (item.ID == "take_boombox")
                         TakeBoombox(player);
                 }
             }
@@ -258,7 +258,7 @@ namespace NeptuneEvo.Events
                         var foreachPlayerSessionData = player.GetSessionData();
                         if (foreachPlayerSessionData == null) continue;
 
-                        Trigger.ClientEvent(foreachPlayer, stopBoomboxMusic");
+                        Trigger.ClientEvent(foreachPlayer, "stopBoomboxMusic");
 
                         if (foreachPlayerSessionData.IsInBoomboxShape != -1 && foreachPlayerSessionData.IsInBoomboxShape == currentIndex)
                             foreachPlayerSessionData.IsInBoomboxShape = -1;
@@ -275,7 +275,7 @@ namespace NeptuneEvo.Events
 
                     if (!isExit)
                     {
-                        Trigger.ClientEvent(player, setBoomboxInfo", false);
+                        Trigger.ClientEvent(player, "setBoomboxInfo", false);
                         Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, "Вы убрали бумбокс.", 3000);
                     }
                 }
@@ -286,7 +286,7 @@ namespace NeptuneEvo.Events
             }
         }
 
-        [RemoteEvent(updateBoomboxURL")]
+        [RemoteEvent("updateBoomboxURL")]
         public static void UpdateBoomboxURL(ExtPlayer player, string url)
         {
             try
@@ -312,7 +312,7 @@ namespace NeptuneEvo.Events
                         foreach (ExtPlayer foreachPlayer in Main.GetPlayersInRadiusOfPosition(BoomboxSpots[sessionData.IsInBoomboxShape].BoomboxPosition, 10f, UpdateData.GetPlayerDimension(player)))
                         {
                             if (!foreachPlayer.IsCharacterData()) continue;
-                            Trigger.ClientEvent(foreachPlayer, stopBoomboxMusic");
+                            Trigger.ClientEvent(foreachPlayer, "stopBoomboxMusic");
                         }
                     }
 
@@ -338,7 +338,7 @@ namespace NeptuneEvo.Events
                 if (BoomboxSpots.ContainsKey(index))
                 {
                     sessionData.IsInBoomboxShape = index;
-                    if (BoomboxSpots[index].BoomboxPlayStatus == true) Trigger.ClientEvent(player, playBoomboxMusic", BoomboxSpots[index].MusicURL);
+                    if (BoomboxSpots[index].BoomboxPlayStatus == true) Trigger.ClientEvent(player, "playBoomboxMusic", BoomboxSpots[index].MusicURL);
                 }
             }
             catch (Exception e)
@@ -358,7 +358,7 @@ namespace NeptuneEvo.Events
                 if (sessionData.IsInBoomboxShape == player.Value) TakeBoombox(player, true);
                 else sessionData.IsInBoomboxShape = -1;
 
-                Trigger.ClientEvent(player, stopBoomboxMusic");
+                Trigger.ClientEvent(player, "stopBoomboxMusic");
             }
             catch (Exception e)
             {
@@ -380,3 +380,4 @@ namespace NeptuneEvo.Events
     }
 }
 */
+

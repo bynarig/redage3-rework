@@ -2,7 +2,7 @@
 using System.Linq;
 using Database;
 using LinqToDB;
-using NeptuneEvo.Core;
+using NeptuneEvo.Debugs;
 using NeptuneEvo.VehicleData.Models;
 using Newtonsoft.Json;
 
@@ -10,14 +10,15 @@ namespace NeptuneEvo.Organizations.Models
 {
     public class OrganizationVehicleData
     {
+        public VehicleCustomization customization;
+        public float dirt;
+        public byte garageId;
         public string model = "";
-        public int rank = 0;
-        public byte garageId = 0;
-        public float dirt = 0;
-        public int petrol = 0;
-        public VehicleCustomization customization = null;
+        public int petrol;
+        public int rank;
 
-        public OrganizationVehicleData(string model, int rank, byte garageId, float dirt, int petrol, VehicleCustomization customization)
+        public OrganizationVehicleData(string model, int rank, byte garageId, float dirt, int petrol,
+            VehicleCustomization customization)
         {
             this.model = model;
             this.rank = rank;
@@ -33,8 +34,7 @@ namespace NeptuneEvo.Organizations.Models
             {
                 try
                 {
-	
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                     await db.Orgvehicles
                         .Where(o => o.Number == number)
@@ -43,7 +43,7 @@ namespace NeptuneEvo.Organizations.Models
                 }
                 catch (Exception e)
                 {
-                    Debugs.Repository.Exception(e);
+                    Repository.Exception(e);
                 }
             });
         }

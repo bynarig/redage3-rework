@@ -8,38 +8,37 @@ namespace NeptuneEvo.Utils.Base36
 {
     public class Reposotory
     {
-        
-        private const string Digits = 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const string Digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         private const string Min = "-1Y2P0IJ32E8E8";
 
-        private const string Max = 1Y2P0IJ32E8E7";
+        private const string Max = "1Y2P0IJ32E8E7";
 
         /// <summary>
-        /// Checks if the given value would cause a overflow (by being out of the long.MinValue to long.MaxValue range).
+        ///     Checks if the given value would cause a overflow (by being out of the long.MinValue to long.MaxValue range).
         /// </summary>
-        /// <param name=value">Value to check</param>
+        /// <param name="value">Value to check</param>
         /// <returns>True if the value would cause an overflow, false otherwise</returns>
         public static bool WouldOverflow(string value)
         {
-            return _Compare(Min, value) < 0 ||_Compare(value, Max) < 0;
+            return _Compare(Min, value) < 0 || _Compare(value, Max) < 0;
         }
 
         /// <summary>
-        /// Compare two specified base 36 values and returns an integer that indicates their relative position in the
-        /// sort order, similar to the string.Compare method.
-        /// <param name=valueA">First value of the comparison</param>
-        /// <param name=valueB">Second value of the comparison</param>
-        /// <returns>A integer indicating how the two values relate together</returns>
+        ///     Compare two specified base 36 values and returns an integer that indicates their relative position in the
+        ///     sort order, similar to the string.Compare method.
+        ///     <param name="valueA">First value of the comparison</param>
+        ///     <param name="valueB">Second value of the comparison</param>
+        ///     <returns>A integer indicating how the two values relate together</returns>
         public static int Compare(string valueA, string valueB)
         {
             return _Compare(Sanitize(valueA), Sanitize(valueB));
         }
 
         /// <summary>
-        /// Converts from base 36 to base 10.
+        ///     Converts from base 36 to base 10.
         /// </summary>
-        /// <param name=value">Value to convert</param>
+        /// <param name="value">Value to convert</param>
         /// <returns>Value in base 10</returns>
         public static long Decode(string value)
         {
@@ -60,9 +59,9 @@ namespace NeptuneEvo.Utils.Base36
         }
 
         /// <summary>
-        /// Converts from base 10 to base 36.
+        ///     Converts from base 10 to base 36.
         /// </summary>
-        /// <param name=value">Value to convert</param>
+        /// <param name="value">Value to convert</param>
         /// <returns>Value in base 36</returns>
         public static string Encode(long value)
         {
@@ -77,8 +76,9 @@ namespace NeptuneEvo.Utils.Base36
             var encoded = string.Empty;
 
             do
+            {
                 encoded = Digits[(int)(value % Digits.Length)] + encoded;
-            while ((value /= Digits.Length) != 0);
+            } while ((value /= Digits.Length) != 0);
 
             return negative ? "-" + encoded : encoded;
         }

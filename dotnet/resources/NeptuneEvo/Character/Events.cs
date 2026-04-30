@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeptuneEvo.Character
+﻿namespace NeptuneEvo.Character
 {
-    class Events
+    internal class Events
     {
-        
     }
 }

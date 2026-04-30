@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeptuneEvo.Players.Models
+﻿namespace NeptuneEvo.Players.Models
 {
     public class InventoryTentData
     {

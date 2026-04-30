@@ -1,16 +1,15 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Chars;
-using Newtonsoft.Json;
-using NeptuneEvoSDK;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using GTANetworkAPI;
 using NeptuneEvo.Character;
+using NeptuneEvo.Handles;
 using NeptuneEvo.Players;
 using NeptuneEvo.Players.Models;
+using RAGE;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Functions
 {
@@ -18,6 +17,7 @@ namespace NeptuneEvo.Functions
     {
         Error = -99
     }
+
     public enum ColShapeEnums
     {
         None = 0,
@@ -173,93 +173,105 @@ namespace NeptuneEvo.Functions
         VoiceZone,
 
         PetShop,
-        
+
         Rieltagency,
-        
+
         QuestZdobich,
         FurnitureBuy,
-        
+
         ImpoundLot,
         ImpoundLotPed,
-        
+
         AirAutoRoom,
         AirSpawn,
-        
-        EliteAutoRoom,
-        
-        HeliCrash,
-        
-        Patrolling,
-        
-        FamilyZone,
-        
-        
-        WarGangZone,
-        
-        QuestBonus,
-    }
-    class CustomColShape : Script
-    {
 
+        EliteAutoRoom,
+
+        HeliCrash,
+
+        Patrolling,
+
+        FamilyZone,
+
+
+        WarGangZone,
+
+        QuestBonus
+    }
+
+    internal class CustomColShape : Script
+    {
         private static readonly nLog Log = new nLog("Functions.ColShape");
 
-        private static ColShapeEnums[] ExceptionToNotifications = new ColShapeEnums[]
+        private static readonly ColShapeEnums[] ExceptionToNotifications =
         {
             ColShapeEnums.EnterGarage
         };
-        
-        private static ColShapeEnums[] KeyClamp = new ColShapeEnums[]
+
+        private static readonly ColShapeEnums[] KeyClamp =
         {
             ColShapeEnums.HeliCrash
         };
-        
-        public static void CreatCircleColShape(float x, float y, float range, uint dimension = uint.MaxValue, ColShapeEnums colShapeEnums = ColShapeEnums.None, int Index = (int)ColShapeData.Error)
+
+        public static void CreatCircleColShape(float x, float y, float range, uint dimension = uint.MaxValue,
+            ColShapeEnums colShapeEnums = ColShapeEnums.None, int Index = (int)ColShapeData.Error)
         {
-            var colShape = (ExtColShape) NAPI.ColShape.CreatCircleColShape(x, y, range, dimension);
+            var colShape = (ExtColShape)NAPI.ColShape.CreatCircleColShape(x, y, range, dimension);
 
             colShape.SetColShapeData(new ExtColShapeData(colShapeEnums, Index, (int)ColShapeData.Error));
         }
-        public static void Create2DColShape(float x, float y, float width, float height, uint dimension = uint.MaxValue, ColShapeEnums colShapeEnums = ColShapeEnums.None, int Index = (int)ColShapeData.Error)
+
+        public static void Create2DColShape(float x, float y, float width, float height, uint dimension = uint.MaxValue,
+            ColShapeEnums colShapeEnums = ColShapeEnums.None, int Index = (int)ColShapeData.Error)
         {
-            var colShape = (ExtColShape) NAPI.ColShape.Create2DColShape(x, y, width, height, dimension);
+            var colShape = (ExtColShape)NAPI.ColShape.Create2DColShape(x, y, width, height, dimension);
 
             colShape.SetColShapeData(new ExtColShapeData(colShapeEnums, Index, (int)ColShapeData.Error));
         }
-        public static void Create3DColShape(Vector3 start, Vector3 end, uint dimension = uint.MaxValue, ColShapeEnums colShapeEnums = ColShapeEnums.None, int Index = (int)ColShapeData.Error)
+
+        public static void Create3DColShape(Vector3 start, Vector3 end, uint dimension = uint.MaxValue,
+            ColShapeEnums colShapeEnums = ColShapeEnums.None, int Index = (int)ColShapeData.Error)
         {
-            var colShape = (ExtColShape) NAPI.ColShape.Create3DColShape(start, end, dimension);
+            var colShape = (ExtColShape)NAPI.ColShape.Create3DColShape(start, end, dimension);
 
             colShape.SetColShapeData(new ExtColShapeData(colShapeEnums, Index, (int)ColShapeData.Error));
         }
-        public static ExtColShape CreateCylinderColShape(Vector3 position, float range, float height, uint dimension = uint.MaxValue, ColShapeEnums colShapeEnums = ColShapeEnums.None, int Index = (int)ColShapeData.Error, int ListId = (int)ColShapeData.Error)
+
+        public static ExtColShape CreateCylinderColShape(Vector3 position, float range, float height,
+            uint dimension = uint.MaxValue, ColShapeEnums colShapeEnums = ColShapeEnums.None,
+            int Index = (int)ColShapeData.Error, int ListId = (int)ColShapeData.Error)
         {
-            var colShape = (ExtColShape) NAPI.ColShape.CreateCylinderColShape(position, range, height, dimension);
+            var colShape = (ExtColShape)NAPI.ColShape.CreateCylinderColShape(position, range, height, dimension);
 
             colShape.SetColShapeData(new ExtColShapeData(colShapeEnums, Index, ListId));
 
             return colShape;
         }
-        public static ExtColShape CreateSphereColShape(Vector3 position, float range, uint dimension = uint.MaxValue, ColShapeEnums colShapeEnums = ColShapeEnums.None, int Index = (int)ColShapeData.Error, int ListId = (int)ColShapeData.Error)
+
+        public static ExtColShape CreateSphereColShape(Vector3 position, float range, uint dimension = uint.MaxValue,
+            ColShapeEnums colShapeEnums = ColShapeEnums.None, int Index = (int)ColShapeData.Error,
+            int ListId = (int)ColShapeData.Error)
         {
-            var colShape = (ExtColShape) NAPI.ColShape.CreateSphereColShape(position, range, dimension);
+            var colShape = (ExtColShape)NAPI.ColShape.CreateSphereColShape(position, range, dimension);
 
             colShape.SetColShapeData(new ExtColShapeData(colShapeEnums, Index, ListId));
 
             return colShape;
         }
+
         public static void DeleteColShape(ExtColShape shape)
         {
             if (shape == null)
                 return;
-            
+
             var colShape = shape.ColShapeData;
 
-            foreach (var foreachPlayer in RAGE.Entities.Players.All.Cast<ExtPlayer>())
+            foreach (var foreachPlayer in Entities.Players.All.Cast<ExtPlayer>())
             {
                 var foreachColShapesData = foreachPlayer.GetColShapesData();
-                if (foreachColShapesData == null) 
+                if (foreachColShapesData == null)
                     continue;
-                
+
                 var sData = foreachColShapesData
                     .LastOrDefault(s => s.ColShapeId == colShape.ColShapeId && s.Index == colShape.Index);
 
@@ -267,20 +279,21 @@ namespace NeptuneEvo.Functions
                 {
                     if (InteractionCollection.isFunction(sData.ColShapeId.ToString()))
                         Trigger.ClientEvent(foreachPlayer, "hud.cEnter");
-                    
+
                     foreachPlayer.DeleteColShapeData(sData);
                 }
-                
             }
-            
-            
-            if (shape.Exists) 
+
+
+            if (shape.Exists)
                 shape.Delete();
         }
+
         public static bool IsPointWithinColshape(ExtColShape shape, Vector3 point)
         {
             return NAPI.ColShape.IsPointWithinColshape(shape, point);
         }
+
         public static int GetDataToEnum(ExtPlayer player, ColShapeEnums colShapeEnums = ColShapeEnums.None)
         {
             var colShapesData = player.GetColShapesData();
@@ -288,27 +301,28 @@ namespace NeptuneEvo.Functions
             if (colShapesData.Count == 0) return (int)ColShapeData.Error;
             ExtColShapeData sData = null;
 
-            if (colShapeEnums == ColShapeEnums.None) 
+            if (colShapeEnums == ColShapeEnums.None)
                 sData = colShapesData.LastOrDefault();
-            else 
+            else
                 sData = colShapesData.FirstOrDefault(s => s.ColShapeId == colShapeEnums);
-            
-            if (sData == null) 
+
+            if (sData == null)
                 return (int)ColShapeData.Error;
-            return 
+            return
                 sData.Index;
         }
+
         public static ExtColShapeData GetData(ExtPlayer player, ColShapeEnums colShapeEnums = ColShapeEnums.None)
         {
             var colShapesData = player.GetColShapesData();
-            if (colShapesData == null) 
+            if (colShapesData == null)
                 return null;
-            if (colShapesData.Count == 0) 
+            if (colShapesData.Count == 0)
                 return null;
 
-            if (colShapeEnums == ColShapeEnums.None) 
+            if (colShapeEnums == ColShapeEnums.None)
                 return colShapesData.LastOrDefault();
-            
+
             return colShapesData.FirstOrDefault(s => s.ColShapeId == colShapeEnums);
         }
 
@@ -320,47 +334,49 @@ namespace NeptuneEvo.Functions
                 var sData = shape.GetColShapeData();
                 if (sData == null) return;
                 if (!player.IsCharacterData()) return;
-                
+
                 OnEnterColShape(player, sData.ColShapeId, sData.Index, sData.ListId);
             }
             catch (Exception e)
             {
-                Log.Write($"OnPlayerEnterColshape Exception: {e.ToString()}");
+                Log.Write($"OnPlayerEnterColshape Exception: {e}");
             }
         }
 
         public static void SetColShapesData(ExtPlayer player, ColShapeEnums colShapeEnums,
-            int index = (int) ColShapeData.Error, int listId = (int) ColShapeData.Error, bool isAddColShapeData = false)
+            int index = (int)ColShapeData.Error, int listId = (int)ColShapeData.Error, bool isAddColShapeData = false)
         {
-            if (!player.IsCharacterData()) 
+            if (!player.IsCharacterData())
                 return;
-            
-            if (KeyClamp.Contains(colShapeEnums) && !isAddColShapeData) 
+
+            if (KeyClamp.Contains(colShapeEnums) && !isAddColShapeData)
                 return;
-            
+
             var colShapesData = player.GetColShapesData();
             if (colShapesData != null)
             {
                 var sData = colShapesData
                     .LastOrDefault(s => s.ColShapeId == colShapeEnums && s.Index == index);
-                        
-                if (sData != null) 
+
+                if (sData != null)
                     player.DeleteColShapeData(sData);
             }
 
             player.AddColShapeData(new ExtColShapeData(colShapeEnums, index, listId));
             //
-            if (InteractionCollection.isFunction(colShapeEnums.ToString()) && !ExceptionToNotifications.Contains(colShapeEnums))
+            if (InteractionCollection.isFunction(colShapeEnums.ToString()) &&
+                !ExceptionToNotifications.Contains(colShapeEnums))
                 Trigger.ClientEvent(player, "hud.oEnter", colShapeEnums.ToString());
         }
 
-        private void OnEnterColShape(ExtPlayer player, ColShapeEnums colShapeEnums, int Index = (int)ColShapeData.Error, int ListId = (int)ColShapeData.Error)
+        private void OnEnterColShape(ExtPlayer player, ColShapeEnums colShapeEnums, int Index = (int)ColShapeData.Error,
+            int ListId = (int)ColShapeData.Error)
         {
             try
             {
                 if (!player.IsCharacterData()) return;
 
-                var vehicle = (ExtVehicle) player.Vehicle;
+                var vehicle = (ExtVehicle)player.Vehicle;
                 if (vehicle != null && vehicle.Model == (uint)VehicleHash.Rcbandito) return;
 
                 //if (InteractionCollection.isFunction(colShapeEnums.ToString()))
@@ -379,13 +395,15 @@ namespace NeptuneEvo.Functions
                     if (ListId != (int)ColShapeData.Error)
                         parameters[2] = ListId;
                 }
-                InteractionCollection.Call(In_" + colShapeEnums.ToString(), parameters);
+
+                InteractionCollection.Call("In_" + colShapeEnums, parameters);
             }
             catch (Exception e)
             {
-                Log.Write($"OnEnterColShape Exception: {e.ToString()}");
+                Log.Write($"OnEnterColShape Exception: {e}");
             }
         }
+
         [ServerEvent(Event.PlayerExitColshape)]
         public void OnPlayerExitColShape(ExtColShape shape, ExtPlayer player)
         {
@@ -398,43 +416,43 @@ namespace NeptuneEvo.Functions
             }
             catch (Exception e)
             {
-                Log.Write($"OnPlayerExitColShape Exception: {e.ToString()}");
+                Log.Write($"OnPlayerExitColShape Exception: {e}");
             }
         }
-        private void OnExitColShape(ExtPlayer player, ColShapeEnums colShapeEnums, int Index = (int)ColShapeData.Error, int ListId = (int)ColShapeData.Error)
+
+        private void OnExitColShape(ExtPlayer player, ColShapeEnums colShapeEnums, int Index = (int)ColShapeData.Error,
+            int ListId = (int)ColShapeData.Error)
         {
             try
             {
                 if (!player.IsCharacterData()) return;
 
                 var colShapesData = player.GetColShapesData();
-                
+
                 if (colShapesData != null)
                 {
                     var sData = colShapesData
                         .LastOrDefault(s => s.ColShapeId == colShapeEnums && s.Index == Index);
-                    
+
                     if (sData != null)
                     {
                         player.DeleteColShapeData(sData);
-                        
+
                         var cData = player.GetLastColShapeData();
-                        if (cData != null && InteractionCollection.isFunction(cData.ColShapeId.ToString()) && !ExceptionToNotifications.Contains(cData.ColShapeId))
-                        {
+                        if (cData != null && InteractionCollection.isFunction(cData.ColShapeId.ToString()) &&
+                            !ExceptionToNotifications.Contains(cData.ColShapeId))
                             Trigger.ClientEvent(player, "hud.oEnter", cData.ColShapeId.ToString());
-                        }
                         else if (InteractionCollection.isFunction(colShapeEnums.ToString()))
-                        {
                             //Скрываем кнопку
                             Trigger.ClientEvent(player, "hud.cEnter");
-                        }
                     }
                 }
-                int length = 1;
+
+                var length = 1;
                 if (Index != (int)ColShapeData.Error) length++;
                 if (ListId != (int)ColShapeData.Error) length++;
 
-                object[] parameters = new object[length];
+                var parameters = new object[length];
 
                 parameters[0] = player;
                 if (Index != (int)ColShapeData.Error)
@@ -443,12 +461,12 @@ namespace NeptuneEvo.Functions
                     if (ListId != (int)ColShapeData.Error)
                         parameters[2] = ListId;
                 }
-                InteractionCollection.Call(Out_" + colShapeEnums.ToString(), parameters);
 
+                InteractionCollection.Call("Out_" + colShapeEnums, parameters);
             }
             catch (Exception e)
             {
-                Log.Write($"OnExitColShape Exception: {e.ToString()}");
+                Log.Write($"OnExitColShape Exception: {e}");
             }
         }
 
@@ -458,15 +476,15 @@ namespace NeptuneEvo.Functions
             var cData = player.GetLastColShapeData();
             if (cData == null) return;
 
-            var vehicle = (ExtVehicle) player.Vehicle;
+            var vehicle = (ExtVehicle)player.Vehicle;
             if (vehicle != null && vehicle.Model == (uint)VehicleHash.Rcbandito) return;
 
 
-            int length = 1;
+            var length = 1;
             if (cData.Index != (int)ColShapeData.Error) length++;
             if (cData.ListId != (int)ColShapeData.Error) length++;
 
-            object[] parameters = new object[length];
+            var parameters = new object[length];
 
             parameters[0] = player;
             if (cData.Index != (int)ColShapeData.Error)
@@ -475,71 +493,32 @@ namespace NeptuneEvo.Functions
                 if (cData.ListId != (int)ColShapeData.Error)
                     parameters[2] = cData.ListId;
             }
+
             InteractionCollection.Call(cData.ColShapeId.ToString(), parameters);
         }
-
     }
 
     [AttributeUsage(AttributeTargets.Method)]
     public class InteractionAttribute : Attribute
     {
-        private readonly string name;
-        public string Name
-        {
-            get { return name; }
-        }
-
         public InteractionAttribute(ColShapeEnums name, bool In = false, bool Out = false)
         {
-            if (In) this.name = In_" + name.ToString();
-            else if (Out) this.name = Out_" + name.ToString();
-            else this.name = name.ToString();
-        }
-    }
-    class InteractionCollection : Script
-    {
-        class InteractionAttributeData
-        {
-            public MethodInfo Method { get; }
-            public Delegate FastInvokeHandler { get; }
-            public object Instance { get; internal set; }
-            public InteractionAttributeData(MethodInfo method, Delegate fastInvokeHandler)
-            {
-                Method = method;
-                FastInvokeHandler = fastInvokeHandler;
-            }
+            if (In) this.Name = "In_" + name;
+            else if (Out) this.Name = "Out_" + name;
+            else this.Name = name.ToString();
         }
 
+        public string Name { get; }
+    }
+
+    internal class InteractionCollection : Script
+    {
         private static readonly nLog Log = new nLog("Functions.InteractionCollection");
 
-        private static ConcurrentDictionary<string, InteractionAttributeData> InteractionFunction = new ConcurrentDictionary<string, InteractionAttributeData>();
+        private static readonly ConcurrentDictionary<string, InteractionAttributeData> InteractionFunction =
+            new ConcurrentDictionary<string, InteractionAttributeData>();
 
-        private bool AddInstanceIfRequired(MethodInfo method, InteractionAttributeData methodData)
-        {
-            if (method.IsStatic) return true;
-
-            var instance = GetMethodInstance(method);
-            if (instance is null)
-            {
-                Console.WriteLine($"Method {method.Name} in class {method.DeclaringType!.FullName} can not be added because " +
-                    $"it's neither static nor an object of the class can be created (e.g. because of missing parameterless constructor or being a static/abstract class.");
-                return false;
-            }
-            methodData.Instance = instance;
-            return true;
-        }
         private readonly Dictionary<Type, object> _instancesPerClass = new Dictionary<Type, object>();
-        private object GetMethodInstance(MethodInfo method)
-        {
-            var classType = method.DeclaringType!;
-            if (_instancesPerClass.TryGetValue(classType, out var instance))
-                return instance;
-
-            instance = Activator.CreateInstance(classType);
-            if (instance is null) return null;
-            _instancesPerClass[classType] = instance;
-            return instance;
-        }
 
         public InteractionCollection()
         {
@@ -553,10 +532,10 @@ namespace NeptuneEvo.Functions
             var assembly = Assembly.GetExecutingAssembly();
             var methods = assembly.GetTypes().SelectMany(type => type
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
-               .Where(m => m.GetCustomAttribute<InteractionAttribute>(false) != null));
+                .Where(m => m.GetCustomAttribute<InteractionAttribute>(false) != null));
 
 
-            foreach (MethodInfo method in methods) // iterate through all found methods
+            foreach (var method in methods) // iterate through all found methods
             {
                 var cmdAttribute = method.GetCustomAttribute<InteractionAttribute>()!;
                 if (!InteractionFunction.ContainsKey(cmdAttribute.Name))
@@ -568,28 +547,70 @@ namespace NeptuneEvo.Functions
                 }
             }
         }
+
+        private bool AddInstanceIfRequired(MethodInfo method, InteractionAttributeData methodData)
+        {
+            if (method.IsStatic) return true;
+
+            var instance = GetMethodInstance(method);
+            if (instance is null)
+            {
+                Console.WriteLine(
+                    $"Method {method.Name} in class {method.DeclaringType!.FullName} can not be added because " +
+                    "it's neither static nor an object of the class can be created (e.g. because of missing parameterless constructor or being a static/abstract class.");
+                return false;
+            }
+
+            methodData.Instance = instance;
+            return true;
+        }
+
+        private object GetMethodInstance(MethodInfo method)
+        {
+            var classType = method.DeclaringType!;
+            if (_instancesPerClass.TryGetValue(classType, out var instance))
+                return instance;
+
+            instance = Activator.CreateInstance(classType);
+            if (instance is null) return null;
+            _instancesPerClass[classType] = instance;
+            return instance;
+        }
+
         public static void Call(string name, params object[] parameters)
         {
             try
             {
                 if (!InteractionFunction.ContainsKey(name)) return;
-                InteractionAttributeData methodData = InteractionFunction[name];
+                var methodData = InteractionFunction[name];
 
                 if (methodData.FastInvokeHandler is FastInvokeHandler nonStaticHandler)
                     nonStaticHandler.Invoke(methodData.Instance, parameters);
                 else if (methodData.FastInvokeHandler is FastInvokeHandlerStatic staticHandler)
                     staticHandler.Invoke(parameters);
-
             }
             catch (Exception e)
             {
-                Log.Write($"Call Exception: {e.ToString()}");
+                Log.Write($"Call Exception: {e}");
             }
         }
 
         public static bool isFunction(string name)
         {
             return InteractionFunction.ContainsKey(name);
+        }
+
+        private class InteractionAttributeData
+        {
+            public InteractionAttributeData(MethodInfo method, Delegate fastInvokeHandler)
+            {
+                Method = method;
+                FastInvokeHandler = fastInvokeHandler;
+            }
+
+            public MethodInfo Method { get; }
+            public Delegate FastInvokeHandler { get; }
+            public object Instance { get; internal set; }
         }
     }
 }

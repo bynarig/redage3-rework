@@ -6,6 +6,6 @@
         Item = 0,
         Vip,
         Money,
-        Donate,
+        Donate
     }
 }

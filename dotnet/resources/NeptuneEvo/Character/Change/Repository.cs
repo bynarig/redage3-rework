@@ -1,12 +1,13 @@
-﻿using NeptuneEvo.Handles;
+﻿using System;
+using System.Collections.Generic;
 using NeptuneEvo.Core;
 using NeptuneEvo.Events;
+using NeptuneEvo.Fractions.LSNews;
+using NeptuneEvo.Handles;
 using NeptuneEvo.Houses;
 using NeptuneEvo.MoneySystem;
 using NeptuneEvo.Players;
-using NeptuneEvoSDK;
-using System;
-using System.Collections.Generic;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Character.Change
 {
@@ -22,7 +23,7 @@ namespace NeptuneEvo.Character.Change
                 string newName = toChange[oldName];
                 int Uuid = Main.PlayerUUIDs.GetValueOrDefault(oldName);
                 if (Uuid <= 0) return;
-                string[] split = newName.Split(_");
+                string[] split = newName.Split("_");
 
                 Main.PlayerNames[Uuid] = newName;
                 Main.PlayerUUIDs.TryRemove(oldName, out _);
@@ -41,10 +42,10 @@ namespace NeptuneEvo.Character.Change
                     Log.Write("3ChangeName Exception: " + e.ToString());
                 }
 
-                using NpgsqlCommand cmd = new NpgsqlCommand("UPDATE characters" SET firstname"=@val1, lastname"=@val2 WHERE uuid"=@"uuid");
-                cmd.Parameters.AddWithValue(@"val1", split[0]);
-                cmd.Parameters.AddWithValue(@"val2", split[1]);
-                cmd.Parameters.AddWithValue(@"uuid", Uuid);
+                using MySqlCommand cmd = new MySqlCommand("UPDATE `characters` SET `firstname`=@val1, `lastname`=@val2 WHERE `uuid`=@uuid");
+                cmd.Parameters.AddWithValue("@val1", split[0]);
+                cmd.Parameters.AddWithValue("@val2", split[1]);
+                cmd.Parameters.AddWithValue("@uuid", Uuid);
                 await MySQL.QueryAsync(cmd);
                 VehicleManager.changeOwner(oldName, newName);
                 BusinessManager.changeOwner(oldName, newName);
@@ -74,13 +75,13 @@ namespace NeptuneEvo.Character.Change
                 if (characterData == null)
                     return;
 
-                string oldName = sessionData.Name;
+                var oldName = sessionData.Name;
 
-                int Uuid = Main.PlayerUUIDs.GetValueOrDefault(oldName);
-                if (Uuid <= 0) 
+                var Uuid = Main.PlayerUUIDs.GetValueOrDefault(oldName);
+                if (Uuid <= 0)
                     return;
 
-                string[] split = newName.Split(_");
+                var split = newName.Split("_");
 
                 //
                 characterData.FirstName = split[0];
@@ -97,10 +98,11 @@ namespace NeptuneEvo.Character.Change
 
                 if (Main.PlayerBankAccs.ContainsKey(oldName))
                 {
-                    int bank = Main.PlayerBankAccs[oldName];
+                    var bank = Main.PlayerBankAccs[oldName];
                     Main.PlayerBankAccs.TryRemove(oldName, out _);
                     Main.PlayerBankAccs.TryAdd(newName, bank);
                 }
+
                 VehicleManager.changeOwner(oldName, newName);
                 BusinessManager.changeOwner(oldName, newName);
                 Bank.changeHolder(oldName, newName);
@@ -110,7 +112,7 @@ namespace NeptuneEvo.Character.Change
                 //
                 Organizations.Player.Repository.SetName(oldName, newName);
                 Fractions.Player.Repository.SetName(oldName, newName);
-                Fractions.LSNews.LsNewsSystem.OnDisconnect(player);
+                LsNewsSystem.OnDisconnect(player);
                 Friend.Repository.ClearFriends(null, oldName, newName);
                 Airsoft.OnPlayerDisconnected(player);
                 MafiaGame.OnPlayerDisconnected(player);
@@ -122,19 +124,19 @@ namespace NeptuneEvo.Character.Change
             }
             catch (Exception e)
             {
-                Log.Write($"changeName Exception: {e.ToString()}");
+                Log.Write($"changeName Exception: {e}");
             }
         }
-        
+
         public static void ChangeNameOffline(string oldName, string newName)
         {
             try
             {
-                int Uuid = Main.PlayerUUIDs.GetValueOrDefault(oldName);
+                var Uuid = Main.PlayerUUIDs.GetValueOrDefault(oldName);
                 if (Uuid <= 0)
                     return;
-                
-                string[] split = newName.Split(_");
+
+                var split = newName.Split("_");
 
                 Main.PlayerNames[Uuid] = newName;
                 Main.PlayerUUIDs.TryRemove(oldName, out _);
@@ -142,11 +144,11 @@ namespace NeptuneEvo.Character.Change
 
                 if (Main.PlayerBankAccs.ContainsKey(oldName))
                 {
-                    int bank = Main.PlayerBankAccs[oldName];
+                    var bank = Main.PlayerBankAccs[oldName];
                     Main.PlayerBankAccs.TryRemove(oldName, out _);
                     Main.PlayerBankAccs.TryAdd(newName, bank);
                 }
-                
+
                 VehicleManager.changeOwner(oldName, newName);
                 BusinessManager.changeOwner(oldName, newName);
                 Bank.changeHolder(oldName, newName);
@@ -159,14 +161,14 @@ namespace NeptuneEvo.Character.Change
                 Friend.Repository.ClearFriends(null, oldName, newName);
                 GameLog.Name(Uuid, oldName, newName);
                 GameLog.UpdateName(newName, Uuid, -1);
-                
+
                 Save.Repository.SaveName(Uuid, split[0], split[1]);
 
                 Log.Debug("Nickname has been changed!", nLog.Type.Success);
             }
             catch (Exception e)
             {
-                Log.Write($"ChangeNameOffline Exception: {e.ToString()}");
+                Log.Write($"ChangeNameOffline Exception: {e}");
             }
         }
     }

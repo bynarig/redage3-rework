@@ -10,88 +10,92 @@ using NeptuneEvo.Functions;
 using NeptuneEvo.Handles;
 using NeptuneEvo.Players.Phone.Messages.Models;
 using Newtonsoft.Json;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Players.Phone.Messages
 {
     public class Repository
     {
         private static readonly nLog Log = new nLog("Players.Phone.Messages.Repository");
+
+        //
+        private static readonly List<Phonemessages> InsertMessagesList = new List<Phonemessages>();
+
+        //
+        //
+        private static readonly List<List<object>> UpdateToStatusMessagesList = new List<List<object>>();
+
         public static async Task<List<PhoneMessageListData>> Load(ServerBD db, int uuid, int phone)
         {
             var phoneMessageListData = new List<PhoneMessageListData>();
             try
             {
                 var phoneMessages = await db.Phonemessage
-                    .Where(pm => (pm.FromPhone == phone && pm.FromUuid == uuid) || (pm.ToPhone == phone && pm.ToUuid == uuid))
+                    .Where(pm =>
+                        (pm.FromPhone == phone && pm.FromUuid == uuid) || (pm.ToPhone == phone && pm.ToUuid == uuid))
                     .OrderByDescending(pm => pm.AutoId)
                     .Select(pm => new
                     {
                         Phone = pm.FromPhone == phone ? pm.ToPhone : pm.FromPhone,
                         IsMe = pm.FromPhone == phone,
-                        Text = pm.Text,
-                        Type = pm.Type,
-                        Date = pm.Date,
-                        Status = pm.FromPhone == phone ? pm.FromStatus : pm.ToStatus,
-                    
+                        pm.Text,
+                        pm.Type,
+                        pm.Date,
+                        Status = pm.FromPhone == phone ? pm.FromStatus : pm.ToStatus
                     })
                     .ToListAsync();
-            
+
                 foreach (var phoneMessage in phoneMessages)
-                {
                     if (!phoneMessageListData.Any(pm => pm.Phone == phoneMessage.Phone))
-                    {
                         phoneMessageListData.Add(new PhoneMessageListData
                         {
                             Phone = phoneMessage.Phone,
                             IsMe = phoneMessage.IsMe,
                             Text = phoneMessage.Text,
-                            Type = (MessageType) phoneMessage.Type,
+                            Type = (MessageType)phoneMessage.Type,
                             Date = phoneMessage.Date,
                             Status = phoneMessage.Status
                         });
-                    }
-                }
             }
             catch (Exception e)
             {
                 Debugs.Repository.Exception(e);
             }
-            
+
             return phoneMessageListData;
         }
-        
+
         //
 
         public static async Task<List<object[]>> getMessage(ExtPlayer player, int number)
         {
             var returnMessages = new List<object[]>();
-            
+
             try
             {
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return returnMessages;
-            
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                 var messages = await db.Phonemessage
                     .Where(pm =>
-                        (pm.FromUuid == characterData.UUID && pm.FromPhone == characterData.Sim && pm.ToPhone == number) ||
+                        (pm.FromUuid == characterData.UUID && pm.FromPhone == characterData.Sim &&
+                         pm.ToPhone == number) ||
                         (pm.ToUuid == characterData.UUID && pm.ToPhone == characterData.Sim && pm.FromPhone == number))
                     .OrderByDescending(pm => pm.AutoId)
-                
                     .ToArrayAsync();
 
                 foreach (var message in messages)
                 {
                     var isMe = message.FromUuid == characterData.UUID;
-                
+
                     returnMessages.Insert(0, new object[]
                     {
                         message.AutoId,
                         message.Text,
-                        message.Date, 
+                        message.Date,
                         isMe,
                         message.Type
                     });
@@ -101,13 +105,15 @@ namespace NeptuneEvo.Players.Phone.Messages
             {
                 Debugs.Repository.Exception(e);
             }
-            
+
             return returnMessages;
         }
-        
-        //
-        private static List<Phonemessages> InsertMessagesList = new List<Phonemessages>();
-        public static bool IsCountInsertMessages() => InsertMessagesList.Count > 0;
+
+        public static bool IsCountInsertMessages()
+        {
+            return InsertMessagesList.Count > 0;
+        }
+
         public static async Task InsertMessages(ServerBD db)
         {
             try
@@ -115,20 +121,19 @@ namespace NeptuneEvo.Players.Phone.Messages
                 var messages = InsertMessagesList.ToList();
                 InsertMessagesList.Clear();
 
-                foreach (var message in messages)
-                {
-                    await db.InsertAsync(message);
-                }
+                foreach (var message in messages) await db.InsertAsync(message);
             }
             catch (Exception e)
             {
-                Log.Write($"InsertMessages Exception: {e.ToString()}");
+                Log.Write($"InsertMessages Exception: {e}");
             }
         }
-        //
-        //
-        private static List<List<object>> UpdateToStatusMessagesList = new List<List<object>>();
-        public static bool IsCountUpdateMessages() => UpdateToStatusMessagesList.Count > 0;
+
+        public static bool IsCountUpdateMessages()
+        {
+            return UpdateToStatusMessagesList.Count > 0;
+        }
+
         public static async Task UpdateMessages(ServerBD db)
         {
             try
@@ -153,32 +158,34 @@ namespace NeptuneEvo.Players.Phone.Messages
             }
             catch (Exception e)
             {
-                Log.Write($"InsertMessages Exception: {e.ToString()}");
+                Log.Write($"InsertMessages Exception: {e}");
             }
         }
+
         //
-        private static void UpdateMessageStatus(ExtPlayer player, int number, int key, string date = null, MessageStatus status = MessageStatus.Error)
+        private static void UpdateMessageStatus(ExtPlayer player, int number, int key, string date = null,
+            MessageStatus status = MessageStatus.Error)
         {
             if (date == null)
                 date = JsonConvert.SerializeObject(DateTime.Now);
 
-            Trigger.ClientEvent(player, "client.phone.updMsgStatus", number, key, date, (int) status);
+            Trigger.ClientEvent(player, "client.phone.updMsgStatus", number, key, date, (int)status);
         }
-        
+
         public static void AddSystemMessageToUuid(int uuid, int number, string text, DateTime date)
         {
             var sim = -1;
             var player = Main.GetPlayerByUUID(uuid);
-            
+
             var characterData = player.GetCharacterData();
             var phoneData = player.getPhoneData();
             if (characterData != null && phoneData != null)
             {
                 sim = characterData.Sim;
                 var dateJson = JsonConvert.SerializeObject(date);
-            
+
                 Trigger.ClientEvent(player, "client.phone.msgAdd", number, text, dateJson, 0);
-            
+
                 if (phoneData.SelectedNumber != characterData.Sim)
                     Settings.Repository.PlayNotify(player);
             }
@@ -188,7 +195,6 @@ namespace NeptuneEvo.Players.Phone.Messages
             }
 
             if (Main.SimCards.ContainsKey(sim))
-            {
                 InsertMessagesList.Add(new Phonemessages
                 {
                     FromUuid = 0,
@@ -201,7 +207,6 @@ namespace NeptuneEvo.Players.Phone.Messages
                     FromStatus = true,
                     ToStatus = true
                 });
-            }
         }
 
         public static void AddSystemMessage(ExtPlayer player, int number, string text, DateTime date)
@@ -211,20 +216,20 @@ namespace NeptuneEvo.Players.Phone.Messages
                 try
                 {
                     var characterData = player.GetCharacterData();
-                    if (characterData == null) 
+                    if (characterData == null)
                         return;
-                    
+
                     var phoneData = player.getPhoneData();
-                    if (phoneData == null) 
+                    if (phoneData == null)
                         return;
-            
+
                     var dateJson = JsonConvert.SerializeObject(date);
-            
+
                     Trigger.ClientEvent(player, "client.phone.msgAdd", number, text, dateJson, 0);
-            
+
                     if (phoneData.SelectedNumber != characterData.Sim)
                         Settings.Repository.PlayNotify(player);
-                
+
                     InsertMessagesList.Add(new Phonemessages
                     {
                         FromUuid = 0,
@@ -240,11 +245,10 @@ namespace NeptuneEvo.Players.Phone.Messages
                 }
                 catch (Exception e)
                 {
-                    Log.Write($"CMD_offunwarn SetTask Exception: {e.ToString()}");
+                    Log.Write($"CMD_offunwarn SetTask Exception: {e}");
                 }
             });
         }
-
 
 
         public static void SendSystemMessage(ExtPlayer player, int number, int key, string text, int type)
@@ -263,29 +267,29 @@ namespace NeptuneEvo.Players.Phone.Messages
             }*/
 
             var errorMessage = "";
-            if (number == (int) DefaultNumber.Polic)
+            if (number == (int)DefaultNumber.Polic)
             {
                 errorMessage = Police.OnCallPolice(player, text);
                 //UpdateMessageStatus(player, number, key, dateJson);
             }
-            else if (number == (int) DefaultNumber.Ems)
+            else if (number == (int)DefaultNumber.Ems)
             {
                 errorMessage = Ems.OnCallEms(player);
                 //UpdateMessageStatus(player, number, key, dateJson);
             }
-            else if (number == (int) DefaultNumber.RedAge)
+            else if (number == (int)DefaultNumber.RedAge)
             {
                 var isActive = false;
 
                 errorMessage = BonusCode.Repository.Enter(player, text);
-                if (errorMessage != String.Empty)
+                if (errorMessage != string.Empty)
                 {
                     isActive = true;
                     AddSystemMessage(player, number, errorMessage, date);
                 }
 
                 errorMessage = PromoCode.Repository.Enter(player, text);
-                if (errorMessage != String.Empty)
+                if (errorMessage != string.Empty)
                 {
                     isActive = true;
                     AddSystemMessage(player, number, errorMessage, date);
@@ -300,7 +304,7 @@ namespace NeptuneEvo.Players.Phone.Messages
             }
 
 
-            UpdateMessageStatus(player, number, key, dateJson, status: MessageStatus.Received);
+            UpdateMessageStatus(player, number, key, dateJson, MessageStatus.Received);
 
             InsertMessagesList.Add(new Phonemessages
             {
@@ -309,7 +313,7 @@ namespace NeptuneEvo.Players.Phone.Messages
                 ToUuid = 0,
                 ToPhone = number,
                 Date = date,
-                Type = (sbyte) type,
+                Type = (sbyte)type,
                 Text = text,
                 FromStatus = true,
                 ToStatus = true
@@ -323,28 +327,28 @@ namespace NeptuneEvo.Players.Phone.Messages
         public static void SendMessage(ExtPlayer player, int number, int key, string text, int type)
         {
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
-            
+
             var phoneData = player.getPhoneData();
-            if (phoneData == null) 
+            if (phoneData == null)
                 return;
-            
+
             var date = DateTime.Now;
             var dateJson = JsonConvert.SerializeObject(date);
-            
-            if (!FunctionsAccess.IsWorking(phonesms"))
+
+            if (!FunctionsAccess.IsWorking("phonesms"))
             {
                 UpdateMessageStatus(player, number, key, dateJson);
                 return;
             }
-            
+
             if (characterData.Sim == -1 || Settings.Repository.IsAir(phoneData.Settings))
             {
                 UpdateMessageStatus(player, number, key, dateJson);
                 return;
             }
-            
+
             if (!Main.SimCards.ContainsKey(number))
             {
                 UpdateMessageStatus(player, number, key, dateJson);
@@ -352,11 +356,11 @@ namespace NeptuneEvo.Players.Phone.Messages
             }
 
             var isSelected = false;
-            
+
             var targetUuid = Main.SimCards[number];
-            
+
             var target = Main.GetPlayerByUUID(targetUuid);
-            
+
             var targetCharacterData = target.GetCharacterData();
             if (targetCharacterData != null)
             {
@@ -365,7 +369,7 @@ namespace NeptuneEvo.Players.Phone.Messages
                     UpdateMessageStatus(player, number, key, dateJson);
                     return;
                 }
-                
+
                 var targetPhoneData = target.getPhoneData();
                 if (targetPhoneData != null && targetPhoneData.BlackList.Contains(characterData.Sim))
                 {
@@ -384,9 +388,9 @@ namespace NeptuneEvo.Players.Phone.Messages
                         Settings.Repository.PlayNotify(target);
                 }
             }
-            
-            UpdateMessageStatus(player, number, key, dateJson, status: MessageStatus.Received);
-            
+
+            UpdateMessageStatus(player, number, key, dateJson, MessageStatus.Received);
+
             InsertMessagesList.Add(new Phonemessages
             {
                 FromUuid = characterData.UUID,
@@ -394,7 +398,7 @@ namespace NeptuneEvo.Players.Phone.Messages
                 ToUuid = targetUuid,
                 ToPhone = number,
                 Date = date,
-                Type = (sbyte) type,
+                Type = (sbyte)type,
                 Text = text,
                 FromStatus = true,
                 ToStatus = isSelected
@@ -404,7 +408,7 @@ namespace NeptuneEvo.Players.Phone.Messages
         public static void SelectedNumber(ExtPlayer player, int number)
         {
             var phoneData = player.getPhoneData();
-            if (phoneData == null) 
+            if (phoneData == null)
                 return;
 
             phoneData.SelectedNumber = number;
@@ -413,7 +417,7 @@ namespace NeptuneEvo.Players.Phone.Messages
         public static void GetChatStatus(ExtPlayer player, int number, bool status)
         {
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
 
             if (!Main.SimCards.ContainsKey(number))
@@ -421,10 +425,10 @@ namespace NeptuneEvo.Players.Phone.Messages
                 Trigger.ClientEvent(player, "client.phone.setPhoneChatStatus", number, 2);
                 return;
             }
+
             var targetUuid = Main.SimCards[number];
 
             if (!status)
-            {
                 UpdateToStatusMessagesList.Add(new List<object>
                 {
                     targetUuid,
@@ -432,45 +436,47 @@ namespace NeptuneEvo.Players.Phone.Messages
                     characterData.UUID,
                     characterData.Sim
                 });
-            }
-            
-            
+
+
             var target = Main.GetPlayerByUUID(targetUuid);
-            
+
             var targetPhoneData = target.getPhoneData();
             if (targetPhoneData != null)
             {
-                if (targetPhoneData.BlackList.Contains(characterData.Sim) || Settings.Repository.IsAir(targetPhoneData.Settings))
+                if (targetPhoneData.BlackList.Contains(characterData.Sim) ||
+                    Settings.Repository.IsAir(targetPhoneData.Settings))
                 {
                     Trigger.ClientEvent(player, "client.phone.setPhoneChatStatus", number, 2);
                     return;
                 }
-                
+
                 Trigger.ClientEvent(player, "client.phone.setPhoneChatStatus", number, 1);
                 return;
             }
-            
+
             Trigger.ClientEvent(player, "client.phone.setPhoneChatStatus", number, 2);
         }
+
         public static void UpdateWrite(ExtPlayer player, int number, bool toggled)
         {
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
-            
+
             if (!Main.SimCards.ContainsKey(number))
                 return;
 
             var targetUuid = Main.SimCards[number];
-            
+
             var target = Main.GetPlayerByUUID(targetUuid);
-            
+
             var targetPhoneData = target.getPhoneData();
             if (targetPhoneData != null)
             {
-                if (targetPhoneData.BlackList.Contains(characterData.Sim) || Settings.Repository.IsAir(targetPhoneData.Settings)) 
+                if (targetPhoneData.BlackList.Contains(characterData.Sim) ||
+                    Settings.Repository.IsAir(targetPhoneData.Settings))
                     return;
-                
+
                 Trigger.ClientEvent(target, "client.phone.setPhoneChatWrite", characterData.Sim, toggled);
             }
         }

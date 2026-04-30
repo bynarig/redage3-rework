@@ -6,52 +6,29 @@ using NeptuneEvo.Accounts;
 using NeptuneEvo.Character;
 using NeptuneEvo.Core;
 using NeptuneEvo.Handles;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.BattlePass.Repository;
 
 namespace NeptuneEvo.MoneySystem
 {
     public class DonatePack : Script
     {
         private static readonly nLog Log = new nLog("MoneySystem.DonatePack");
-        
-        class PackBuy
-        {
-            public int Id;
-            public string Login;
-            public int UUID;
-            public DateTime Time;
-        }
-        
-        class Pack
-        {
-            public int Id;
-            public string Title;
-            public int Donate;
-            public int Money;
 
-            public Pack(int id, string title, int donate, int money)
-            {
-                Id = id;
-                Title = title;
-                Donate = donate;
-                Money = money;
-            }
-        }
+        private static readonly List<PackBuy> PacksBuy = new List<PackBuy>();
 
-        private static List<PackBuy> PacksBuy = new List<PackBuy>();
-
-        private static List<Pack> Packs = new List<Pack>
+        private static readonly List<Pack> Packs = new List<Pack>
         {
-            new Pack(0, "Покупка BattlePass", BattlePass.Repository.PricePremium, 1999),
+            new Pack(0, "Покупка BattlePass", Repository.PricePremium, 1999)
         };
 
         [RemoteEvent("server.donatepack.donate")]
         public void ConfirmDonate(ExtPlayer player, int id)
         {
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
-            
+
             var accountData = player.GetAccountData();
             if (accountData == null)
                 return;
@@ -60,7 +37,7 @@ namespace NeptuneEvo.MoneySystem
 
             if (packBuy != null)
                 PacksBuy.Remove(packBuy);
-            
+
             PacksBuy.Add(new PackBuy
             {
                 Id = id,
@@ -69,6 +46,7 @@ namespace NeptuneEvo.MoneySystem
                 Time = DateTime.Now.AddMinutes(30)
             });
         }
+
         public static bool IsDonate(ExtPlayer player, string login, int money)
         {
             var packBuy = PacksBuy.FirstOrDefault(pb => pb.Login.Equals(login));
@@ -78,36 +56,38 @@ namespace NeptuneEvo.MoneySystem
                 var accountData = player.GetAccountData();
                 if (accountData == null)
                     return false;
-                
+
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return false;
 
-                if (characterData.UUID != packBuy.UUID) 
+                if (characterData.UUID != packBuy.UUID)
                     return false;
-                
+
                 var pack = Packs[packBuy.Id];
-                
+
                 if (pack.Money != money)
                     return false;
-                
+
                 PacksBuy.Remove(packBuy);
-                
+
                 Confirm(player, packBuy.Id, true);
-                
-                GameLog.AccountLog(accountData.Login, accountData.HWID, accountData.IP, accountData.SocialClub, pack.Title);
-                
+
+                GameLog.AccountLog(accountData.Login, accountData.HWID, accountData.IP, accountData.SocialClub,
+                    pack.Title);
+
                 return true;
             }
 
             return false;
         }
+
         public static bool IsDonate(ExtPlayer player)
         {
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return false;
-            
+
             var accountData = player.GetAccountData();
             if (accountData == null)
                 return false;
@@ -116,7 +96,7 @@ namespace NeptuneEvo.MoneySystem
 
             return packBuy != null;
         }
-        
+
         public static void DeleteTime()
         {
             try
@@ -126,17 +106,15 @@ namespace NeptuneEvo.MoneySystem
                     .ToList();
 
                 foreach (var packBuy in packsBuy)
-                {
                     if (PacksBuy.Contains(packBuy))
                         PacksBuy.Remove(packBuy);
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"DeleteTime Exception: {e.ToString()}");
+                Log.Write($"DeleteTime Exception: {e}");
             }
         }
-        
+
         [RemoteEvent("server.donatepack.rb")]
         public static void ConfirmRB(ExtPlayer player, int id)
         {
@@ -150,6 +128,7 @@ namespace NeptuneEvo.MoneySystem
                     break;
             }
         }
+
         public static void Confirm(ExtPlayer player, int id, bool isBuyDonate = false)
         {
             if (!player.IsCharacterData())
@@ -158,11 +137,11 @@ namespace NeptuneEvo.MoneySystem
             switch (id)
             {
                 case 0:
-                    BattlePass.Repository.BuyPremium(player, isBuyDonate);
+                    Repository.BuyPremium(player, isBuyDonate);
                     break;
             }
         }
-        
+
         [RemoteEvent("server.donatepack.open")]
         public static void Open(ExtPlayer player, int id)
         {
@@ -170,11 +149,32 @@ namespace NeptuneEvo.MoneySystem
                 return;
 
             var pack = Packs[id];
-            
+
             Trigger.ClientEvent(player, "client.donatepack.show", pack.Id, pack.Title, pack.Donate, pack.Money);
         }
-        
-        
-        
+
+        private class PackBuy
+        {
+            public int Id;
+            public string Login;
+            public DateTime Time;
+            public int UUID;
+        }
+
+        private class Pack
+        {
+            public readonly int Donate;
+            public readonly int Id;
+            public readonly int Money;
+            public readonly string Title;
+
+            public Pack(int id, string title, int donate, int money)
+            {
+                Id = id;
+                Title = title;
+                Donate = donate;
+                Money = money;
+            }
+        }
     }
 }

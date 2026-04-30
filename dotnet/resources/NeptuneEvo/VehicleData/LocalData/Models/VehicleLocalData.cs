@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using GTANetworkAPI;
 using NeptuneEvo.Handles;
 using NeptuneEvo.Jobs.Models;
 
@@ -16,9 +15,9 @@ namespace NeptuneEvo.VehicleData.LocalData.Models
         public bool CanMats { get; set; } = false;
         public bool CanDrugs { get; set; } = false;
         public bool CanMedKits { get; set; } = false;
-        public string By { get; set; } = NONE";
+        public string By { get; set; } = "NONE";
         public VehicleAccess Access { get; set; } = VehicleAccess.None;
-        public string NumberPlate { get; set; } = null";
+        public string NumberPlate { get; set; } = "null";
         public int Fraction { get; set; } = -1;
         public int MinRank { get; set; } = 100;
         public bool BagInUse { get; set; } = false;
@@ -35,15 +34,14 @@ namespace NeptuneEvo.VehicleData.LocalData.Models
         public int RentCarPrice { get; set; } = 0;
         public DateTime RentCarTime { get; set; } = DateTime.Now;
         public string RentCarModel { get; set; } = null;
-        public int VehLoadedFuel { get; set; } = 0;   
-        public bool IsDeath { get; set; } = false;     
+        public int VehLoadedFuel { get; set; } = 0;
+        public bool IsDeath { get; set; } = false;
         public DateTime DeathTime { get; set; } = DateTime.Now;
-        public bool IsFbAttach { get; set; } = false;   
-        public DateTime ExitTime { get; set; } = DateTime.Now;   
-        public bool IsTicket { get; set; } = false;   
-        
-        public uint Centimeters { get; set; } = 0;   
-        public int Mileage { get; set; } = 0;   
+        public bool IsFbAttach { get; set; } = false;
+        public DateTime ExitTime { get; set; } = DateTime.Now;
+        public bool IsTicket { get; set; } = false;
 
+        public uint Centimeters { get; set; } = 0;
+        public int Mileage { get; set; } = 0;
     }
 }

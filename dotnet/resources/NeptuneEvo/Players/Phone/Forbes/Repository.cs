@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Database;
 using LinqToDB;
 using NeptuneEvo.Character;
@@ -12,7 +11,6 @@ using NeptuneEvo.Houses;
 using NeptuneEvo.MoneySystem;
 using NeptuneEvo.Players.Phone.Forbes.Models;
 using Newtonsoft.Json;
-using NeptuneEvoSDK;
 
 namespace NeptuneEvo.Players.Phone.Forbes
 {
@@ -25,20 +23,21 @@ namespace NeptuneEvo.Players.Phone.Forbes
         {
             if (Time > DateTime.Now)
                 return;
-            
-            if (!FunctionsAccess.IsWorking(phoneforbes"))
+
+            if (!FunctionsAccess.IsWorking("phoneforbes"))
                 return;
-            
+
             Time = DateTime.Now.AddMinutes(30 * 5);
-            
+
             Trigger.SetTask(() => GetData());
         }
+
         private static async void GetData()
         {
             try
             {
                 var forbesData = new Dictionary<string, ForbesData>();
-            
+
                 var bizList = BusinessManager.BizList.Values
                     .Where(b => b.IsOwner())
                     .ToList();
@@ -52,6 +51,7 @@ namespace NeptuneEvo.Players.Phone.Forbes
                         Price = biz.SellPrice
                     };
                     if (!forbesData.ContainsKey(biz.Owner))
+                    {
                         forbesData.Add(biz.Owner, new ForbesData
                         {
                             List = new List<ForbesList>
@@ -59,18 +59,19 @@ namespace NeptuneEvo.Players.Phone.Forbes
                                 element
                             },
                             Name = biz.Owner,
-                            SumMoney = (uint) biz.SellPrice
+                            SumMoney = (uint)biz.SellPrice
                         });
+                    }
                     else
                     {
                         var forbes = forbesData[biz.Owner];
-                        forbes.SumMoney += (uint) biz.SellPrice;
+                        forbes.SumMoney += (uint)biz.SellPrice;
                         forbes.List.Add(element);
                     }
                 }
-                
+
                 //
-                
+
                 var houseList = HouseManager.Houses
                     .Where(b => b.Owner != string.Empty)
                     .ToList();
@@ -83,8 +84,9 @@ namespace NeptuneEvo.Players.Phone.Forbes
                         Name = $"Дом #{house.ID}",
                         Price = house.Price
                     };
-                    
+
                     if (!forbesData.ContainsKey(house.Owner))
+                    {
                         forbesData.Add(house.Owner, new ForbesData
                         {
                             List = new List<ForbesList>
@@ -94,6 +96,7 @@ namespace NeptuneEvo.Players.Phone.Forbes
                             Name = house.Owner,
                             SumMoney = (uint)house.Price
                         });
+                    }
                     else
                     {
                         var forbes = forbesData[house.Owner];
@@ -116,6 +119,7 @@ namespace NeptuneEvo.Players.Phone.Forbes
                         };
 
                         if (!forbesData.ContainsKey(vehicle.Holder))
+                        {
                             forbesData.Add(vehicle.Holder, new ForbesData
                             {
                                 List = new List<ForbesList>
@@ -125,6 +129,7 @@ namespace NeptuneEvo.Players.Phone.Forbes
                                 Name = vehicle.Holder,
                                 SumMoney = (uint)vehicleData.Price
                             });
+                        }
                         else
                         {
                             var forbes = forbesData[vehicle.Holder];
@@ -133,9 +138,9 @@ namespace NeptuneEvo.Players.Phone.Forbes
                         }
                     }
                 }
-                
-                
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+
+
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                 var characters = await db.Characters
                     .ToListAsync();
@@ -150,9 +155,10 @@ namespace NeptuneEvo.Players.Phone.Forbes
                         var bankId = Convert.ToInt32(character.Bank);
                         var lvl = Convert.ToInt32(character.Lvl);
 
-                        money += (int) Bank.GetBalance(bankId);
-                    
+                        money += (int)Bank.GetBalance(bankId);
+
                         if (!forbesData.ContainsKey(name))
+                        {
                             forbesData.Add(name, new ForbesData
                             {
                                 List = new List<ForbesList>(),
@@ -162,6 +168,7 @@ namespace NeptuneEvo.Players.Phone.Forbes
                                 Lvl = lvl,
                                 IsShowForbes = isShowForbes
                             });
+                        }
                         else
                         {
                             var forbes = forbesData[name];
@@ -179,9 +186,8 @@ namespace NeptuneEvo.Players.Phone.Forbes
                         if (forbesData.ContainsKey(name))
                             forbesData.Remove(name);
                     }
-
                 }
-                
+
                 //
 
                 var forbesTopList = forbesData.Values
@@ -194,7 +200,7 @@ namespace NeptuneEvo.Players.Phone.Forbes
                 foreach (var forbes in forbesTopList)
                 {
                     var item = new List<object>();
-                    
+
                     item.Add(forbes.Name);
                     item.Add(forbes.Money);
                     item.Add(forbes.SumMoney);
@@ -202,7 +208,7 @@ namespace NeptuneEvo.Players.Phone.Forbes
                     item.Add(forbes.IsShowForbes);
 
                     var list = new List<object>();
-                    
+
                     foreach (var forbesList in forbes.List)
                     {
                         var itemList = new List<object>();
@@ -210,11 +216,12 @@ namespace NeptuneEvo.Players.Phone.Forbes
                         itemList.Add(forbesList.Name);
                         itemList.Add(forbesList.Price);
                         itemList.Add(forbesList.Type);
-                        
+
                         list.Add(itemList);
                     }
+
                     item.Add(list);
-                    
+
                     forbesTopString.Add(item);
                 }
 
@@ -230,7 +237,7 @@ namespace NeptuneEvo.Players.Phone.Forbes
         {
             if (!player.IsCharacterData())
                 return;
-            
+
             Trigger.ClientEvent(player, "client.phone.forbes.init", ForbesTopString);
         }
     }

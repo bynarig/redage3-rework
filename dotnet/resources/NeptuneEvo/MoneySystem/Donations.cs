@@ -1,27 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading;
 using GTANetworkAPI;
-using Localization;
-using NeptuneEvo.Handles;
-using Npgsql;
-using NeptuneEvo.Core;
-using NeptuneEvoSDK;
-using Newtonsoft.Json;
-using NeptuneEvo.Chars;
+using NeptuneEvo.Localization;
+using MySqlConnector;
 using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
 using NeptuneEvo.Character;
+using NeptuneEvo.Chars;
+using NeptuneEvo.Core;
+using NeptuneEvo.Handles;
+using NeptuneEvo.Players;
 using NeptuneEvo.Players.Phone.Messages.Models;
-using NeptuneEvoSDK.Models;
+using NeptuneEvo.Utils.Analytics;
+using Newtonsoft.Json;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.Accounts.Repository;
 
 namespace NeptuneEvo.MoneySystem
 {
-    class Donations : Script
+    internal class Donations : Script
     {
         private static readonly nLog Log = new nLog("MoneySystem.Donations");
         private static Timer scanTimer;
@@ -37,23 +35,10 @@ namespace NeptuneEvo.MoneySystem
                 $"User={Main.DonateSettings.User};" +
                 $"Password={Main.DonateSettings.Password};" +
                 $"Database={Main.DonateSettings.DataBase};" +
-                $"SslMode=None;";
-            
+                "SslMode=None;";
+
             SYNCSTR = $"select * from completed where srv={Main.ServerNumber}";
         }
-        #region Работа с таймером
-        public static void Start()
-        {
-            LoadDonations();
-            
-            scanTimer = new Timer(new TimerCallback(Tick), null, 1000 * 60, 1000 * 60);
-        }
-
-        public static void Stop()
-        {
-            scanTimer.Change(Timeout.Infinite, 0);
-        }
-        #endregion
 
         private static void CheckPromoDonate(string login, ulong reds, ExtPlayer player)
         {
@@ -64,168 +49,210 @@ namespace NeptuneEvo.MoneySystem
                 string promo = null;
                 if (accountData == null)
                 {
-                    using NpgsqlCommand cmd = new NpgsqlCommand()
+                    using var cmd = new MySqlCommand
                     {
-                        CommandText = $"SELECT promocodes FROM accounts" WHERE login"=@"val0"
+                        CommandText = "SELECT promocodes FROM `accounts` WHERE `login`=@val0"
                     };
-                    cmd.Parameters.AddWithValue(@"val0", login);
-                    using DataTable result = MySQL.QueryRead(cmd);
+                    cmd.Parameters.AddWithValue("@val0", login);
+                    using var result = MySQL.QueryRead(cmd);
                     if (result != null)
                     {
-                        promo = JsonConvert.DeserializeObject<List<string>>(result.Rows[0][promocodes"].ToString())[0];
-                        if (Main.PromoCodes.ContainsKey(promo) && Main.PromoCodes[promo].CreatorUUID != 0 && Main.PromoCodes[promo].DonatePercent > 0) dlogin = Main.PromoCodes[promo].DonateLogin;
+                        promo = JsonConvert.DeserializeObject<List<string>>(result.Rows[0]["promocodes"].ToString())[0];
+                        if (Main.PromoCodes.ContainsKey(promo) && Main.PromoCodes[promo].CreatorUUID != 0 &&
+                            Main.PromoCodes[promo].DonatePercent > 0) dlogin = Main.PromoCodes[promo].DonateLogin;
                     }
                 }
                 else
                 {
-                    if (accountData.PromoCodes.Count >= 1 && !accountData.PromoCodes[0].Equals(noref"))
+                    if (accountData.PromoCodes.Count >= 1 && !accountData.PromoCodes[0].Equals("noref"))
                     {
                         promo = accountData.PromoCodes[0];
-                        if (Main.PromoCodes.ContainsKey(promo) && Main.PromoCodes[promo].CreatorUUID != 0 && Main.PromoCodes[promo].DonatePercent > 0) dlogin = Main.PromoCodes[promo].DonateLogin;
+                        if (Main.PromoCodes.ContainsKey(promo) && Main.PromoCodes[promo].CreatorUUID != 0 &&
+                            Main.PromoCodes[promo].DonatePercent > 0) dlogin = Main.PromoCodes[promo].DonateLogin;
                     }
                 }
+
                 if (string.IsNullOrEmpty(promo) || promo == null || !Main.PromoCodes.ContainsKey(promo)) return;
-                using NpgsqlCommand cmdPromocodes_new = new NpgsqlCommand
+                using var cmdPromocodes_new = new MySqlCommand
                 {
-                    CommandText = "UPDATE promocodes_new" SET donated"=donated"+@val0 WHERE promo"=@"val1"
+                    CommandText = "UPDATE `promocodes_new` SET `donated`=`donated`+@val0 WHERE `promo`=@val1"
                 };
-                cmdPromocodes_new.Parameters.AddWithValue(@"val0", reds);
-                cmdPromocodes_new.Parameters.AddWithValue(@"val1", promo);
+                cmdPromocodes_new.Parameters.AddWithValue("@val0", reds);
+                cmdPromocodes_new.Parameters.AddWithValue("@val1", promo);
                 MySQL.Query(cmdPromocodes_new);
-                if (string.IsNullOrEmpty(dlogin) || dlogin == null || dlogin.Equals(null")) return;
+                if (string.IsNullOrEmpty(dlogin) || dlogin == null || dlogin.Equals("null")) return;
                 reds = Convert.ToUInt64(reds * Main.PromoCodes[promo].DonatePercent);
                 if (reds >= 1)
                 {
                     Main.PromoCodes[promo].DonateReceivedByStreamer += reds;
-                    ExtPlayer target = Accounts.Repository.GetPlayerToLogin(dlogin);
+                    var target = Repository.GetPlayerToLogin(dlogin);
                     var targetAccountData = target.GetAccountData();
                     if (targetAccountData == null)
                     {
-                        GameLog.AccountLog(dlogin, "-", "-", "-", LangFunc.GetText(LangType.Ru, DataName.RefTopUp, login, reds));
-                        using NpgsqlCommand cmd = new NpgsqlCommand
+                        GameLog.AccountLog(dlogin, "-", "-", "-",
+                            LangFunc.GetText(LangType.Ru, DataName.RefTopUp, login, reds));
+                        using var cmd = new MySqlCommand
                         {
-                            CommandText = "update accounts" set redbucks"=redbucks"+@val0 where login"=@val1; UPDATE promocodes_new" SET donreceived"=donreceived"+@val2 WHERE promo"=@"val3"
+                            CommandText =
+                                "update `accounts` set `redbucks`=`redbucks`+@val0 where `login`=@val1; UPDATE `promocodes_new` SET `donreceived`=`donreceived`+@val2 WHERE `promo`=@val3"
                         };
-                        cmd.Parameters.AddWithValue(@"val0", reds);
-                        cmd.Parameters.AddWithValue(@"val1", dlogin);
-                        cmd.Parameters.AddWithValue(@"val2", reds);
-                        cmd.Parameters.AddWithValue(@"val3", promo);
+                        cmd.Parameters.AddWithValue("@val0", reds);
+                        cmd.Parameters.AddWithValue("@val1", dlogin);
+                        cmd.Parameters.AddWithValue("@val2", reds);
+                        cmd.Parameters.AddWithValue("@val3", promo);
                         MySQL.Query(cmd);
                     }
                     else
                     {
-                        UpdateData.RedBucks(target, (int)reds, msg: "Пополнение за реферала");
-                        Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.RedAge, LangFunc.GetText(LangType.Ru, DataName.ComeRbFromRef, reds, login), DateTime.Now);
+                        UpdateData.RedBucks(target, (int)reds, "Пополнение за реферала");
+                        Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.RedAge,
+                            LangFunc.GetText(LangType.Ru, DataName.ComeRbFromRef, reds, login), DateTime.Now);
                         //Notify.Send(target, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.ComeRbFromRef, reds, login), 3000);
-                        using NpgsqlCommand cmd = new NpgsqlCommand
+                        using var cmd = new MySqlCommand
                         {
-                            CommandText = "update accounts" set redbucks"=@val0 where login"=@val1; UPDATE promocodes_new" SET donreceived"=donreceived"+@val2 WHERE promo"=@"val3"
+                            CommandText =
+                                "update `accounts` set `redbucks`=@val0 where `login`=@val1; UPDATE `promocodes_new` SET `donreceived`=`donreceived`+@val2 WHERE `promo`=@val3"
                         };
-                        cmd.Parameters.AddWithValue(@"val0", targetAccountData.RedBucks);
-                        cmd.Parameters.AddWithValue(@"val1", targetAccountData.Login);
-                        cmd.Parameters.AddWithValue(@"val2", reds);
-                        cmd.Parameters.AddWithValue(@"val3", promo);
+                        cmd.Parameters.AddWithValue("@val0", targetAccountData.RedBucks);
+                        cmd.Parameters.AddWithValue("@val1", targetAccountData.Login);
+                        cmd.Parameters.AddWithValue("@val2", reds);
+                        cmd.Parameters.AddWithValue("@val3", promo);
                         MySQL.Query(cmd);
                     }
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"CheckPromoDonate Exception: {e.ToString()}");
+                Log.Write($"CheckPromoDonate Exception: {e}");
             }
         }
 
         #region Проверка никнеймов и донатов
+
         public static void Tick(object state)
         {
             try
             {
                 if (!Main.DonateSettings.IsCheck)
                     return;
-                
-                Log.Debug($"Donate time");
-                using (NpgsqlConnection connection = new NpgsqlConnection(Connection))
+
+                Log.Debug("Donate time");
+                using (var connection = new MySqlConnection(Connection))
                 {
                     connection.Open();
-                    using NpgsqlCommand command = new NpgsqlCommand();
+                    using var command = new MySqlCommand();
                     command.Connection = connection;
                     command.CommandText = SYNCSTR;
-                    NpgsqlDataReader reader = command.ExecuteReader();
-                    using DataTable result = new DataTable();
+                    var reader = command.ExecuteReader();
+                    using var result = new DataTable();
                     result.Load(reader);
                     reader.Close();
                     foreach (DataRow Row in result.Rows)
                     {
-                        int id = Convert.ToInt32(Row[id"]);
-                        string name = Convert.ToString(Row[account"]).ToLower();
-                        long reds = Convert.ToInt64(Row[amount"]);
+                        var id = Convert.ToInt32(Row["id"]);
+                        var name = Convert.ToString(Row["account"]).ToLower();
+                        var reds = Convert.ToInt64(Row["amount"]);
                         //
-                        Utils.Analytics.HelperThread.AddEvent(donate", Accounts.Repository.GetEmailToLogin(name), "", (int)reds);
+                        HelperThread.AddEvent("donate", Repository.GetEmailToLogin(name), "", (int)reds);
                         //
-                        
+
                         try
-                        {                       
+                        {
                             if (!Main.Usernames.ContainsKey(name))
                             {
                                 Log.Write($"Can't find registred name for {name}!", nLog.Type.Warn);
                                 continue;
                             }
-                            var player = Accounts.Repository.GetPlayerToLogin(name);
+
+                            var player = Repository.GetPlayerToLogin(name);
                             CheckPromoDonate(name, (ulong)reds, player);
-                        
+
                             if (!DonatePack.IsDonate(player, name.ToLower(), (int)reds))
                             {
-                                if (Main.DonateSettings.IsSaleEnable) 
+                                if (Main.DonateSettings.IsSaleEnable)
                                     reds = SaleEvent(reds);
-                                else if (Main.DonateSettings.Multiplier > 1) 
+                                else if (Main.DonateSettings.Multiplier > 1)
                                     reds = reds * Main.DonateSettings.Multiplier;
-                                
+
                                 var accountData = player.GetAccountData();
                                 if (accountData == null)
                                 {
                                     GameLog.AccountLog(name, "-", "-", "-", $"Пополнение (+{reds} RedBucks)");
-                                    using NpgsqlCommand cmd = new NpgsqlCommand
+                                    using var cmd = new MySqlCommand
                                     {
-                                        CommandText = "update accounts" set redbucks"=redbucks"+@val0, ReceivedAwardDonate"=ReceivedAwardDonate"+@val0 where login"=@"val1"
+                                        CommandText =
+                                            "update `accounts` set `redbucks`=`redbucks`+@val0, `ReceivedAwardDonate`=`ReceivedAwardDonate`+@val0 where `login`=@val1"
                                     };
-                                    cmd.Parameters.AddWithValue(@"val0", reds);
-                                    cmd.Parameters.AddWithValue(@"val1", name);
+                                    cmd.Parameters.AddWithValue("@val0", reds);
+                                    cmd.Parameters.AddWithValue("@val1", name);
                                     MySQL.Query(cmd);
                                 }
                                 else
                                 {
-                                    UpdateData.RedBucks(player, (int)reds, msg: "Пополнение");
+                                    UpdateData.RedBucks(player, (int)reds, "Пополнение");
                                     accountData.ReceivedAwardDonate += (int)reds;
-                                    using NpgsqlCommand cmd = new NpgsqlCommand
+                                    using var cmd = new MySqlCommand
                                     {
-                                        CommandText = "update accounts" set redbucks"=@val0 where login"=@"val1"
+                                        CommandText = "update `accounts` set `redbucks`=@val0 where `login`=@val1"
                                     };
-                                    cmd.Parameters.AddWithValue(@"val0", accountData.RedBucks);
-                                    cmd.Parameters.AddWithValue(@"val1", accountData.Login);
+                                    cmd.Parameters.AddWithValue("@val0", accountData.RedBucks);
+                                    cmd.Parameters.AddWithValue("@val1", accountData.Login);
                                     MySQL.Query(cmd);
                                     //Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вам пришли {reds} RedBucks", 3000);
-                                    Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.RedAge, LangFunc.GetText(LangType.Ru, DataName.UvGotReds, reds), DateTime.Now);
+                                    Players.Phone.Messages.Repository.AddSystemMessage(player,
+                                        (int)DefaultNumber.RedAge,
+                                        LangFunc.GetText(LangType.Ru, DataName.UvGotReds, reds), DateTime.Now);
                                 }
                             }
+
                             command.CommandText = $"delete from completed where id={id}";
                             command.ExecuteNonQuery();
                         }
                         catch (Exception e)
                         {
-                            Log.Write($"Tick Foreach Exception: {e.ToString()}");
+                            Log.Write($"Tick Foreach Exception: {e}");
                         }
                     }
+
                     connection.Close();
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"Tick Exception: {e.ToString()}");
+                Log.Write($"Tick Exception: {e}");
             }
         }
+
+        #endregion
+
+        public static long SaleEvent(long input)
+        {
+            if (input < 1000) return input;
+            if (input < 3000) return input + input / 100 * 10;
+            if (input < 10000) return input + input / 100 * 20;
+            if (input < 20000) return input + input / 100 * 30;
+            if (input >= 20000) return input + input / 100 * 50;
+            return input;
+        }
+
+        #region Работа с таймером
+
+        public static void Start()
+        {
+            LoadDonations();
+
+            scanTimer = new Timer(Tick, null, 1000 * 60, 1000 * 60);
+        }
+
+        public static void Stop()
+        {
+            scanTimer.Change(Timeout.Infinite, 0);
+        }
+
         #endregion
 
         #region Действия в донат-меню
+
         internal enum Type
         {
             Character,
@@ -247,9 +274,10 @@ namespace NeptuneEvo.MoneySystem
             BagGoodStart,
             BagExcellentStart,
             BagPerfectStart,
-            BagOnFoot,
+            BagOnFoot
         }
-        [RemoteEvent(giftdonate")]
+
+        [RemoteEvent("giftdonate")]
         public void GiftDonate(ExtPlayer player, string login, int sum)
         {
             try
@@ -264,149 +292,159 @@ namespace NeptuneEvo.MoneySystem
                 if (login.Equals(accountData.Login)) return;
                 if (sum < 25 || sum > 9999)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.RbTransferLimit), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.RbTransferLimit), 3000);
                     return;
                 }
+
                 if (accountData.RedBucks < sum)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NetRB), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.NetRB), 3000);
                     return;
                 }
+
                 if (DateTime.Now < sessionData.TimingsData.NextGiftDonate)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.Cooldown5min), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.Cooldown5min), 3000);
                     return;
                 }
+
                 if (characterData.AdminLVL <= 5) sessionData.TimingsData.NextGiftDonate = DateTime.Now.AddMinutes(5);
                 else sessionData.TimingsData.NextGiftDonate = DateTime.Now.AddSeconds(10);
-                using NpgsqlCommand cmd = new NpgsqlCommand
+                using var cmd = new MySqlCommand
                 {
-                    CommandText = "SELECT redbucks FROM accounts" WHERE login"=@"lg"
+                    CommandText = "SELECT redbucks FROM `accounts` WHERE `login`=@lg"
                 };
-                cmd.Parameters.AddWithValue(@"lg", login);
-                using DataTable result = MySQL.QueryRead(cmd);
+                cmd.Parameters.AddWithValue("@lg", login);
+                using var result = MySQL.QueryRead(cmd);
                 if (result == null || result.Rows.Count == 0)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.RecoveryCantFind), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.RecoveryCantFind), 3000);
                     return;
                 }
-                int targetrb = Convert.ToInt32(result.Rows[0][redbucks"]);
-                UpdateData.RedBucks(player, -sum, msg: $"Подарок {login}");
 
-                using NpgsqlCommand cmdAccounts = new NpgsqlCommand
+                var targetrb = Convert.ToInt32(result.Rows[0]["redbucks"]);
+                UpdateData.RedBucks(player, -sum, $"Подарок {login}");
+
+                using var cmdAccounts = new MySqlCommand
                 {
-                    CommandText = "UPDATE accounts" SET redbucks"=@val0 WHERE login"=@val1; UPDATE accounts" SET redbucks"=@val2 WHERE login"=@"val3"
+                    CommandText =
+                        "UPDATE `accounts` SET `redbucks`=@val0 WHERE `login`=@val1; UPDATE `accounts` SET `redbucks`=@val2 WHERE `login`=@val3"
                 };
-                cmdAccounts.Parameters.AddWithValue(@"val0", accountData.RedBucks);
-                cmdAccounts.Parameters.AddWithValue(@"val1", accountData.Login);
-                ExtPlayer target = Accounts.Repository.GetPlayerToLogin(login);
+                cmdAccounts.Parameters.AddWithValue("@val0", accountData.RedBucks);
+                cmdAccounts.Parameters.AddWithValue("@val1", accountData.Login);
+                var target = Repository.GetPlayerToLogin(login);
                 var targetAccountData = target.GetAccountData();
                 if (targetAccountData == null)
                 {
-                    UpdateData.RedBucks(target, sum, msg: $"Подарок от {accountData.Login}");
-                    cmdAccounts.Parameters.AddWithValue(@"val2", targetAccountData.RedBucks);
-                    cmdAccounts.Parameters.AddWithValue(@"val3", targetAccountData.Login);
-                    Notify.Send(target, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы получили подарок: {sum} RedBucks от {player.Name.Replace('_', ' ')} ({player.Value})!", 5000);
+                    UpdateData.RedBucks(target, sum, $"Подарок от {accountData.Login}");
+                    cmdAccounts.Parameters.AddWithValue("@val2", targetAccountData.RedBucks);
+                    cmdAccounts.Parameters.AddWithValue("@val3", targetAccountData.Login);
+                    Notify.Send(target, NotifyType.Success, NotifyPosition.BottomCenter,
+                        $"Вы получили подарок: {sum} RedBucks от {player.Name.Replace('_', ' ')} ({player.Value})!",
+                        5000);
                 }
                 else
                 {
-
                     targetrb += sum;
-                    cmdAccounts.Parameters.AddWithValue(@"val2", targetrb);
-                    cmdAccounts.Parameters.AddWithValue(@"val3", login);
+                    cmdAccounts.Parameters.AddWithValue("@val2", targetrb);
+                    cmdAccounts.Parameters.AddWithValue("@val3", login);
                 }
+
                 MySQL.Query(cmdAccounts);
-                Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.SucGiftRb, sum, login), 5000);
+                Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.SucGiftRb, sum, login), 5000);
             }
             catch (Exception e)
             {
-                Log.Write($"GiftDonate Exception: {e.ToString()}");
+                Log.Write($"GiftDonate Exception: {e}");
             }
         }
 
-        [RemoteEvent(donate")]
+        [RemoteEvent("donate")]
         public void MakeDonate(ExtPlayer player, int id, string data)
         {
             try
             {
                 var accountData = player.GetAccountData();
                 if (accountData == null) return;
-                Type type = (Type)id;
+                var type = (Type)id;
                 if (type != Type.Slot && !player.IsCharacterData()) return;
                 switch (type)
                 {
                     case Type.Slot:
+                    {
+                        var slotId = 0;
+                        if (!int.TryParse(data, out slotId))
                         {
-                            int slotId = 0;
-                            if (!Int32.TryParse(data, out slotId))
-                            {
-                                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.RecoveryError), 3000);
-                                return;
-                            }
-                            slotId -= 1;
-                            if (accountData.Chars[slotId] != -2)
-                            {
-                                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.Already3Slot), 3000);
-                                return;
-                            }
-                            if (accountData.RedBucks < 1000)
-                            {
-                                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NetRB), 3000);
-                                return;
-                            }
-                            UpdateData.RedBucks(player, -1000, msg: LangFunc.GetText(LangType.Ru, DataName.Buy3Slot));
-                            if (accountData.VipLvl <= 3)
-                            {
-                                accountData.VipDate = (accountData.VipLvl == 0) ? DateTime.Now.AddDays(30) : accountData.VipDate.AddDays(30);
-                                accountData.VipLvl = 3;
-                                Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.PlatinumVIP30d), 3000);
-                            }
-                            else
-                            {
-                                accountData.VipDate = accountData.VipDate.AddDays(7);
-                                Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.PlattoVip7d), 5000);
-                            }
-
-                            accountData.Chars[slotId] = -1;
-                            Trigger.ClientEvent(player, unlockSlot", slotId);
-
-                            using NpgsqlCommand cmd1 = new NpgsqlCommand
-                            {
-                                CommandText = "update accounts" set redbucks"=@val0 where login"=@"val1"
-                            };
-                            cmd1.Parameters.AddWithValue(@"val0", accountData.RedBucks);
-                            cmd1.Parameters.AddWithValue(@"val1", accountData.Login);
-                            MySQL.Query(cmd1);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.RecoveryError), 3000);
                             return;
                         }
-                    default:
-                        // Not supposed to end up here. 
-                        break;
+
+                        slotId -= 1;
+                        if (accountData.Chars[slotId] != -2)
+                        {
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.Already3Slot), 3000);
+                            return;
+                        }
+
+                        if (accountData.RedBucks < 1000)
+                        {
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.NetRB), 3000);
+                            return;
+                        }
+
+                        UpdateData.RedBucks(player, -1000, LangFunc.GetText(LangType.Ru, DataName.Buy3Slot));
+                        if (accountData.VipLvl <= 3)
+                        {
+                            accountData.VipDate = accountData.VipLvl == 0
+                                ? DateTime.Now.AddDays(30)
+                                : accountData.VipDate.AddDays(30);
+                            accountData.VipLvl = 3;
+                            Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.PlatinumVIP30d), 3000);
+                        }
+                        else
+                        {
+                            accountData.VipDate = accountData.VipDate.AddDays(7);
+                            Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.PlattoVip7d), 5000);
+                        }
+
+                        accountData.Chars[slotId] = -1;
+                        Trigger.ClientEvent(player, "unlockSlot", slotId);
+
+                        using var cmd1 = new MySqlCommand
+                        {
+                            CommandText = "update `accounts` set `redbucks`=@val0 where `login`=@val1"
+                        };
+                        cmd1.Parameters.AddWithValue("@val0", accountData.RedBucks);
+                        cmd1.Parameters.AddWithValue("@val1", accountData.Login);
+                        MySQL.Query(cmd1);
+                        return;
+                    }
                 }
 
-                using NpgsqlCommand cmd = new NpgsqlCommand
+                using var cmd = new MySqlCommand
                 {
-                    CommandText = "update accounts" set redbucks"=@val0 where login"=@"val1"
+                    CommandText = "update `accounts` set `redbucks`=@val0 where `login`=@val1"
                 };
-                cmd.Parameters.AddWithValue(@"val0", accountData.RedBucks);
-                cmd.Parameters.AddWithValue(@"val1", accountData.Login);
+                cmd.Parameters.AddWithValue("@val0", accountData.RedBucks);
+                cmd.Parameters.AddWithValue("@val1", accountData.Login);
                 MySQL.Query(cmd);
             }
             catch (Exception e)
             {
-                Log.Write($"MakeDonate Exception: {e.ToString()}");
+                Log.Write($"MakeDonate Exception: {e}");
             }
         }
-        #endregion
 
-        public static long SaleEvent(long input)
-        {
-            if (input < 1000) return input;
-            if (input < 3000) return input + (input / 100 * 10);
-            if (input < 10000) return input + (input / 100 * 20);
-            if (input < 20000) return input + (input / 100 * 30);
-            if (input >= 20000) return input + (input / 100 * 50);
-            return input;
-        }
+        #endregion
     }
 }

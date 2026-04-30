@@ -1,5 +1,5 @@
-﻿using NeptuneEvo.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using NeptuneEvo.Core;
 
 namespace NeptuneEvo.Players.Models
 {

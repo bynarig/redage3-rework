@@ -9,19 +9,18 @@ namespace NeptuneEvo.Players.Phone.Models
 {
     public class PhoneData
     {
-        public bool IsOpen = false;
-        
         public List<int> BlackList = new List<int>();
-        public Dictionary<int, PhoneContactsData> PhoneContacts = new Dictionary<int, PhoneContactsData>();
+
+        public CallData Call = null;
+
+        public List<List<object>> Gallery = new List<List<object>>();
+        public bool IsOpen = false;
         public List<PhoneMessageListData> MessagesList = new List<PhoneMessageListData>();
+        public Dictionary<int, PhoneContactsData> PhoneContacts = new Dictionary<int, PhoneContactsData>();
+        public List<RecentsData> Recents = new List<RecentsData>();
 
         public int SelectedNumber = -1;
 
-        public CallData Call = null;
-        
-        public List<List<object>> Gallery = new List<List<object>>();
-        public List<RecentsData> Recents = new List<RecentsData>();
-        
         public SettingsData Settings = new SettingsData();
     }
 }

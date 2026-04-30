@@ -1,56 +1,54 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using System;
-using System.Collections.Generic;
-using NeptuneEvo.Core;
-using NeptuneEvoSDK;
-using System.Data;
-using System.Linq;
-using Newtonsoft.Json;
-using Npgsql;
-using Database;
-using LinqToDB;
-using System.Threading.Tasks;
-using NeptuneEvo.Functions;
+﻿using System;
 using System.Collections.Concurrent;
-using GTANetworkMethods;
-using Localization;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Database;
+using GTANetworkAPI;
+using LinqToDB;
+using NeptuneEvo.Localization;
 using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
 using NeptuneEvo.Character;
+using NeptuneEvo.Core;
+using NeptuneEvo.Functions;
+using NeptuneEvo.Handles;
+using NeptuneEvo.Houses;
+using NeptuneEvo.Players;
 using NeptuneEvo.Players.Phone.Messages.Models;
+using Newtonsoft.Json;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.Players.Phone.Messages.Repository;
 using Task = System.Threading.Tasks.Task;
 
 namespace NeptuneEvo.MoneySystem
 {
-    class Bank : Script
+    internal class Bank : Script
     {
-        public static readonly nLog Log = new nLog("MoneySystem.Bank");
-        private static Random Rnd = new Random();
-
-        public static ConcurrentDictionary<int, Data> Accounts = new ConcurrentDictionary<int, Data>();
-
         public enum BankNotifyType
         {
             PaySuccess,
             PayIn,
             PayOut,
             PayError,
-            InputError,
+            InputError
         }
+
+        public static readonly nLog Log = new nLog("MoneySystem.Bank");
+        private static Random Rnd = new Random();
+
+        public static ConcurrentDictionary<int, Data> Accounts = new ConcurrentDictionary<int, Data>();
+
         public static async void Init()
         {
             try
             {
                 Log.Write("Loading Bank Accounts...");
 
-                await using var db = new ServerBD(MainDB");//При старте
+                await using var db = new ServerBD("MainDB"); //При старте
 
                 var banks = await db.Money
                     .ToListAsync();
-                
+
                 foreach (var bank in banks)
                 {
                     var data = new Data();
@@ -63,33 +61,34 @@ namespace NeptuneEvo.MoneySystem
             }
             catch (Exception e)
             {
-                Log.Write($"Bank Exception: {e.ToString()}");
+                Log.Write($"Bank Exception: {e}");
             }
         }
 
         public static long GetBalance(int bankId)
         {
-
             if (Accounts.ContainsKey(bankId))
                 return Accounts[bankId].Balance;
 
             return 0;
         }
+
         #region Changing account balance
+
         public static bool Change(int bankId, long amount, bool notify = true)
         {
             try
             {
-                if (!Accounts.ContainsKey(bankId)) 
+                if (!Accounts.ContainsKey(bankId))
                     return false;
-                
+
                 var bank = Accounts[bankId];
                 if (bank.Balance + amount < 0)
                     return false;
-                
+
                 if (amount < 0 && Admin.IsServerStoping)
                     return false;
-                
+
                 bank.Balance += amount;
 
                 if (bank.Type == 1 && amount >= 10000)
@@ -99,7 +98,7 @@ namespace NeptuneEvo.MoneySystem
 
                 if (bank.Type == 1)
                 {
-                    var target = (ExtPlayer) NAPI.Player.GetPlayerFromName(bank.Holder);
+                    var target = (ExtPlayer)NAPI.Player.GetPlayerFromName(bank.Holder);
                     if (target != null)
                     {
                         if (notify)
@@ -107,21 +106,28 @@ namespace NeptuneEvo.MoneySystem
                             if (amount > 0) BankNotify(target, BankNotifyType.PayIn, amount.ToString());
                             else BankNotify(target, BankNotifyType.PayOut, amount.ToString());
                         }
+
                         Trigger.ClientEvent(target, "client.charStore.BankMoney", bank.Balance);
                     }
                     else
+                    {
                         bank.IsSave = true;
+                    }
                 }
+
                 return true;
             }
             catch (Exception e)
             {
-                Log.Write($"Change Exception: {e.ToString()}");
+                Log.Write($"Change Exception: {e}");
                 return false;
             }
         }
+
         #endregion Changing account balance
+
         #region Transfer money from 1-Acc to 2-Acc
+
         public static bool Transfer(int firstAccID, int lastAccID, long amount)
         {
             try
@@ -131,69 +137,47 @@ namespace NeptuneEvo.MoneySystem
                     Log.Write($"Account ID error [{firstAccID}->{lastAccID}]", nLog.Type.Error);
                     return false;
                 }
-                Data firstAcc = Accounts[firstAccID];
+
+                var firstAcc = Accounts[firstAccID];
                 if (!Accounts.ContainsKey(lastAccID))
                 {
                     if (firstAcc.Type == 1)
-                        BankNotify((ExtPlayer) NAPI.Player.GetPlayerFromName(firstAcc.Holder), BankNotifyType.InputError, "Такого счета не существует!");
-                    Log.Write($"Transfer with error. Account does not exist! [{firstAccID.ToString()}->{lastAccID.ToString()}:{amount.ToString()}]", nLog.Type.Warn);
+                        BankNotify((ExtPlayer)NAPI.Player.GetPlayerFromName(firstAcc.Holder), BankNotifyType.InputError,
+                            "Такого счета не существует!");
+                    Log.Write(
+                        $"Transfer with error. Account does not exist! [{firstAccID.ToString()}->{lastAccID.ToString()}:{amount.ToString()}]",
+                        nLog.Type.Warn);
                     return false;
                 }
+
                 if (!Change(firstAccID, -amount))
                 {
                     if (firstAcc.Type == 1)
-                        BankNotify((ExtPlayer) NAPI.Player.GetPlayerFromName(firstAcc.Holder), BankNotifyType.PayError, "Недостаточно средств!");
-                    Log.Write($"Transfer with error. Insufficient funds! [{firstAccID.ToString()}->{lastAccID.ToString()}:{amount.ToString()}]", nLog.Type.Warn);
+                        BankNotify((ExtPlayer)NAPI.Player.GetPlayerFromName(firstAcc.Holder), BankNotifyType.PayError,
+                            "Недостаточно средств!");
+                    Log.Write(
+                        $"Transfer with error. Insufficient funds! [{firstAccID.ToString()}->{lastAccID.ToString()}:{amount.ToString()}]",
+                        nLog.Type.Warn);
                     return false;
                 }
+
                 Change(lastAccID, amount);
-                ExtPlayer target = (ExtPlayer) NAPI.Player.GetPlayerFromName(Accounts[lastAccID].Holder);
-                if (target != null) target.Eval($"mp.game.audio.playSoundFrontend(-1, \"LOCAL_PLYR_CASH_COUNTER_COMPLETE\", \"DLC_HEISTS_GENERAL_FRONTEND_SOUNDS\", true);");
-                
-                GameLog.Money($"bank({firstAccID})", $"bank({lastAccID})", amount, bankTransfer");
+                var target = (ExtPlayer)NAPI.Player.GetPlayerFromName(Accounts[lastAccID].Holder);
+                if (target != null)
+                    target.Eval(
+                        "mp.game.audio.playSoundFrontend(-1, \"LOCAL_PLYR_CASH_COUNTER_COMPLETE\", \"DLC_HEISTS_GENERAL_FRONTEND_SOUNDS\", true);");
+
+                GameLog.Money($"bank({firstAccID})", $"bank({lastAccID})", amount, "bankTransfer");
                 return true;
             }
             catch (Exception e)
             {
-                Log.Write($"Transfer Exception: {e.ToString()}");
+                Log.Write($"Transfer Exception: {e}");
                 return false;
             }
         }
+
         #endregion Transfer money from 1-Acc to 2-Acc
-        #region Save Acc
-        
-        public static void SetSave(int bankId)
-        {
-            if (Accounts.ContainsKey(bankId))
-                Accounts[bankId].IsSave = true;
-        }
-        public static async Task Save(ServerBD db, int bankId)
-        {
-            try
-            {
-                if (!Accounts.ContainsKey(bankId)) return;
-
-                var bank = Accounts[bankId];
-                bank.IsSave = false;
-                    
-                var updateBank = db.Money
-                    .Where(m => m.Id == bankId)
-                    .Set(m => m.Balance, Convert.ToInt32(bank.Balance));
-
-                if (bank.IsSaveHolder)
-                    updateBank = updateBank.Set(b => b.Holder, bank.Holder);
-                
-                bank.IsSaveHolder = false;
-                        
-                await updateBank
-                    .UpdateAsync();
-            }
-            catch (Exception e)
-            {
-                Log.Write($"Save Exception: {e.ToString()}");
-            }
-        }
-        #endregion Save Acc
 
         public static void BankNotify(ExtPlayer player, BankNotifyType type, string info)
         {
@@ -202,31 +186,32 @@ namespace NeptuneEvo.MoneySystem
                 switch (type)
                 {
                     case BankNotifyType.InputError:
-                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.ErrorInput), 3000);
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                            LangFunc.GetText(LangType.Ru, DataName.ErrorInput), 3000);
                         return;
                     case BankNotifyType.PayError:
-                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.ErrorWithdraw), 3000);
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                            LangFunc.GetText(LangType.Ru, DataName.ErrorWithdraw), 3000);
                         return;
                     case BankNotifyType.PayIn:
-                        int money = Convert.ToInt32(info);
+                        var money = Convert.ToInt32(info);
                         //Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.MoneyIncome, Wallet.Format(money)), 3000);
-                        Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.Bank, LangFunc.GetText(LangType.Ru, DataName.MoneyIncome, Wallet.Format(money)), DateTime.Now);
+                        Repository.AddSystemMessage(player, (int)DefaultNumber.Bank,
+                            LangFunc.GetText(LangType.Ru, DataName.MoneyIncome, Wallet.Format(money)), DateTime.Now);
                         if (money >= 10)
                             BattlePass.Repository.UpdateReward(player, 5);
                         return;
                     case BankNotifyType.PayOut:
                         money = Convert.ToInt32(info);
                         //Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.MoneyOutcome, Wallet.Format(money)), 3000);
-                        Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.Bank, LangFunc.GetText(LangType.Ru, DataName.MoneyOutcome, Wallet.Format(money)), DateTime.Now);
+                        Repository.AddSystemMessage(player, (int)DefaultNumber.Bank,
+                            LangFunc.GetText(LangType.Ru, DataName.MoneyOutcome, Wallet.Format(money)), DateTime.Now);
                         return;
-                    default:
-                        // Not supposed to end up here. 
-                        break;
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"BankNotify Exception: {e.ToString()}");
+                Log.Write($"BankNotify Exception: {e}");
             }
         }
 
@@ -234,16 +219,16 @@ namespace NeptuneEvo.MoneySystem
         {
             try
             {
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
-                int moneyId = await db.InsertWithInt32IdentityAsync(new Moneys
+                var moneyId = await db.InsertWithInt32IdentityAsync(new Moneys
                 {
                     Type = (sbyte)type,
                     Holder = holder,
-                    Balance = (int)balance,
+                    Balance = (int)balance
                 });
 
-                Data data = new Data();
+                var data = new Data();
                 data.ID = moneyId;
                 data.Type = type;
                 data.Holder = holder;
@@ -255,10 +240,11 @@ namespace NeptuneEvo.MoneySystem
             }
             catch (Exception e)
             {
-                Log.Write($"Create Exception: {e.ToString()}");
+                Log.Write($"Create Exception: {e}");
                 return 0;
             }
         }
+
         public static void Remove(int bankId)
         {
             try
@@ -266,16 +252,17 @@ namespace NeptuneEvo.MoneySystem
                 if (!Accounts.ContainsKey(bankId))
                     return;
                 Accounts.TryRemove(bankId, out _);
-                
+
                 Database.Models.Bank.OnDell(bankId);
-                
+
                 Log.Write("Bank account deleted! ID:" + bankId, nLog.Type.Warn);
             }
             catch (Exception e)
             {
-                Log.Write($"Remove Exception: {e.ToString()}");
+                Log.Write($"Remove Exception: {e}");
             }
         }
+
         public static Data Get(string holder)
         {
             return Accounts.FirstOrDefault(A => A.Value.Holder == holder).Value;
@@ -285,7 +272,7 @@ namespace NeptuneEvo.MoneySystem
         {
             if (Accounts.ContainsKey(bankId))
                 return Accounts[bankId];
-            
+
             return null;
         }
 
@@ -298,19 +285,17 @@ namespace NeptuneEvo.MoneySystem
                     .Select(b => b.Key)
                     .ToList();
 
-                foreach (int id in toChange)
-                {
+                foreach (var id in toChange)
                     if (Accounts.ContainsKey(id))
                     {
                         Accounts[id].Holder = newName;
                         Accounts[id].IsSaveHolder = true;
                         Accounts[id].IsSave = true;
                     }
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"changeHolder Exception: {e.ToString()}");
+                Log.Write($"changeHolder Exception: {e}");
             }
         }
 
@@ -323,12 +308,49 @@ namespace NeptuneEvo.MoneySystem
             public bool IsSave { get; set; }
             public bool IsSaveHolder { get; set; }
         }
+
+        #region Save Acc
+
+        public static void SetSave(int bankId)
+        {
+            if (Accounts.ContainsKey(bankId))
+                Accounts[bankId].IsSave = true;
+        }
+
+        public static async Task Save(ServerBD db, int bankId)
+        {
+            try
+            {
+                if (!Accounts.ContainsKey(bankId)) return;
+
+                var bank = Accounts[bankId];
+                bank.IsSave = false;
+
+                var updateBank = db.Money
+                    .Where(m => m.Id == bankId)
+                    .Set(m => m.Balance, Convert.ToInt32(bank.Balance));
+
+                if (bank.IsSaveHolder)
+                    updateBank = updateBank.Set(b => b.Holder, bank.Holder);
+
+                bank.IsSaveHolder = false;
+
+                await updateBank
+                    .UpdateAsync();
+            }
+            catch (Exception e)
+            {
+                Log.Write($"Save Exception: {e}");
+            }
+        }
+
+        #endregion Save Acc
     }
 
-    class ATM : Script
+    internal class ATM : Script
     {
-
         #region ATMs List
+
         public static List<Vector3> ATMs = new List<Vector3>
         {
             new Vector3(-30.28312, -723.7054, 43.10828),
@@ -385,8 +407,9 @@ namespace NeptuneEvo.MoneySystem
             new Vector3(468.4216, -990.5975, 26.273373),
             new Vector3(-1285.7714, -572.65314, 30f),
             new Vector3(-433.14172, 265.18628, 83f),
-            new Vector3(-717.572, -915.6549, 19f),//new
+            new Vector3(-717.572, -915.6549, 19f) //new
         };
+
         #endregion ATMs List
 
         [ServerEvent(Event.ResourceStart)]
@@ -394,16 +417,17 @@ namespace NeptuneEvo.MoneySystem
         {
             try
             {
-                for (int i = 0; i < ATMs.Count; i++)
+                for (var i = 0; i < ATMs.Count; i++)
                 {
                     if (i != 58) Main.CreateBlip(new Main.BlipData(500, "Банкомат", ATMs[i], 7, true, 0.32f));
                     CustomColShape.CreateCylinderColShape(ATMs[i], 1, 2, 0, ColShapeEnums.Atm, i);
                 }
+
                 Bank.Log.Write("ATMs loaded", nLog.Type.Success);
             }
             catch (Exception e)
             {
-                Bank.Log.Write($"onResourceStart Exception: {e.ToString()}");
+                Bank.Log.Write($"onResourceStart Exception: {e}");
             }
         }
 
@@ -417,22 +441,27 @@ namespace NeptuneEvo.MoneySystem
                 if (characterData.DemorganTime >= 1) return;
                 if (characterData.WantedLVL != null && characterData.WantedLVL.Level > 0)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.WantedNOATM), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.WantedNOATM), 3000);
                     return;
                 }
+
                 if (characterData.Bank == 0 || !Bank.Accounts.ContainsKey(characterData.Bank))
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoBanks), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.NoBanks), 3000);
                     return;
                 }
-                Trigger.ClientEvent(player, setatm", characterData.Bank.ToString(), player.Name, Bank.GetBalance(characterData.Bank).ToString(), "");
-                Trigger.ClientEvent(player, openatm");
-                //Trigger.PlayAnimation(player, amb"@prop_human_atm@female@enter", enter", 2);
+
+                Trigger.ClientEvent(player, "setatm", characterData.Bank.ToString(), player.Name,
+                    Bank.GetBalance(characterData.Bank).ToString(), "");
+                Trigger.ClientEvent(player, "openatm");
+                //Trigger.PlayAnimation(player, "amb@prop_human_atm@female@enter", "enter", 2);
                 BattlePass.Repository.UpdateReward(player, 39);
             }
             catch (Exception e)
             {
-                Bank.Log.Write($"OpenATM Exception: {e.ToString()}");
+                Bank.Log.Write($"OpenATM Exception: {e}");
             }
         }
 
@@ -445,28 +474,30 @@ namespace NeptuneEvo.MoneySystem
                 Bank.Log.Debug("Biz count : " + characterData.BizIDs.Count);
                 if (characterData.BizIDs.Count > 0)
                 {
-                    List<string> _Data = new List<string>();
-                    foreach (int key in characterData.BizIDs)
+                    var _Data = new List<string>();
+                    foreach (var key in characterData.BizIDs)
                     {
-                        Business biz = BusinessManager.BizList[key];
-                        string name = BusinessManager.BusinessTypeNames[biz.Type];
+                        var biz = BusinessManager.BizList[key];
+                        var name = BusinessManager.BusinessTypeNames[biz.Type];
                         _Data.Add($"{name}");
                     }
-                    Trigger.ClientEvent(player, atmOpenBiz", JsonConvert.SerializeObject(_Data), "");
+
+                    Trigger.ClientEvent(player, "atmOpenBiz", JsonConvert.SerializeObject(_Data), "");
                 }
                 else
                 {
-                    Trigger.ClientEvent(player, atmOpen", "[1,0,0]");
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoBusiness), 3000);
+                    Trigger.ClientEvent(player, "atmOpen", "[1,0,0]");
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.NoBusiness), 3000);
                 }
             }
             catch (Exception e)
             {
-                Bank.Log.Write($"AtmBizGen Exception: {e.ToString()}");
+                Bank.Log.Write($"AtmBizGen Exception: {e}");
             }
         }
 
-        [RemoteEvent(atmVal")]
+        [RemoteEvent("atmVal")]
         public static void ClientEvent_ATMVAL(ExtPlayer player, params object[] args)
         {
             try
@@ -479,51 +510,57 @@ namespace NeptuneEvo.MoneySystem
                 if (characterData == null) return;
                 if (Admin.IsServerStoping)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.ServerCant), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.ServerCant), 3000);
                     return;
                 }
-                int type = sessionData.ATMData.Type;
-                string data = Convert.ToString(args[0]);
+
+                var type = sessionData.ATMData.Type;
+                var data = Convert.ToString(args[0]);
                 int amount;
                 int myamount;
                 if (!int.TryParse(data, out amount)) return;
                 switch (type)
                 {
                     case 0:
-                        Trigger.ClientEvent(player, atmClose");
+                        Trigger.ClientEvent(player, "atmClose");
                         myamount = Math.Abs(amount);
                         if (myamount <= 0) return;
                         if (myamount > characterData.Money) myamount = (int)characterData.Money;
                         if (myamount > 0)
-                        {
                             if (Wallet.Change(player, -myamount))
                             {
                                 Bank.Change(characterData.Bank, +myamount);
-                                player.Eval($"mp.game.audio.playSoundFrontend(-1, \"Bus_Schedule_Pickup\", \"DLC_PRISON_BREAK_HEIST_SOUNDS\", true);");
-                                if (characterData.AdminLVL <= 7) GameLog.Money($"player({characterData.UUID})", $"bank({characterData.Bank})", myamount, $atmIn");
+                                player.Eval(
+                                    "mp.game.audio.playSoundFrontend(-1, \"Bus_Schedule_Pickup\", \"DLC_PRISON_BREAK_HEIST_SOUNDS\", true);");
+                                if (characterData.AdminLVL <= 7)
+                                    GameLog.Money($"player({characterData.UUID})", $"bank({characterData.Bank})",
+                                        myamount, "atmIn");
                             }
-                        }
+
                         break;
                     case 1:
                         myamount = Math.Abs(amount);
                         if (myamount <= 0) return;
-                        if (myamount > Bank.GetBalance(characterData.Bank)) 
+                        if (myamount > Bank.GetBalance(characterData.Bank))
                             myamount = (int)Bank.GetBalance(characterData.Bank);
                         if (myamount > 0)
-                        {
                             if (Bank.Change(characterData.Bank, -myamount))
                             {
-                                player.Eval($"mp.game.audio.playSoundFrontend(-1, \"Bus_Schedule_Pickup\", \"DLC_PRISON_BREAK_HEIST_SOUNDS\", true);");
+                                player.Eval(
+                                    "mp.game.audio.playSoundFrontend(-1, \"Bus_Schedule_Pickup\", \"DLC_PRISON_BREAK_HEIST_SOUNDS\", true);");
                                 Wallet.Change(player, +myamount);
-                                if (characterData.AdminLVL <= 7) GameLog.Money($"bank({characterData.Bank})", $"player({characterData.UUID})", myamount, $atmOut");
+                                if (characterData.AdminLVL <= 7)
+                                    GameLog.Money($"bank({characterData.Bank})", $"player({characterData.UUID})",
+                                        myamount, "atmOut");
                             }
-                        }
+
                         break;
                     case 2:
-                        var house = Houses.HouseManager.GetHouse(player, true);
+                        var house = HouseManager.GetHouse(player, true);
                         if (house == null) return;
 
-                        int maxMoney = 0;
+                        var maxMoney = 0;
 
                         switch (accountData.VipLvl)
                         {
@@ -536,7 +573,7 @@ namespace NeptuneEvo.MoneySystem
                                 break;
                             case 3:
                                 maxMoney = Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 21); // Gold
-                                break;  
+                                break;
                             case 4: // Platinum
                             case 5: // Media Platinum
                                 maxMoney = Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 28);
@@ -549,52 +586,66 @@ namespace NeptuneEvo.MoneySystem
                         myamount = Math.Abs(amount);
                         if (myamount <= 0)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CanNotTransact), 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.CanNotTransact), 3000);
                             return;
                         }
+
                         var bankBalance = Bank.GetBalance(house.BankID);
                         if (bankBalance + myamount > maxMoney)
                             myamount = maxMoney - (int)bankBalance;
                         if (myamount <= 0)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CanNotTransact), 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.CanNotTransact), 3000);
                             return;
                         }
+
                         if (!Wallet.Change(player, -myamount))
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoMoney), 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.NoMoney), 3000);
                             return;
                         }
+
                         Bank.Change(house.BankID, +myamount);
-                        GameLog.Money($"player({characterData.UUID})", $"bank({house.BankID})", myamount, $atmHouse");
+                        GameLog.Money($"player({characterData.UUID})", $"bank({house.BankID})", myamount, "atmHouse");
                         //BattlePass.Repository.UpdateReward(player, 41);
                         //Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.SucTransact), 3000);
-                        Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.Bank, LangFunc.GetText(LangType.Ru, DataName.SucTransactH, myamount, (bankBalance+myamount), maxMoney), DateTime.Now);
+                        Repository.AddSystemMessage(player, (int)DefaultNumber.Bank,
+                            LangFunc.GetText(LangType.Ru, DataName.SucTransactH, myamount, bankBalance + myamount,
+                                maxMoney), DateTime.Now);
 
                         switch (accountData.VipLvl)
                         {
                             case 0:
                             case 1:
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 7)}$','Сумма внесения наличных']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 7)}$','Сумма внесения наличных']");
                                 break;
                             case 2:
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 14)}$','Сумма внесения наличных']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 14)}$','Сумма внесения наличных']");
                                 break;
                             case 3:
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 21)}$','Сумма внесения наличных']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 21)}$','Сумма внесения наличных']");
                                 break;
                             case 4: // Platinum
                             case 5: // Media Platinum
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 28)}$','Сумма внесения наличных']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 28)}$','Сумма внесения наличных']");
                                 break;
                             default:
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 7)}$','Сумма внесения наличных']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 7)}$','Сумма внесения наличных']");
                                 break;
                         }
+
                         break;
                     case 3:
-                        int bid = sessionData.ATMData.BizID;
-                        Business biz = BusinessManager.BizList[characterData.BizIDs[bid]];
+                        var bid = sessionData.ATMData.BizID;
+                        var biz = BusinessManager.BizList[characterData.BizIDs[bid]];
 
                         maxMoney = 0;
 
@@ -618,99 +669,125 @@ namespace NeptuneEvo.MoneySystem
                                 maxMoney = Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 7); // Error Exception
                                 break;
                         }
+
                         myamount = Math.Abs(amount);
                         if (myamount <= 0)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CanNotTransact), 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.CanNotTransact), 3000);
                             return;
                         }
 
                         bankBalance = Bank.GetBalance(biz.BankID);
-                        if (bankBalance + myamount > maxMoney) 
+                        if (bankBalance + myamount > maxMoney)
                             myamount = maxMoney - (int)bankBalance;
-                        
+
                         if (myamount <= 0)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CanNotTransact), 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.CanNotTransact), 3000);
                             return;
                         }
+
                         if (!Wallet.Change(player, -myamount))
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoMoney), 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.NoMoney), 3000);
                             return;
                         }
+
                         Bank.Change(biz.BankID, +myamount);
-                        GameLog.Money($"player({characterData.UUID})", $"bank({biz.BankID})", myamount, $atmBiz");
+                        GameLog.Money($"player({characterData.UUID})", $"bank({biz.BankID})", myamount, "atmBiz");
                         //Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.SucTransact), 3000);
-                        Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.Bank, LangFunc.GetText(LangType.Ru, DataName.SucTransactB, myamount, (bankBalance+myamount), maxMoney), DateTime.Now);
+                        Repository.AddSystemMessage(player, (int)DefaultNumber.Bank,
+                            LangFunc.GetText(LangType.Ru, DataName.SucTransactB, myamount, bankBalance + myamount,
+                                maxMoney), DateTime.Now);
                         switch (accountData.VipLvl)
                         {
                             case 0:
                             case 1:
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 7)}$','Сумма зачисления']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 7)}$','Сумма зачисления']");
                                 break;
                             case 2:
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 14)}$','Сумма зачисления']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 14)}$','Сумма зачисления']");
                                 break;
                             case 3:
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 21)}$','Сумма зачисления']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 21)}$','Сумма зачисления']");
                                 break;
                             case 4: // Platinum
                             case 5: // Media Platinum
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 28)}$','Сумма зачисления']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 28)}$','Сумма зачисления']");
                                 break;
                             default:
-                                Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 7)}$','Сумма зачисления']");
+                                Trigger.ClientEvent(player, "atmOpen",
+                                    $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 7)}$','Сумма зачисления']");
                                 break;
                         }
+
                         break;
                     case 4:
                         if (!Bank.Accounts.ContainsKey(amount) || amount <= 0)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CantFindBankAccount), 3000);
-                            Trigger.ClientEvent(player, closeatm");
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.CantFindBankAccount), 3000);
+                            Trigger.ClientEvent(player, "closeatm");
                             Trigger.StopAnimation(player);
                             return;
                         }
+
                         sessionData.ATMData.Amount = amount; // ATM2ACC
-                        Trigger.ClientEvent(player, atmOpen", "[2,0,'Сумма для перевода']");
+                        Trigger.ClientEvent(player, "atmOpen", "[2,0,'Сумма для перевода']");
                         sessionData.ATMData.Type = 44;
                         break;
                     case 44:
-                        if (!FunctionsAccess.IsWorking(atmtransfer"))
+                        if (!FunctionsAccess.IsWorking("atmtransfer"))
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                             return;
                         }
+
                         if (characterData.LVL < 1)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.flvltotransact), 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.flvltotransact), 3000);
                             return;
-                        }   
+                        }
+
                         if (DateTime.Now < sessionData.TimingsData.NextBankTransfer)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NextTransactionSoon), 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.NextTransactionSoon), 3000);
                             return;
                         }
-                        int bank = sessionData.ATMData.Amount;
+
+                        var bank = sessionData.ATMData.Amount;
                         if (!Bank.Accounts.ContainsKey(bank) || bank <= 0)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CantFindBankAccount), 3000);
-                            Trigger.ClientEvent(player, closeatm");
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.CantFindBankAccount), 3000);
+                            Trigger.ClientEvent(player, "closeatm");
                             Trigger.StopAnimation(player);
                             return;
                         }
+
                         if (Bank.Accounts[bank].Type != 1 && characterData.AdminLVL == 0)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CantFindBankAccount), 3000);
-                            Trigger.ClientEvent(player, closeatm");
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.CantFindBankAccount), 3000);
+                            Trigger.ClientEvent(player, "closeatm");
                             Trigger.StopAnimation(player);
                             return;
                         }
+
                         /*if (characterData.Bank == bank || (characterData.AdminLVL >= 1 && characterData.AdminLVL <= 5))
                         {
                             Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.TransactionCancelled), 3000);
-                            Trigger.ClientEvent(player, closeatm");
+                            Trigger.ClientEvent(player, "closeatm");
                             Trigger.StopAnimation(player);
                             return;
                         }*/
@@ -721,35 +798,41 @@ namespace NeptuneEvo.MoneySystem
                         sessionData.CurrentBankTransferBankInfo = bank;
                         sessionData.CurrentBankTransferSum = myamount;
 
-                        Trigger.ClientEvent(player, closeatm");
+                        Trigger.ClientEvent(player, "closeatm");
                         Trigger.StopAnimation(player);
-                        Trigger.ClientEvent(player, openDialog", AcceptBankTransfer", LangFunc.GetText(LangType.Ru, DataName.TransactionConfirm1, myamount) + (Bank.Accounts[bank].Holder.Length > 3 ? LangFunc.GetText(LangType.Ru, DataName.TransactionConfirm2, Bank.Accounts[bank].Holder) : "на неизвестный счет?"));
+                        Trigger.ClientEvent(player, "openDialog", "AcceptBankTransfer",
+                            LangFunc.GetText(LangType.Ru, DataName.TransactionConfirm1, myamount) +
+                            (Bank.Accounts[bank].Holder.Length > 3
+                                ? LangFunc.GetText(LangType.Ru, DataName.TransactionConfirm2,
+                                    Bank.Accounts[bank].Holder)
+                                : "на неизвестный счет?"));
 
                         //Bank.Transfer(acc.Bank, bank, myamount);
-                        if (characterData.AdminLVL == 0) sessionData.TimingsData.NextBankTransfer = DateTime.Now.AddSeconds(10);
-                        break;
-                    default:
-                        // Not supposed to end up here. 
+                        if (characterData.AdminLVL == 0)
+                            sessionData.TimingsData.NextBankTransfer = DateTime.Now.AddSeconds(10);
                         break;
                 }
             }
             catch (Exception e)
             {
-                Bank.Log.Write($"ClientEvent_ATMVAL Exception: {e.ToString()}");
+                Bank.Log.Write($"ClientEvent_ATMVAL Exception: {e}");
             }
         }
+
         public static void AcceptTransfer(ExtPlayer player)
         {
             try
             {
                 var sessionData = player.GetSessionData();
                 if (sessionData == null) return;
-                if (sessionData.CurrentBankTransferSumAccBankInfo == 0 || sessionData.CurrentBankTransferBankInfo == 0 || sessionData.CurrentBankTransferSum <= 0) return;
-                Bank.Transfer(sessionData.CurrentBankTransferSumAccBankInfo, sessionData.CurrentBankTransferBankInfo, sessionData.CurrentBankTransferSum);
-                
-                Bank.Data targetAcc = Bank.Accounts[sessionData.CurrentBankTransferBankInfo];
+                if (sessionData.CurrentBankTransferSumAccBankInfo == 0 ||
+                    sessionData.CurrentBankTransferBankInfo == 0 || sessionData.CurrentBankTransferSum <= 0) return;
+                Bank.Transfer(sessionData.CurrentBankTransferSumAccBankInfo, sessionData.CurrentBankTransferBankInfo,
+                    sessionData.CurrentBankTransferSum);
+
+                var targetAcc = Bank.Accounts[sessionData.CurrentBankTransferBankInfo];
                 if (!Bank.Accounts.ContainsKey(sessionData.CurrentBankTransferBankInfo)) return;
-                
+
                 // ExtPlayer target = (ExtPlayer) NAPI.Player.GetPlayerFromName(targetAcc.Holder);
                 // if (target.IsCharacterData())
                 // {
@@ -773,10 +856,11 @@ namespace NeptuneEvo.MoneySystem
             }
             catch (Exception e)
             {
-                Bank.Log.Write($"AcceptTransfer Exception: {e.ToString()}");
+                Bank.Log.Write($"AcceptTransfer Exception: {e}");
             }
         }
-        [RemoteEvent(atmDP")]
+
+        [RemoteEvent("atmDP")]
         public static void ClientEvent_ATMDupe(ExtPlayer player)
         {
             try
@@ -786,11 +870,11 @@ namespace NeptuneEvo.MoneySystem
             }
             catch (Exception e)
             {
-                Bank.Log.Write($"ClientEvent_ATMDupe Exception: {e.ToString()}");
+                Bank.Log.Write($"ClientEvent_ATMDupe Exception: {e}");
             }
         }
 
-        [RemoteEvent(atmCB")]
+        [RemoteEvent("atmCB")]
         public static void ClientEvent_ATMCB(ExtPlayer player, params object[] args)
         {
             try
@@ -801,57 +885,67 @@ namespace NeptuneEvo.MoneySystem
                 if (accountData == null) return;
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
-                int type = Convert.ToInt32(args[0]);
-                int index = Convert.ToInt32(args[1]);
+                var type = Convert.ToInt32(args[0]);
+                var index = Convert.ToInt32(args[1]);
                 if (index == -1)
                 {
-                    Trigger.ClientEvent(player, closeatm");
+                    Trigger.ClientEvent(player, "closeatm");
                     Trigger.StopAnimation(player);
                     return;
                 }
+
                 switch (type)
                 {
                     case 1:
                         switch (index)
                         {
                             case 0:
-                                Trigger.ClientEvent(player, atmOpen", "[2,' ','Сумма внесения наличных']");
+                                Trigger.ClientEvent(player, "atmOpen", "[2,' ','Сумма внесения наличных']");
                                 sessionData.ATMData.Type = index;
                                 break;
                             case 1:
-                                Trigger.ClientEvent(player, atmOpen", "[2,' ','Сумма для снятия']");
+                                Trigger.ClientEvent(player, "atmOpen", "[2,' ','Сумма для снятия']");
                                 sessionData.ATMData.Type = index;
                                 break;
                             case 2:
-                                if (Houses.HouseManager.GetHouse(player, true) == null)
+                                if (HouseManager.GetHouse(player, true) == null)
                                 {
-                                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoHome), 3000);
+                                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                        LangFunc.GetText(LangType.Ru, DataName.NoHome), 3000);
                                     return;
                                 }
-                                var house = Houses.HouseManager.GetHouse(player, true);
+
+                                var house = HouseManager.GetHouse(player, true);
                                 var bankBalance = Bank.GetBalance(house.BankID);
-                                
+
                                 switch (accountData.VipLvl)
                                 {
                                     case 0:
                                     case 1:
-                                        Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 7)}$','Сумма внесения наличных']");
+                                        Trigger.ClientEvent(player, "atmOpen",
+                                            $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 7)}$','Сумма внесения наличных']");
                                         break;
                                     case 2:
-                                        Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 14)}$','Сумма внесения наличных']");
+                                        Trigger.ClientEvent(player, "atmOpen",
+                                            $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 14)}$','Сумма внесения наличных']");
                                         break;
                                     case 3:
-                                        Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 21)}$','Сумма внесения наличных']");
+                                        Trigger.ClientEvent(player, "atmOpen",
+                                            $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 21)}$','Сумма внесения наличных']");
                                         break;
                                     case 4: // Platinum
                                     case 5: // Media Platinum
-                                        Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 28)}$','Сумма внесения наличных']");
+                                        Trigger.ClientEvent(player, "atmOpen",
+                                            $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 28)}$','Сумма внесения наличных']");
                                         break;
                                     default:
-                                        Trigger.ClientEvent(player, atmOpen", $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 7)}$','Сумма внесения наличных']");
+                                        Trigger.ClientEvent(player, "atmOpen",
+                                            $"[2,'{bankBalance}/{Convert.ToInt32(house.Price / 100 * 0.026 * 24 * 7)}$','Сумма внесения наличных']");
                                         break;
                                 }
-                                Trigger.ClientEvent(player, setatm", LangFunc.GetText(LangType.Ru, DataName.House), $"Недвижимость #{house.ID}", bankBalance, "");
+
+                                Trigger.ClientEvent(player, "setatm", LangFunc.GetText(LangType.Ru, DataName.House),
+                                    $"Недвижимость #{house.ID}", bankBalance, "");
                                 sessionData.ATMData.Type = index;
                                 break;
                             case 3:
@@ -859,17 +953,16 @@ namespace NeptuneEvo.MoneySystem
                                 sessionData.ATMData.Type = index;
                                 break;
                             case 4:
-                                Trigger.ClientEvent(player, atmOpen", "[2,0,'Счет зачисления']");
+                                Trigger.ClientEvent(player, "atmOpen", "[2,0,'Счет зачисления']");
                                 sessionData.ATMData.Type = index;
                                 break;
-                            default:
-                                // Not supposed to end up here. 
-                                break;
                         }
+
                         break;
                     case 2:
-                        Trigger.ClientEvent(player, atmOpen", "[1,0,0]");
-                        Trigger.ClientEvent(player, setatm", characterData.Bank, player.Name, Bank.GetBalance(characterData.Bank), "");
+                        Trigger.ClientEvent(player, "atmOpen", "[1,0,0]");
+                        Trigger.ClientEvent(player, "setatm", characterData.Bank, player.Name,
+                            Bank.GetBalance(characterData.Bank), "");
                         break;
                     case 3:
                     {
@@ -881,40 +974,39 @@ namespace NeptuneEvo.MoneySystem
                         {
                             case 0:
                             case 1:
-                                Trigger.ClientEvent(player, atmOpen",
+                                Trigger.ClientEvent(player, "atmOpen",
                                     $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 7)}$','Сумма зачисления']");
                                 break;
                             case 2:
-                                Trigger.ClientEvent(player, atmOpen",
+                                Trigger.ClientEvent(player, "atmOpen",
                                     $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 14)}$','Сумма зачисления']");
                                 break;
                             case 3:
-                                Trigger.ClientEvent(player, atmOpen",
+                                Trigger.ClientEvent(player, "atmOpen",
                                     $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 21)}$','Сумма зачисления']");
                                 break;
                             case 4: // Platinum
                             case 5: // Media Platinum
-                                Trigger.ClientEvent(player, atmOpen",
+                                Trigger.ClientEvent(player, "atmOpen",
                                     $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 28)}$','Сумма зачисления']");
                                 break;
                             default:
-                                Trigger.ClientEvent(player, atmOpen",
+                                Trigger.ClientEvent(player, "atmOpen",
                                     $"[2,'{bankBalance}/{Convert.ToInt32(biz.SellPrice / 100 * biz.Tax * 24 * 7)}$','Сумма зачисления']");
                                 break;
                         }
 
-                        Trigger.ClientEvent(player, setatm",
+                        Trigger.ClientEvent(player, "setatm",
                             "Бизнес",
                             BusinessManager.BusinessTypeNames[biz.Type],
                             bankBalance, "");
                         break;
                     }
-
                 }
             }
             catch (Exception e)
             {
-                Bank.Log.Write($"ClientEvent_ATMCB Exception: {e.ToString()}");
+                Bank.Log.Write($"ClientEvent_ATMCB Exception: {e}");
             }
         }
     }

@@ -7,6 +7,5 @@ namespace NeptuneEvo.Handles
         public ExtPed(NetHandle handle) : base(handle)
         {
         }
-        
     }
 }

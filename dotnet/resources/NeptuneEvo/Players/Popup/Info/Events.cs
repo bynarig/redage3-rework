@@ -1,5 +1,4 @@
 ﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
 
 namespace NeptuneEvo.Players.Popup.Info
 {

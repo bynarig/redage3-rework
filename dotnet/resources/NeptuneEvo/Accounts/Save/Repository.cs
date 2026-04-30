@@ -1,21 +1,20 @@
-﻿using Database;
-using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using LinqToDB;
-using NeptuneEvo.Core;
-using Newtonsoft.Json;
-using NeptuneEvoSDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using Database;
+using LinqToDB;
+using NeptuneEvo.Core;
+using NeptuneEvo.Handles;
+using Newtonsoft.Json;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Accounts.Save
 {
     public class Repository
     {
         private static readonly nLog Log = new nLog("Accounts.Save.Repository");
+
         public static async Task SaveSql(ServerBD db, ExtPlayer player)
         {
             try
@@ -24,7 +23,7 @@ namespace NeptuneEvo.Accounts.Save
                 if (accountData == null) return;
 
                 await Players.Session.Repository.SaveSession(db, player);
-                
+
                 var accountSave = db.Accounts
                     .Where(v => v.Login == accountData.Login)
                     .Set(v => v.Password, accountData.Password)
@@ -57,25 +56,25 @@ namespace NeptuneEvo.Accounts.Save
                 if (Main.ServerSettings.IsMerger)
                     accountSave = accountSave
                         .Set(v => v.Characters,
-                            JsonConvert.SerializeObject(new List<int>()
+                            JsonConvert.SerializeObject(new List<int>
                             {
                                 accountData.Chars[3], accountData.Chars[4], accountData.Chars[5], accountData.Chars[6],
                                 accountData.Chars[7], accountData.Chars[8]
                             }));
-                    
-                    
+
+
                 await accountSave
                     .UpdateAsync();
 
                 if (Admin.IsServerStoping && player != null)
                     player.IsRestartSaveAccountData = true;
-
             }
             catch (Exception e)
             {
-                Log.Write($"SaveSql Exception: {e.ToString()}");
+                Log.Write($"SaveSql Exception: {e}");
             }
         }
+
         public static void SaveReceived(ExtPlayer player)
         {
             Trigger.SetTask(async () =>
@@ -84,9 +83,9 @@ namespace NeptuneEvo.Accounts.Save
                 {
                     var accountData = player.GetAccountData();
                     if (accountData == null) return;
-                
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
-                
+
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
+
                     await db.Accounts
                         .Where(v => v.Login == accountData.Login)
                         .Set(v => v.ReceivedAward, JsonConvert.SerializeObject(accountData.ReceivedAward))

@@ -1,17 +1,16 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
+﻿using System;
+using GTANetworkAPI;
 using NeptuneEvo.Accounts;
-using NeptuneEvoSDK;
-using System;
-using System.Threading.Tasks;
+using NeptuneEvo.Handles;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Character.Load
 {
-    class Events : Script
+    internal class Events : Script
     {
         private static readonly nLog Log = new nLog("Core.Character.Load");
 
-        [RemoteEvent(selectchar")]
+        [RemoteEvent("selectchar")]
         public void ClientEvent_selectCharacter(ExtPlayer player, int uuid, int spawnid)
         {
             try
@@ -22,15 +21,12 @@ namespace NeptuneEvo.Character.Load
                 Log.Write($"{player.Name}({uuid}) select char - spawnid({spawnid})");
 
                 accountData.LastSelectCharUUID = uuid;
-                
-                Trigger.SetTask(async () =>
-                {
-                    await Repository.Load(player, uuid, spawnid);
-                });
+
+                Trigger.SetTask(async () => { await Repository.Load(player, uuid, spawnid); });
             }
             catch (Exception e)
             {
-                Log.Write($"ClientEvent_selectCharacter Exception: {e.ToString()}");
+                Log.Write($"ClientEvent_selectCharacter Exception: {e}");
             }
         }
     }

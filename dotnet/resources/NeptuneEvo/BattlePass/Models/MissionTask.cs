@@ -2,10 +2,10 @@
 {
     public class MissionTask
     {
+        public int BattlePassTaskId;
+        public int Money;
         public string Name;
         public string Title;
-        public int Money;
-        public int BattlePassTaskId;
 
         public MissionTask(string name, string title, int money, int battlePassTaskId)
         {

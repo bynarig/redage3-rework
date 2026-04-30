@@ -4,11 +4,11 @@ namespace NeptuneEvo.Table.Tasks.Models
 {
     public class TableTaskData
     {
-        public string Name;
+        public List<TableTaskAwards> Awards;
         public string Desc;
         public int MaxCount;
-        public int PersonExp;
+        public string Name;
         public int OrgExp;
-        public List<TableTaskAwards> Awards;
+        public int PersonExp;
     }
 }

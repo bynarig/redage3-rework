@@ -1,18 +1,18 @@
-﻿using Database;
-using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using Microsoft.EntityFrameworkCore;
-using NeptuneEvo.Accounts.Autorization.Models;
-using NeptuneEvo.Accounts.Models;
-using NeptuneEvo.Chars;
-using NeptuneEvo.Players;
-using Newtonsoft.Json;
-using NeptuneEvoSDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Localization;
+using Database;
+using LinqToDB;
+using NeptuneEvo.Localization;
+using NeptuneEvo.Accounts.Autorization.Models;
+using NeptuneEvo.Accounts.Models;
+using NeptuneEvo.Chars;
+using NeptuneEvo.Handles;
+using NeptuneEvo.Players;
+using NeptuneEvo.Utils.Analytics;
+using Newtonsoft.Json;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Accounts.Autorization
 {
@@ -32,13 +32,23 @@ namespace NeptuneEvo.Accounts.Autorization
                 }
             }*/
             var testSpeedLoad = DateTime.Now;
-            AutorizationEnum result = await InitAccount(player, loginOrEmail, password);
+            var result = await InitAccount(player, loginOrEmail, password);
             if (result == AutorizationEnum.Authorized) LoadCharacter.Repository.Load(player, testSpeedLoad);
-            else if (result == AutorizationEnum.LoadingError) Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.AuthorizWait), 3000);
-            else if (result == AutorizationEnum.Already) Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.AlreadyAuthorized), 3000);
-            else if (result == AutorizationEnum.Refused) Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.IncorrectInput), 3000);
-            else if (result == AutorizationEnum.SclubError) Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.SocialClubDoesntCorrect), 3000);
-            else if (result == AutorizationEnum.Error) Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.ConnectError), 3000);
+            else if (result == AutorizationEnum.LoadingError)
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.AuthorizWait), 3000);
+            else if (result == AutorizationEnum.Already)
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.AlreadyAuthorized), 3000);
+            else if (result == AutorizationEnum.Refused)
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.IncorrectInput), 3000);
+            else if (result == AutorizationEnum.SclubError)
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.SocialClubDoesntCorrect), 3000);
+            else if (result == AutorizationEnum.Error)
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.ConnectError), 3000);
             //else if (result == AutorizationEnum.MaxSlots) Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "", 3000);
             //Log.Write($"{sessionData.Name} ({sessionData.SocialClubName} | {sessionData.RealSocialClub}) tryed to signin.");
         }
@@ -48,15 +58,15 @@ namespace NeptuneEvo.Accounts.Autorization
             try
             {
                 var sessionData = player.GetSessionData();
-                if (sessionData == null) 
+                if (sessionData == null)
                     return AutorizationEnum.LoadingError;
-                if (sessionData.RealHWID.Equals(NONE") || sessionData.RealSocialClub.Equals(NONE")) 
+                if (sessionData.RealHWID.Equals("NONE") || sessionData.RealSocialClub.Equals("NONE"))
                     return AutorizationEnum.LoadingError;
-                if (player.IsAccountData()) 
+                if (player.IsAccountData())
                     return AutorizationEnum.Already;
-                if (Players.Queue.Repository.AddQueue(player)) 
+                if (Players.Queue.Repository.AddQueue(player))
                     return AutorizationEnum.MaxSlots;
-                    
+
                 var auntificationData = sessionData.AuntificationData;
 
                 if (Main.ServerNumber != 0 && !auntificationData.IsCreateAccount)
@@ -65,36 +75,36 @@ namespace NeptuneEvo.Accounts.Autorization
                 loginOrEmail = loginOrEmail.ToLower();
 
                 if (loginOrEmail == auntificationData.Login.ToLower())
-                {
                     if (auntificationData.Password != password)
                         return AutorizationEnum.Refused;
-                }
 
-                using var db = new ServerBD(MainDB");//В отдельном потоке
-                
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
+
                 // Получаем модель пользователя по логину
                 var account = await db.Accounts
-                    .Where(v => (v.Login.ToLower() == loginOrEmail || v.Email.ToLower() == loginOrEmail) && v.Password == password)
+                    .Where(v => (v.Login.ToLower() == loginOrEmail || v.Email.ToLower() == loginOrEmail) &&
+                                v.Password == password)
                     .FirstOrDefaultAsync();
 
                 // Если база не вернула значение, то отправляем сброс
                 if (account == null)
                     return AutorizationEnum.Refused;
-                
-                if (Main.ServerNumber != 0 && !account.Socialclub.Equals(sessionData.RealSocialClub) && !account.Socialclub.Equals(sessionData.SocialClubName))
+
+                if (Main.ServerNumber != 0 && !account.Socialclub.Equals(sessionData.RealSocialClub) &&
+                    !account.Socialclub.Equals(sessionData.SocialClubName))
                     return AutorizationEnum.SclubError;
-                
+
                 var target = Accounts.Repository.GetPlayerToLogin(account.Login);
-                if (Main.ServerSettings.IsCheckOnlineLogin && target != null) 
+                if (Main.ServerSettings.IsCheckOnlineLogin && target != null)
                     return AutorizationEnum.Already;
 
-                if (Players.Queue.Repository.AddQueue(player)) 
+                if (Players.Queue.Repository.AddQueue(player))
                     return AutorizationEnum.MaxSlots;
-                
+
                 /*if (Character.Repository.GetPlayers().Any(p => p.GetAccountData()?.Login == account.Login))
                     return AutorizationEnum.Already;*/
-                    
-                    
+
+
                 //Удаляем таймер на авторизацию
                 if (sessionData.TimersData.AutoDCTimer != null)
                 {
@@ -114,8 +124,8 @@ namespace NeptuneEvo.Accounts.Autorization
                     VipLvl = account.Viplvl,
                     VipDate = account.Vipdate,
 
-                    PresentGet = Convert.ToBoolean((object)account.Present),
-                    RefPresentGet = Convert.ToBoolean((object)account.Refpresent),
+                    PresentGet = Convert.ToBoolean(account.Present),
+                    RefPresentGet = Convert.ToBoolean(account.Refpresent),
 
                     RefferalId = account.RefferalId,
 
@@ -127,10 +137,10 @@ namespace NeptuneEvo.Accounts.Autorization
                     ReceivedAwardDonate = account.ReceivedAwardDonate,
 
                     Unique = Donate.SetUnique(account.Unique),
-                    
+
                     LastSelectCharUUID = account.LastSelectCharUUID,
-                    
-                    Ga = account.Ga,
+
+                    Ga = account.Ga
                 };
 
                 //
@@ -142,6 +152,7 @@ namespace NeptuneEvo.Accounts.Autorization
                 {
                     accountData.PromoCodes = new List<string>();
                 }
+
                 //
                 try
                 {
@@ -151,41 +162,39 @@ namespace NeptuneEvo.Accounts.Autorization
                 {
                     accountData.BonusCodes = new List<string>();
                 }
+
                 //
-                List<int> Chars = new List<int>();
+                var Chars = new List<int>();
                 try
                 {
                     Chars = JsonConvert.DeserializeObject<List<int>>(account.Characters);
                 }
                 catch
                 {
-                    Chars = new List<int>() { -2, -2, -2, -2, -2, -2 };
+                    Chars = new List<int> { -2, -2, -2, -2, -2, -2 };
                 }
 
-                accountData.Chars = new List<int>()
+                accountData.Chars = new List<int>
                 {
                     account.Character1,
                     account.Character2,
-                    account.Character3,
+                    account.Character3
                 };
 
                 if (Main.ServerSettings.IsMerger)
-                {
-                    foreach (int i in Chars)
-                    {
+                    foreach (var i in Chars)
                         accountData.Chars.Add(i);
-                    }
-                }
 
                 //
                 try
                 {
-                    accountData.FreeCase = JsonConvert.DeserializeObject<int[]>(account.@case);         
+                    accountData.FreeCase = JsonConvert.DeserializeObject<int[]>(account.@case);
                 }
                 catch
                 {
                     accountData.FreeCase = new int[3] { 0, 0, 0 };
                 }
+
                 //
                 try
                 {
@@ -208,8 +217,9 @@ namespace NeptuneEvo.Accounts.Autorization
                 }
                 catch
                 {
-                    accountData.ReceivedAward = new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 };
+                    accountData.ReceivedAward = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 };
                 }
+
                 //
                 if (DateTime.Now > accountData.SubscribeEndTime)
                 {
@@ -219,14 +229,14 @@ namespace NeptuneEvo.Accounts.Autorization
                 }
 
                 player.SetAccountData(accountData);
-                
-                if (!Main.TodayUniqueHWIDs.Contains(accountData.HWID)) 
+
+                if (!Main.TodayUniqueHWIDs.Contains(accountData.HWID))
                     Main.TodayUniqueHWIDs.Add(accountData.HWID);
 
-                Main.SetUpEverything(player);//TODO
+                Main.SetUpEverything(player); //TODO
 
                 //
-                
+
                 var ticks = Convert.ToInt64(DateTime.Now.Ticks - account.ExitDate.Ticks);
 
                 if (ticks >= 1)
@@ -234,17 +244,17 @@ namespace NeptuneEvo.Accounts.Autorization
                     var date = new DateTime(ticks);
 
                     if (date.Day > 20)
-                        Utils.Analytics.HelperThread.AddEvent(login_returned_user", accountData.Email, accountData.Ga);
+                        HelperThread.AddEvent("login_returned_user", accountData.Email, accountData.Ga);
                     else
-                        Utils.Analytics.HelperThread.AddEvent(login_current_user", accountData.Email, accountData.Ga);
+                        HelperThread.AddEvent("login_current_user", accountData.Email, accountData.Ga);
                 }
                 //
-                
+
                 return AutorizationEnum.Authorized;
             }
             catch (Exception e)
             {
-                Log.Write($"AutorizationAccount Exception: {e.ToString()}");
+                Log.Write($"AutorizationAccount Exception: {e}");
                 return AutorizationEnum.Error;
             }
         }

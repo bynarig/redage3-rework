@@ -5,17 +5,18 @@ namespace NeptuneEvo.Fractions.Models
 {
     public class FractionVehicleData
     {
+        public int color1;
+        public int color2;
+        public VehicleCustomization customization;
+        public int defaultRank;
+        public uint Dimension = 0;
         public string model = "";
         public Vector3 position = new Vector3();
+        public int rank;
         public Vector3 rotation = new Vector3();
-        public int rank = 0;
-        public int defaultRank = 0;
-        public int color1 = 0;
-        public int color2 = 0;
-        public VehicleCustomization customization = null;
-        public uint Dimension = 0;
 
-        public FractionVehicleData (string model, Vector3 position, Vector3 rotation, int rank, int defaultRank, int color1, int color2, VehicleCustomization customization)
+        public FractionVehicleData(string model, Vector3 position, Vector3 rotation, int rank, int defaultRank,
+            int color1, int color2, VehicleCustomization customization)
         {
             this.model = model.ToLower();
             this.position = position;

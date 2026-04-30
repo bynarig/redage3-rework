@@ -1,30 +1,28 @@
 ﻿using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using GTANetworkAPI;
 using NeptuneEvo.Accounts.Email.Confirmation.Models;
 using NeptuneEvo.Handles;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Accounts.Email.Confirmation
 {
     public class Events : Script
     {
-
-        [Command(emailconfirm")]
+        [Command("emailconfirm")]
         public void emailconfirm(ExtPlayer player, string email)
-        {        
+        {
             EmailConfirm(player, email);
         }
 
         [RemoteEvent("server.email.confirm")]
         public void EmailConfirm(ExtPlayer player, string email)
-        {                
+        {
             var accountData = player.GetAccountData();
-            if (accountData == null) 
+            if (accountData == null)
                 return;
-            
+
             var rg = new Regex(@"[0-9]{8,11}[.][0-9]{8,11}", RegexOptions.IgnoreCase);
-            
+
             if (rg.IsMatch(accountData.Ga))
             {
                 Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Вы уже подтвердили почту!", 3000);

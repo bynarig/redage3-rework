@@ -1,6 +1,5 @@
-﻿using GTANetworkAPI;
+﻿using System;
 using NeptuneEvo.Handles;
-using System;
 
 namespace NeptuneEvo.Players.Models
 {

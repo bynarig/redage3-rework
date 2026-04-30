@@ -1,8 +1,4 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using NeptuneEvo.Handles;
 
 namespace NeptuneEvo.Players.Models
 {
@@ -12,5 +8,4 @@ namespace NeptuneEvo.Players.Models
         public int type { get; set; } = 0;
         public int typeSurname { get; set; } = 0;
     }
-    
 }

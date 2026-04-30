@@ -1,26 +1,13 @@
-﻿using NeptuneEvo.Chars.Models;
-using System;
+﻿using System;
+using NeptuneEvo.Chars.Models;
 using Newtonsoft.Json;
 
 namespace NeptuneEvo.Players.Models
 {
     public class RouletteData
     {
-        public bool Done { get; set; }
-        public int IndexList { get; set; }
-        [JsonIgnore]
-        public RouletteItemData Item { get; set; }
-        public int ItemIndex { get; set; }
-        public int Index { get; set; }
-        public int Amount { get; set; }
-        public int Price { get; set; }
-        public string Text { get; set; }
-        public bool BtnTake { get; set; }
-        public bool TypeCurrency { get; set; }
-        public DateTime CreateTime { get; set; } = DateTime.Now;
-        public int CaseID { get; set; }
-        public byte FreeCaseBonus { get; set; }
-        public RouletteData(RouletteItemData Item, int ItemIndex, int Index, int Amount, int Price, string Text, bool BtnTake, bool TypeCurrency, DateTime CreateTime, int CaseID, byte BonusCase)
+        public RouletteData(RouletteItemData Item, int ItemIndex, int Index, int Amount, int Price, string Text,
+            bool BtnTake, bool TypeCurrency, DateTime CreateTime, int CaseID, byte BonusCase)
         {
             this.Item = Item;
             this.ItemIndex = ItemIndex;
@@ -32,9 +19,25 @@ namespace NeptuneEvo.Players.Models
             this.TypeCurrency = TypeCurrency;
             this.CreateTime = CreateTime;
             this.CaseID = CaseID;
-            this.FreeCaseBonus = BonusCase;
-            this.Done = false;
-            this.IndexList = 0;
+            FreeCaseBonus = BonusCase;
+            Done = false;
+            IndexList = 0;
         }
+
+        public bool Done { get; set; }
+        public int IndexList { get; set; }
+
+        [JsonIgnore] public RouletteItemData Item { get; set; }
+
+        public int ItemIndex { get; set; }
+        public int Index { get; set; }
+        public int Amount { get; set; }
+        public int Price { get; set; }
+        public string Text { get; set; }
+        public bool BtnTake { get; set; }
+        public bool TypeCurrency { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
+        public int CaseID { get; set; }
+        public byte FreeCaseBonus { get; set; }
     }
 }

@@ -1,51 +1,73 @@
-﻿using Database;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Database;
 using GTANetworkAPI;
-using NeptuneEvo.Handles;
+using NeptuneEvo.Localization;
 using NeptuneEvo.Accounts;
 using NeptuneEvo.Character;
 using NeptuneEvo.Chars;
 using NeptuneEvo.Chars.Models;
 using NeptuneEvo.Core;
 using NeptuneEvo.Functions;
-using Newtonsoft.Json;
-using NeptuneEvoSDK;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using Localization;
+using NeptuneEvo.Handles;
+using NeptuneEvo.MoneySystem;
 using NeptuneEvo.Players.Phone.Messages.Models;
+using Newtonsoft.Json;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.Chars.Repository;
 
 namespace NeptuneEvo.Events
 {
-    class EverydayAward : Script
+    internal class EverydayAward : Script
     {
         private static readonly nLog Log = new nLog("Events.EverydayAward");
-        public static DayOfWeek InitDayOfWeek = DateTime.Now.DayOfWeek;// DateTime.Now.DayOfWeek;
-        public class EverydayAwardData
-        {
-            [JsonIgnore]
-            public int AutoId { get; set; }
-            public int Day { get; set; }
-            public bool Active { get; set; }
-            public string Title { get; set; }
-            public string Desc { get; set; }
-            public string Img { get; set; }
-            [JsonIgnore]
-            public int Type { get; set; }
-            public int ItemId { get; set; }
-            [JsonIgnore]
-            public int Count { get; set; }
-            public string Data { get; set; }
-        }
+        public static DayOfWeek InitDayOfWeek = DateTime.Now.DayOfWeek; // DateTime.Now.DayOfWeek;
 
-        private static List<EverydayAwardData> EverydayAwardsData = new List<EverydayAwardData>(); // item_id, item_name, amount, item_data, is_main_award
+        private static List<EverydayAwardData>
+            EverydayAwardsData = new List<EverydayAwardData>(); // item_id, item_name, amount, item_data, is_main_award
+
+        public static IReadOnlyDictionary<DayOfWeek, int> WeekToInt = new Dictionary<DayOfWeek, int>
+        {
+            { DayOfWeek.Monday, 0 },
+            { DayOfWeek.Tuesday, 1 },
+            { DayOfWeek.Wednesday, 2 },
+            { DayOfWeek.Thursday, 3 },
+            { DayOfWeek.Friday, 4 },
+            { DayOfWeek.Saturday, 5 },
+            { DayOfWeek.Sunday, 6 }
+        };
+
+        public static IReadOnlyDictionary<DayOfWeek, int> WeekToIntNextDay = new Dictionary<DayOfWeek, int>
+        {
+            { DayOfWeek.Monday, 1 },
+            { DayOfWeek.Tuesday, 2 },
+            { DayOfWeek.Wednesday, 3 },
+            { DayOfWeek.Thursday, 4 },
+            { DayOfWeek.Friday, 5 },
+            { DayOfWeek.Saturday, 6 },
+            { DayOfWeek.Sunday, 0 }
+        };
+
+        private static readonly int WeekBonusSlotId = 7; // Бонус на 80 часов
+        public static int IsInitOpenSlotId = 8; //Проверка на показ интерфеса при каждом входе
+        private static readonly int GameTime = 60 * 6; //Проверка на показ интерфеса при каждом входе
+        private static readonly int WeekGameTime = 60 * 70; //Проверка на показ интерфеса при каждом входе
+
+        public static IReadOnlyDictionary<int, int> DonateToBonus = new Dictionary<int, int>
+        {
+            { 9, 15000 },
+            { 10, 30000 },
+            { 11, 60000 },
+            { 12, 100000 },
+            { 13, 140000 }
+        };
 
         /*
             -5, "Exclusive Case", 1, null),
             -4, "Premium Case", 1, null),
             -3, "VIP Diamond", 2, null),
-            -2, RedBucks", 100, null),
+            -2, "RedBucks", 100, null),
             -1, "Игровая валюта", 150000, null),
         */
 
@@ -54,34 +76,36 @@ namespace NeptuneEvo.Events
         {
             try
             {
-                UpdateEverydayAwardItems(IsStart: true);
+                UpdateEverydayAwardItems(true);
             }
             catch (Exception e)
             {
-                Log.Write($"Event_ResourceStart Exception: {e.ToString()}");
+                Log.Write($"Event_ResourceStart Exception: {e}");
             }
         }
+
         [Command(AdminCommands.RefresEverydayAward)]
         public void CMD_RefresEverydayAward(ExtPlayer player)
         {
             try
             {
                 if (!player.IsCharacterData()) return;
-                else if (!CommandsAccess.CanUseCmd(player, AdminCommands.RefresEverydayAward)) return;
-                UpdateEverydayAwardItems(IsStart: true);
+                if (!CommandsAccess.CanUseCmd(player, AdminCommands.RefresEverydayAward)) return;
+                UpdateEverydayAwardItems(true);
                 Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Вы обнеовили еж задачи.", 3000);
             }
             catch (Exception e)
             {
-                Log.Write($"CMD_Refreshclothes Exception: {e.ToString()}");
+                Log.Write($"CMD_Refreshclothes Exception: {e}");
             }
         }
+
         public static string GetTitle(int Type, int ItemId)
         {
             switch (Type)
             {
                 case 0:
-                    return Chars.Repository.ItemsInfo[(ItemId)ItemId].Name;
+                    return Repository.ItemsInfo[(ItemId)ItemId].Name;
                 case 1:
                     switch (ItemId)
                     {
@@ -93,16 +117,15 @@ namespace NeptuneEvo.Events
                             return "VIP Diamond";
                         case 4:
                             return "VIP Diamond";
-                        default:
-                            // Not supposed to end up here. 
-                            break;
                     }
+
                     break;
                 case 2:
                     return "Игровая валюта";
                 case 3:
-                    return RedBucks";
+                    return "RedBucks";
             }
+
             return "";
         }
 
@@ -111,23 +134,24 @@ namespace NeptuneEvo.Events
         {
             try
             {
-                bool IsInit = false;
+                var IsInit = false;
                 if (IsStart)
-                {
-                    using (var db = new ConfigBD(ConfigDB"))
+                    using (var db = new ConfigBD("ConfigDB"))
                     {
-                        List<Everydayawards> Everydayawards = db.Everydayaward
-                                                        .Where(ed => ed.Active == true)
-                                                        .ToList();
-                        
-                        if (Everydayawards.Count == 0) 
+                        var Everydayawards = db.Everydayaward
+                            .Where(ed => ed.Active == true)
+                            .ToList();
+
+                        if (Everydayawards.Count == 0)
+                        {
                             IsInit = true;
+                        }
                         else
                         {
                             EverydayAwardsData = new List<EverydayAwardData>();
-                            foreach (Everydayawards award in Everydayawards)
+                            foreach (var award in Everydayawards)
                             {
-                                EverydayAwardData everydayAwardData = new EverydayAwardData();
+                                var everydayAwardData = new EverydayAwardData();
                                 everydayAwardData.Day = award.Day;
                                 everydayAwardData.Active = award.Active;
                                 everydayAwardData.Title = GetTitle(award.Type, award.ItemId);
@@ -141,15 +165,12 @@ namespace NeptuneEvo.Events
                             }
                         }
                     }
-                }
 
                 if (InitDayOfWeek != DateTime.Now.DayOfWeek)
                     IsInit = true;
 
-                if (IsInit)
-                {
-                    InitDayOfWeek = DateTime.Now.DayOfWeek;
-                    /*using (ConfigBD db = new ConfigBD(ConfigDB"))
+                if (IsInit) InitDayOfWeek = DateTime.Now.DayOfWeek;
+                /*using (ConfigBD db = new ConfigBD("ConfigDB"))
                     {
                         db.Everydayawards
                             .Set(ed => ed.Active, false)
@@ -192,46 +213,12 @@ namespace NeptuneEvo.Events
                             EverydayAwardsData.Add(awardData);
                         }
                     }*/
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateEverydayAwardItems Exception: {e.ToString()}");
+                Log.Write($"UpdateEverydayAwardItems Exception: {e}");
             }
         }
-        public static IReadOnlyDictionary<DayOfWeek, int> WeekToInt = new Dictionary<DayOfWeek, int>()
-        {
-            { DayOfWeek.Monday, 0 },
-            { DayOfWeek.Tuesday, 1 },
-            { DayOfWeek.Wednesday, 2 },
-            { DayOfWeek.Thursday, 3 },
-            { DayOfWeek.Friday, 4 },
-            { DayOfWeek.Saturday, 5 },
-            { DayOfWeek.Sunday, 6 }
-        };
-        public static IReadOnlyDictionary<DayOfWeek, int> WeekToIntNextDay = new Dictionary<DayOfWeek, int>()
-        {
-            { DayOfWeek.Monday, 1 },
-            { DayOfWeek.Tuesday, 2 },
-            { DayOfWeek.Wednesday, 3 },
-            { DayOfWeek.Thursday, 4 },
-            { DayOfWeek.Friday, 5 },
-            { DayOfWeek.Saturday, 6 },
-            { DayOfWeek.Sunday, 0 }
-        };
-        private static int WeekBonusSlotId = 7; // Бонус на 80 часов
-        public static int IsInitOpenSlotId = 8; //Проверка на показ интерфеса при каждом входе
-        private static int GameTime = 60 * 6; //Проверка на показ интерфеса при каждом входе
-        private static int WeekGameTime = 60 * 70; //Проверка на показ интерфеса при каждом входе
-
-        public static IReadOnlyDictionary<int, int> DonateToBonus = new Dictionary<int, int>()
-        {
-            { 9, 15000 },
-            { 10, 30000 },
-            { 11, 60000 },
-            { 12, 100000 },
-            { 13, 140000 },
-        };
 
         //Новое
 
@@ -239,85 +226,92 @@ namespace NeptuneEvo.Events
         public static void OnPlayerSpawn(ExtPlayer player)
         {
             var accountData = player.GetAccountData();
-            if (accountData == null) 
+            if (accountData == null)
                 return;
-            
+
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
 
             if (Convert.ToBoolean(accountData.ReceivedAward[WeekBonusSlotId]))
             {
-                Trigger.ClientEvent(player, initAwards", false);
+                Trigger.ClientEvent(player, "initAwards", false);
             }
             else
             {
                 var award = new List<object>();
-                
+
                 var everyDayAward = EverydayAwardsData[WeekBonusSlotId];
-                award.Add(everyDayAward.Desc);//0
-                award.Add(everyDayAward.Type);//1
-                award.Add(everyDayAward.ItemId);//2
-                award.Add(everyDayAward.Data);//3
-                award.Add(everyDayAward.Img);//4
-                
-                if (characterData.Time.WeekTime >= WeekGameTime) 
+                award.Add(everyDayAward.Desc); //0
+                award.Add(everyDayAward.Type); //1
+                award.Add(everyDayAward.ItemId); //2
+                award.Add(everyDayAward.Data); //3
+                award.Add(everyDayAward.Img); //4
+
+                if (characterData.Time.WeekTime >= WeekGameTime)
                     award.Add(0); //5
                 else
                     award.Add(WeekGameTime - characterData.Time.WeekTime); //6
-                
-                Trigger.ClientEvent(player, initAwards", JsonConvert.SerializeObject(award));
+
+                Trigger.ClientEvent(player, "initAwards", JsonConvert.SerializeObject(award));
             }
         }
-        
-        
+
+
         [RemoteEvent("server.rl.day.load")]
         public static void OnRewardsList(ExtPlayer player)
         {
-            if (!FunctionsAccess.IsWorking(everydayaward2"))
+            if (!FunctionsAccess.IsWorking("everydayaward2"))
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                 return;
             }
-            
+
             var accountData = player.GetAccountData();
-            if (accountData == null) 
+            if (accountData == null)
                 return;
-            
+
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
-            
+
             characterData.Time = Main.GetCurrencyTime(player, characterData.Time);
             if (Main.WeekInfo != accountData.ReceivedAwardWeek)
             {
                 accountData.ReceivedAwardWeek = Main.WeekInfo;
-                accountData.ReceivedAward = new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0, accountData.ReceivedAward[IsInitOpenSlotId], 0, 0, 0, 0, 0, 0 };
+                accountData.ReceivedAward = new List<int>
+                    { 0, 0, 0, 0, 0, 0, 0, 0, accountData.ReceivedAward[IsInitOpenSlotId], 0, 0, 0, 0, 0, 0 };
                 accountData.ReceivedAwardDonate = 0;
             }
-            
+
             //
-            int slotId = WeekToInt[InitDayOfWeek];
+            var slotId = WeekToInt[InitDayOfWeek];
             var playerAwards = new List<List<object>>();
-            for(var week = 0; week <= WeekBonusSlotId; week++)
+            for (var week = 0; week <= WeekBonusSlotId; week++)
             {
                 var everyDayAward = EverydayAwardsData[week];
-                
+
                 var award = new List<object>();
-                
-                award.Add(week);//0
+
+                award.Add(week); //0
                 //award.Add(everyDayAward.Title);//1
-                award.Add(everyDayAward.Desc);//2
-                award.Add(everyDayAward.Type);//3
-                award.Add(everyDayAward.ItemId);//4
-                award.Add(everyDayAward.Data);//5
-                award.Add(everyDayAward.Img);//6
+                award.Add(everyDayAward.Desc); //2
+                award.Add(everyDayAward.Type); //3
+                award.Add(everyDayAward.ItemId); //4
+                award.Add(everyDayAward.Data); //5
+                award.Add(everyDayAward.Img); //6
 
                 if (Convert.ToBoolean(accountData.ReceivedAward[week]))
-                    award.Add(1);//7
+                {
+                    award.Add(1); //7
+                }
                 else if (slotId == week)
                 {
-                    if (characterData.Time.TodayTime >= GameTime) award.Add(2); //7
+                    if (characterData.Time.TodayTime >= GameTime)
+                    {
+                        award.Add(2); //7
+                    }
                     else
                     {
                         award.Add(4); //7
@@ -326,7 +320,10 @@ namespace NeptuneEvo.Events
                 }
                 else if (WeekBonusSlotId == week)
                 {
-                    if (characterData.Time.WeekTime >= WeekGameTime) award.Add(2); //7
+                    if (characterData.Time.WeekTime >= WeekGameTime)
+                    {
+                        award.Add(2); //7
+                    }
                     else
                     {
                         award.Add(4); //7
@@ -334,31 +331,34 @@ namespace NeptuneEvo.Events
                     }
                 }
                 else if (slotId > week)
-                    award.Add(3);//7
-                
+                {
+                    award.Add(3); //7
+                }
+
                 playerAwards.Add(award);
             }
-            
+
             Trigger.ClientEvent(player, "client.rewardslist.day.init", JsonConvert.SerializeObject(playerAwards));
         }
 
         [RemoteEvent("server.rl.day.take")]
         public static void OnTakeDay(ExtPlayer player, int slotId)
         {
-            if (!FunctionsAccess.IsWorking(everydayaward2"))
+            if (!FunctionsAccess.IsWorking("everydayaward2"))
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                 return;
             }
-            
+
             var accountData = player.GetAccountData();
-            if (accountData == null) 
+            if (accountData == null)
                 return;
-            
+
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
-            
+
             if (!Convert.ToBoolean(accountData.ReceivedAward[slotId]))
             {
                 if (characterData.Time.TodayTime >= GameTime)
@@ -368,51 +368,58 @@ namespace NeptuneEvo.Events
                     OnRewardsList(player);
                     Accounts.Save.Repository.SaveReceived(player);
                 }
-                else 
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.Everyday6h), 3000);
+                else
+                {
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.Everyday6h), 3000);
+                }
             }
-            else 
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.AlreadyEveryDayGet), 3000);
+            else
+            {
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.AlreadyEveryDayGet), 3000);
+            }
         }
-        
+
         //
 
         [RemoteEvent("server.rl.donate.load")]
         public static void OnDonateList(ExtPlayer player)
         {
-            if (!FunctionsAccess.IsWorking(everydayaward2"))
+            if (!FunctionsAccess.IsWorking("everydayaward2"))
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                 return;
             }
-            
+
             var accountData = player.GetAccountData();
-            if (accountData == null) 
+            if (accountData == null)
                 return;
-            
+
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
 
             var playerAwards = new List<List<object>>();
             foreach (var donateData in DonateToBonus)
-            {                    
+            {
                 var index = donateData.Key;
                 var everyDayAward = EverydayAwardsData[index - 1];
-                
+
                 var award = new List<object>();
-                
-                award.Add(index);//0
+
+                award.Add(index); //0
                 //award.Add(everyDayAward.Title);//1
-                award.Add(everyDayAward.Desc);//2
-                award.Add(everyDayAward.Type);//3
-                award.Add(everyDayAward.ItemId);//4
-                award.Add(everyDayAward.Data);//5
-                award.Add(everyDayAward.Img);//6
-                
+                award.Add(everyDayAward.Desc); //2
+                award.Add(everyDayAward.Type); //3
+                award.Add(everyDayAward.ItemId); //4
+                award.Add(everyDayAward.Data); //5
+                award.Add(everyDayAward.Img); //6
+
                 if (!Convert.ToBoolean(accountData.ReceivedAward[index]))
                 {
-                    if (accountData.ReceivedAwardDonate >= donateData.Value) 
+                    if (accountData.ReceivedAwardDonate >= donateData.Value)
                     {
                         award.Add(2); //7
                         award.Add(0); //8
@@ -428,25 +435,27 @@ namespace NeptuneEvo.Events
                     award.Add(1); //7
                     award.Add(0); //8
                 }
+
                 award.Add(donateData.Value); //9
 
                 playerAwards.Add(award);
             }
-            
+
             Trigger.ClientEvent(player, "client.rewardslist.donate.init", JsonConvert.SerializeObject(playerAwards));
         }
 
         [RemoteEvent("server.rl.donate.take")]
         public static void OnTakeDonate(ExtPlayer player, int slotId)
         {
-            if (!FunctionsAccess.IsWorking(everydayaward2"))
+            if (!FunctionsAccess.IsWorking("everydayaward2"))
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                 return;
             }
-            
+
             var accountData = player.GetAccountData();
-            if (accountData == null) 
+            if (accountData == null)
                 return;
 
             var donateData = DonateToBonus[slotId];
@@ -458,32 +467,40 @@ namespace NeptuneEvo.Events
                     GiveBonus(player, slotId - 1);
                     OnDonateList(player);
                     Accounts.Save.Repository.SaveReceived(player);
-                    Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.RedAge, LangFunc.GetText(LangType.Ru, DataName.YouGetPopBonus, MoneySystem.Wallet.Format(donateData)), DateTime.Now);
+                    Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.RedAge,
+                        LangFunc.GetText(LangType.Ru, DataName.YouGetPopBonus, Wallet.Format(donateData)),
+                        DateTime.Now);
                 }
-                else 
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.Everyday6h), 3000);
+                else
+                {
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.Everyday6h), 3000);
+                }
             }
-            else 
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.AlreadyEveryDayGet), 3000);
+            else
+            {
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.AlreadyEveryDayGet), 3000);
+            }
         }
-        
-       
+
+
         //
 
-        [Command(trl")]
+        [Command("trl")]
         public static void Test(ExtPlayer player, int type, int value)
         {
             if (Main.ServerNumber != 0)
                 return;
-            
+
             var accountData = player.GetAccountData();
-            if (accountData == null) 
+            if (accountData == null)
                 return;
-            
+
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
-            
+
             switch (type)
             {
                 case 0:
@@ -500,20 +517,23 @@ namespace NeptuneEvo.Events
                     break;
             }
         }
-        
+
         //-------------------------
-        
+
         [RemoteEvent("server.everydayaward.open")]
         public static void LoadEverydayAwardInfo(ExtPlayer player, bool isInit = false)
         {
             try
             {
-                if (!FunctionsAccess.IsWorking(everydayaward"))
+                if (!FunctionsAccess.IsWorking("everydayaward"))
                 {
                     if (isInit) Main.Compensation(player);
-                    else Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
+                    else
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                            LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                     return;
                 }
+
                 var accountData = player.GetAccountData();
                 if (accountData == null) return;
                 if (isInit && !Convert.ToBoolean(accountData.ReceivedAward[IsInitOpenSlotId]))
@@ -521,6 +541,7 @@ namespace NeptuneEvo.Events
                     Main.Compensation(player);
                     return;
                 }
+
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
                 //
@@ -540,18 +561,21 @@ namespace NeptuneEvo.Events
                 if (Main.WeekInfo != accountData.ReceivedAwardWeek)
                 {
                     accountData.ReceivedAwardWeek = Main.WeekInfo;
-                    accountData.ReceivedAward = new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0, accountData.ReceivedAward[IsInitOpenSlotId], 0, 0, 0, 0, 0, 0 };
+                    accountData.ReceivedAward = new List<int>
+                        { 0, 0, 0, 0, 0, 0, 0, 0, accountData.ReceivedAward[IsInitOpenSlotId], 0, 0, 0, 0, 0, 0 };
                     accountData.ReceivedAwardDonate = 0;
                 }
+
                 //
                 var playerAwards = new List<EverydayAwardData>();
                 var playerAward = new EverydayAwardData();
-                foreach (int week in WeekToInt.Values)
+                foreach (var week in WeekToInt.Values)
                 {
                     playerAward = EverydayAwardsData[week];
                     playerAward.Active = Convert.ToBoolean(accountData.ReceivedAward[week]);
                     playerAwards.Add(playerAward);
                 }
+
                 //
                 playerAward = EverydayAwardsData[WeekBonusSlotId];
                 playerAward.Active = Convert.ToBoolean(accountData.ReceivedAward[WeekBonusSlotId]);
@@ -559,16 +583,17 @@ namespace NeptuneEvo.Events
                 //
                 playerAward = new EverydayAwardData();
                 playerAward.Active = Convert.ToBoolean(accountData.ReceivedAward[IsInitOpenSlotId]);
-                playerAwards.Add(playerAward);//8
+                playerAwards.Add(playerAward); //8
 
-                int donate = -1;
+                var donate = -1;
                 var donateAward = new EverydayAwardData();
                 foreach (var donateData in DonateToBonus)
                 {
-                    int day = donateData.Key;
+                    var day = donateData.Key;
                     playerAward = EverydayAwardsData[day - 1];
 
-                    if (donate == -1 && accountData.ReceivedAward[day] == 0/* && accountData.ReceivedAwardDonate >= donateData.Value*/)
+                    if (donate == -1 &&
+                        accountData.ReceivedAward[day] == 0 /* && accountData.ReceivedAwardDonate >= donateData.Value*/)
                     {
                         playerAward.Active = true;
                         donate = donateData.Value - accountData.ReceivedAwardDonate;
@@ -580,50 +605,56 @@ namespace NeptuneEvo.Events
                     {
                         playerAward.Active = false;
                     }
+
                     playerAwards.Add(playerAward);
                 }
+
                 playerAwards.Add(donateAward);
 
                 if (donate == -1)
                     donate = 0;
 
-                Trigger.ClientEvent(player, "client.everydayawards", isInit, WeekToInt[InitDayOfWeek] + 1, JsonConvert.SerializeObject(playerAwards), characterData.Time.WeekTime, donate);
+                Trigger.ClientEvent(player, "client.everydayawards", isInit, WeekToInt[InitDayOfWeek] + 1,
+                    JsonConvert.SerializeObject(playerAwards), characterData.Time.WeekTime, donate);
             }
             catch (Exception e)
             {
-                Log.Write($"LoadEverydayAwardInfo Exception: {e.ToString()}");
+                Log.Write($"LoadEverydayAwardInfo Exception: {e}");
             }
         }
+
         [RemoteEvent("server.everydayaward.checkbox")]
         public static void CheckBox(ExtPlayer player)
         {
             try
             {
                 var accountData = player.GetAccountData();
-                if (accountData == null) 
+                if (accountData == null)
                     return;
 
-                accountData.ReceivedAward[IsInitOpenSlotId] = Convert.ToBoolean(accountData.ReceivedAward[IsInitOpenSlotId]) ? 0 : 1;
+                accountData.ReceivedAward[IsInitOpenSlotId] =
+                    Convert.ToBoolean(accountData.ReceivedAward[IsInitOpenSlotId]) ? 0 : 1;
 
                 Accounts.Save.Repository.SaveReceived(player);
             }
             catch (Exception e)
             {
-                Log.Write($"TakeDayAward Exception: {e.ToString()}");
+                Log.Write($"TakeDayAward Exception: {e}");
             }
         }
+
         [RemoteEvent("server.everydayaward.take")]
         public static void TakeDayAward(ExtPlayer player)
         {
             try
             {
-                int SlotId = WeekToInt[InitDayOfWeek];
+                var SlotId = WeekToInt[InitDayOfWeek];
 
                 var accountData = player.GetAccountData();
                 if (accountData == null) return;
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
-                bool isUpdate = false;
+                var isUpdate = false;
                 if (!Convert.ToBoolean(accountData.ReceivedAward[SlotId]))
                 {
                     if (characterData.Time.TodayTime >= GameTime)
@@ -632,22 +663,25 @@ namespace NeptuneEvo.Events
                         GiveBonus(player, SlotId);
                         isUpdate = true;
                     }
-                    else Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.Everyday6h), 3000);
+                    else
+                    {
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                            LangFunc.GetText(LangType.Ru, DataName.Everyday6h), 3000);
+                    }
                 }
+
                 if (!Convert.ToBoolean(accountData.ReceivedAward[WeekBonusSlotId]))
-                {
                     if (characterData.Time.WeekTime >= WeekGameTime)
                     {
                         accountData.ReceivedAward[WeekBonusSlotId] = 1;
                         GiveBonus(player, WeekBonusSlotId);
                         isUpdate = true;
                     }
-                    //else Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, ".", 3000);
-                }
 
+                //else Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, ".", 3000);
                 foreach (var donateData in DonateToBonus)
                 {
-                    int day = donateData.Key;
+                    var day = donateData.Key;
 
                     if (accountData.ReceivedAward[day] == 0 && accountData.ReceivedAwardDonate >= donateData.Value)
                     {
@@ -655,20 +689,23 @@ namespace NeptuneEvo.Events
                         GiveBonus(player, day - 1);
                         isUpdate = true;
                         //Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.YouGetPopBonus, MoneySystem.Wallet.Format(donateData.Value)), 10000);
-                        Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.RedAge, LangFunc.GetText(LangType.Ru, DataName.YouGetPopBonus, MoneySystem.Wallet.Format(donateData.Value)), DateTime.Now);
+                        Players.Phone.Messages.Repository.AddSystemMessage(player, (int)DefaultNumber.RedAge,
+                            LangFunc.GetText(LangType.Ru, DataName.YouGetPopBonus, Wallet.Format(donateData.Value)),
+                            DateTime.Now);
                         break;
-                    }                    
+                    }
                 }
 
 
                 if (isUpdate)
                     Accounts.Save.Repository.SaveReceived(player);
                 else
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.AlreadyEveryDayGet), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.AlreadyEveryDayGet), 3000);
             }
             catch (Exception e)
             {
-                Log.Write($"TakeDayAward Exception: {e.ToString()}");
+                Log.Write($"TakeDayAward Exception: {e}");
             }
         }
 
@@ -680,50 +717,68 @@ namespace NeptuneEvo.Events
                 if (accountData == null) return;
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
-                EverydayAwardData award = EverydayAwardsData[slotId];
+                var award = EverydayAwardsData[slotId];
                 switch (award.Type)
                 {
                     case 0:
                         if ((ItemId)award.ItemId == ItemId.BodyArmor && award.Count > 1)
-                        {
-                            for (int i = 0; i < award.Count; i++)
-                            {
-                                Chars.Repository.AddNewItemWarehouse(player, (ItemId)award.ItemId, 1, award.Data);
-                            }
-                        }
+                            for (var i = 0; i < award.Count; i++)
+                                Repository.AddNewItemWarehouse(player, (ItemId)award.ItemId, 1, award.Data);
                         else
-                        {
-                            Chars.Repository.AddNewItemWarehouse(player, (ItemId)award.ItemId, award.Count, award.Data);
-                        }
+                            Repository.AddNewItemWarehouse(player, (ItemId)award.ItemId, award.Count, award.Data);
 
-                        GameLog.Money($system", $"player({characterData.UUID})", 1, $"GiveBonus({award.ItemId},{award.Data})");
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.YouGetItemSklad, Chars.Repository.ItemsInfo[(ItemId)award.ItemId].Name), 3000);
+                        GameLog.Money("system", $"player({characterData.UUID})", 1,
+                            $"GiveBonus({award.ItemId},{award.Data})");
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            LangFunc.GetText(LangType.Ru, DataName.YouGetItemSklad,
+                                Repository.ItemsInfo[(ItemId)award.ItemId].Name), 3000);
                         break;
                     case 1:
-                        Chars.Repository.UpdateVipStatus(player, award.ItemId, award.Count, true, true, BonusVIP");
-                        GameLog.Money($system", $"player({characterData.UUID})", 1, $"GiveBonus(VIP,{award.ItemId},{award.Data})");
+                        Repository.UpdateVipStatus(player, award.ItemId, award.Count, true, true, "BonusVIP");
+                        GameLog.Money("system", $"player({characterData.UUID})", 1,
+                            $"GiveBonus(VIP,{award.ItemId},{award.Data})");
                         break;
                     case 2:
-                        MoneySystem.Wallet.Change(player, +award.Count);
-                        GameLog.Money($system", $"player({characterData.UUID})", award.Count, $GiveBonus");
+                        Wallet.Change(player, +award.Count);
+                        GameLog.Money("system", $"player({characterData.UUID})", award.Count, "GiveBonus");
                         //PlayerStats(player);
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.YouWonMoneyAmount, MoneySystem.Wallet.Format(award.Count)), 3000);
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            LangFunc.GetText(LangType.Ru, DataName.YouWonMoneyAmount, Wallet.Format(award.Count)),
+                            3000);
                         break;
                     case 3:
-                        UpdateData.RedBucks(player, award.Count, msg: LangFunc.GetText(LangType.Ru, DataName.EverydayOnlineLog));
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.YouWinRb, award.Count), 5000);
-                        break;
-                    default:
-                        // Not supposed to end up here. 
+                        UpdateData.RedBucks(player, award.Count,
+                            LangFunc.GetText(LangType.Ru, DataName.EverydayOnlineLog));
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            LangFunc.GetText(LangType.Ru, DataName.YouWinRb, award.Count), 5000);
                         break;
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"GiveBonus Exception: {e.ToString()}");
+                Log.Write($"GiveBonus Exception: {e}");
             }
         }
-        /*[RemoteEvent(TakeDayAward")]
+
+        public class EverydayAwardData
+        {
+            [JsonIgnore] public int AutoId { get; set; }
+
+            public int Day { get; set; }
+            public bool Active { get; set; }
+            public string Title { get; set; }
+            public string Desc { get; set; }
+            public string Img { get; set; }
+
+            [JsonIgnore] public int Type { get; set; }
+
+            public int ItemId { get; set; }
+
+            [JsonIgnore] public int Count { get; set; }
+
+            public string Data { get; set; }
+        }
+        /*[RemoteEvent("TakeDayAward")]
         public static void TakeDayAward(Player player)
         {
             try
@@ -769,7 +824,7 @@ namespace NeptuneEvo.Events
             }
         }
 
-        [RemoteEvent(TakeWeekAward")]
+        [RemoteEvent("TakeWeekAward")]
         public static void TakeWeekAward(Player player)
         {
             try
@@ -822,13 +877,13 @@ namespace NeptuneEvo.Events
                 }
                 else if (ItemId == -1)
                 {
-                    GameLog.Money($system", $"player({characterData.UUID})", 3000, $"GiveEverydayAward({ItemId},{ItemName},{Amount})");
+                    GameLog.Money($"system", $"player({characterData.UUID})", 3000, $"GiveEverydayAward({ItemId},{ItemName},{Amount})");
                     MoneySystem.Wallet.Change(player, Amount);
                     success = true;
                 }
                 else if (ItemId > 0)
                 {
-                    if (Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", (ItemId)ItemId, Amount, ItemData) == -1)
+                    if (Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", (ItemId)ItemId, Amount, ItemData) == -1)
                     {
                         Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Недостаточно места в инвентаре.", 3000);
                         success = false;

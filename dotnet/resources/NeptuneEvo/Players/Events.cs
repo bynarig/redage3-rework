@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeptuneEvo.Players
+﻿namespace NeptuneEvo.Players
 {
-    class Events
+    internal class Events
     {
     }
 }

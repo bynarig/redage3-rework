@@ -7,6 +7,5 @@ namespace NeptuneEvo.Handles
         public ExtObject(NetHandle handle) : base(handle)
         {
         }
-        
     }
 }

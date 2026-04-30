@@ -8,8 +8,8 @@
 
         public BetData(int bet, int spot)
         {
-            this.Bet = bet;
-            this.Spot = spot;
+            Bet = bet;
+            Spot = spot;
         }
     }
 }

@@ -6,6 +6,9 @@ namespace NeptuneEvo.Players.Phone.Gps
     public class Events : Script
     {
         [RemoteEvent("gps.pointDefault")]
-        public void OnPointDefault(ExtPlayer player, string name) => Repository.OnPointDefault(player, name);
+        public void OnPointDefault(ExtPlayer player, string name)
+        {
+            Repository.OnPointDefault(player, name);
+        }
     }
 }

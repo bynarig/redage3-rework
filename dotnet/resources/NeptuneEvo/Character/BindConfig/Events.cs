@@ -1,18 +1,14 @@
 ﻿using GTANetworkAPI;
 using NeptuneEvo.Handles;
-using NeptuneEvoSDK;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Character.BindConfig
 {
-    class Events : Script
+    internal class Events : Script
     {
         private static readonly nLog Log = new nLog("Core.Character.BindConfig.Events");
 
-        [RemoteEvent(bindConfigSave")]
+        [RemoteEvent("bindConfigSave")]
         public void Save(ExtPlayer player, byte key, byte value)
         {
             Repository.Update(player, key, value);

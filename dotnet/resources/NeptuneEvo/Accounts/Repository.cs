@@ -1,19 +1,18 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Accounts.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using NeptuneEvoSDK;
+using NeptuneEvo.Accounts.Models;
+using NeptuneEvo.Handles;
+using RAGE;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Accounts
 {
     public static class Repository
     {
         private static readonly nLog Log = new nLog("Accounts.Repository");
-        
+
         public static bool IsAccountData(this ExtPlayer player)
         {
             if (player is null)
@@ -29,10 +28,11 @@ namespace NeptuneEvo.Accounts
 
             return null;
         }
+
         public static string GetLogin(this ExtPlayer player)
         {
             var accountData = player.GetAccountData();
-            
+
             if (accountData != null)
                 return accountData.Login;
 
@@ -41,39 +41,42 @@ namespace NeptuneEvo.Accounts
 
         public static string GetSha256(string strData)
         {
-            byte[] message = Encoding.ASCII.GetBytes(strData);
-            using (SHA256Managed hashString = new SHA256Managed())
+            var message = Encoding.ASCII.GetBytes(strData);
+            using (var hashString = new SHA256Managed())
             {
-                string hex = "";
+                var hex = "";
 
-                byte[] hashValue = hashString.ComputeHash(message);
-                foreach (byte x in hashValue)
+                var hashValue = hashString.ComputeHash(message);
+                foreach (var x in hashValue)
                     hex += string.Format("{0:x2}", x);
                 return hex;
             }
         }
+
         public static ExtPlayer GetPlayerToLogin(string login)
-        {            
+        {
             try
-            {            
+            {
                 login = login.ToLower();
-        
-                return RAGE.Entities.Players.All.Cast<ExtPlayer>()
+
+                return Entities.Players.All.Cast<ExtPlayer>()
                     .FirstOrDefault(p => p.AccountData != null && p.AccountData.Login.ToLower() == login);
             }
             catch (Exception e)
             {
-                Log.Write($"GetPlayerToLogin Exception: {e.ToString()}");
+                Log.Write($"GetPlayerToLogin Exception: {e}");
             }
+
             return null;
         }
+
         public static string GetEmailToLogin(string login)
         {
             login = login.ToLower();
-            
+
             if (Main.LoginToEmail.ContainsKey(login))
                 return Main.LoginToEmail[login];
-            
+
             return null;
         }
     }

@@ -9,11 +9,16 @@ namespace NeptuneEvo.Functions
     internal class FastMethodInvoker
     {
         public Delegate GetMethodInvoker(MethodInfo methodInfo)
-            => methodInfo.IsStatic ? (Delegate)GetStaticMethodInvoker(methodInfo) : GetNonStaticMethodInvoker(methodInfo);
+        {
+            return methodInfo.IsStatic
+                ? (Delegate)GetStaticMethodInvoker(methodInfo)
+                : GetNonStaticMethodInvoker(methodInfo);
+        }
 
         private FastInvokeHandlerStatic GetStaticMethodInvoker(MethodInfo methodInfo)
         {
-            var dynamicMethod = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object[]) }, methodInfo.DeclaringType!.Module);
+            var dynamicMethod = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object[]) },
+                methodInfo.DeclaringType!.Module);
             var ilGenerator = dynamicMethod.GetILGenerator();
 
             // Get the types of each parameter
@@ -43,7 +48,8 @@ namespace NeptuneEvo.Functions
 
         private FastInvokeHandler GetNonStaticMethodInvoker(MethodInfo methodInfo)
         {
-            var dynamicMethod = new DynamicMethod(string.Empty, typeof(object), new Type[] { typeof(object), typeof(object[]) }, methodInfo.DeclaringType!.Module);
+            var dynamicMethod = new DynamicMethod(string.Empty, typeof(object),
+                new[] { typeof(object), typeof(object[]) }, methodInfo.DeclaringType!.Module);
             var ilGenerator = dynamicMethod.GetILGenerator();
 
             // Get the types of each parameter
@@ -75,7 +81,9 @@ namespace NeptuneEvo.Functions
         }
 
         private void EmitCast(Type toType, ILGenerator gen)
-            => gen.Emit(toType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, toType);
+        {
+            gen.Emit(toType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, toType);
+        }
 
         private void EmitInt(int i, ILGenerator gen)
         {
@@ -85,7 +93,7 @@ namespace NeptuneEvo.Functions
             }
             else
             {
-                OpCode code = i switch
+                var code = i switch
                 {
                     0 => OpCodes.Ldc_I4_0,
                     1 => OpCodes.Ldc_I4_1,

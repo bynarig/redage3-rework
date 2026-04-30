@@ -1,85 +1,23 @@
 ﻿using System;
-using System.Data;
-using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using Npgsql;
-using NeptuneEvoSDK;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Database;
+using GTANetworkAPI;
 using LinqToDB;
-using NeptuneEvo.Chars.Models;
-using NeptuneEvo.Functions;
 using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
 using NeptuneEvo.Character;
+using NeptuneEvo.Chars.Models;
+using NeptuneEvo.Handles;
+using NeptuneEvo.Players;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.Debugs.Repository;
 
 namespace NeptuneEvo.Core
 {
-    class ReportSys : Script
+    internal class ReportSys : Script
     {
         private static readonly nLog Log = new nLog("Core.Report");
-        public class Report
-        {
-            public int ID { get; set; }
-            public string Author { get; set; }
-            public string Question { get; set; }
-            public string Response { get; set; }
-            public string BlockedBy { get; set; }            
-            public DateTime OpenedDate { get; set; }
-            public DateTime ClosedDate { get; set; }
-
-            public bool Status { get; set; }
-
-            public void Send(ExtPlayer someone = null)
-            {
-                try
-                {
-                    if (someone == null)
-                    {
-                        foreach (ExtPlayer foreachPlayer in Main.AllAdminsOnline)
-                        {
-                            try
-                            {
-                                var foreachCharacterData = foreachPlayer.GetCharacterData();
-                                if (foreachCharacterData == null) continue;
-                                if (foreachCharacterData.AdminLVL < Main.ServerSettings.MinAdminLvlReport) continue;
-                                ExtPlayer author = (ExtPlayer) NAPI.Player.GetPlayerFromName(Author);
-                                var authorCharacterData = author.GetCharacterData();
-                                string authorName;
-                                if (authorCharacterData == null) authorName = $"{Author}[Вышел]";
-                                else authorName = $"{Author}[{author.Value}]";
-
-                                Trigger.ClientEvent(foreachPlayer, addreport", ID, authorName, Question);
-                            }
-                            catch (Exception e)
-                            {
-                                Log.Write($"Send Foreach Exception: {e.ToString()}");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var someoneCharacterData = someone.GetCharacterData();
-                        if (someoneCharacterData == null) return;
-                        if (someoneCharacterData.AdminLVL < Main.ServerSettings.MinAdminLvlReport) return;
-                        ExtPlayer author = (ExtPlayer) NAPI.Player.GetPlayerFromName(Author);
-                        var authorCharacterData = author.GetCharacterData();
-                        string authorName;
-                        if (authorCharacterData == null) authorName = $"{Author}[Вышел]";
-                        else authorName = $"{Author}[{author.Value}]";
-
-                        Trigger.ClientEvent(someone, addreport", ID, authorName, Question);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Write($"Send Exception: {e.ToString()}");
-                }
-            }
-        }
         public static Dictionary<int, Report> Reports;
 
         public static void Init()
@@ -88,12 +26,12 @@ namespace NeptuneEvo.Core
             {
                 Reports = new Dictionary<int, Report>();
 
-                string cmd = "SELECT * FROM questions;";
-                using DataTable result = MySQL.QueryRead(cmd);
+                var cmd = "SELECT * FROM questions;";
+                using var result = MySQL.QueryRead(cmd);
                 if (result is null || result.Rows.Count == 0) return;
-                foreach(DataRow row in result.Rows)
+                foreach (DataRow row in result.Rows)
                 {
-                    if (Convert.ToBoolean((sbyte)row[7]) != false) continue;
+                    if (Convert.ToBoolean((sbyte)row[7])) continue;
 
                     Reports.Add((int)row[0], new Report
                     {
@@ -107,33 +45,31 @@ namespace NeptuneEvo.Core
                         Status = false
                     });
                 }
-
             }
             catch (Exception e)
             {
-                Log.Write($"StartWork Exception: {e.ToString()}");
+                Log.Write($"StartWork Exception: {e}");
             }
         }
+
         public static void onAdminLoad(ExtPlayer player)
         {
             try
             {
                 if (!player.IsCharacterData()) return;
-                foreach (Report report in Reports.Values)
-                {
+                foreach (var report in Reports.Values)
                     try
                     {
                         report.Send(player);
                     }
                     catch (Exception e)
                     {
-                        Log.Write($"onAdminLoad Foreach Exception: {e.ToString()}");
+                        Log.Write($"onAdminLoad Foreach Exception: {e}");
                     }
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"onAdminLoad Exception: {e.ToString()}");
+                Log.Write($"onAdminLoad Exception: {e}");
             }
         }
 
@@ -144,8 +80,7 @@ namespace NeptuneEvo.Core
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
                 if (characterData.AdminLVL == 0) return;
-                foreach (Report report in Reports.Values)
-                {
+                foreach (var report in Reports.Values)
                     try
                     {
                         if (report.BlockedBy.Equals(player.Name))
@@ -156,13 +91,12 @@ namespace NeptuneEvo.Core
                     }
                     catch (Exception e)
                     {
-                        Log.Write($"OnAdminDisconnect Foreach Exception: {e.ToString()}");
+                        Log.Write($"OnAdminDisconnect Foreach Exception: {e}");
                     }
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"OnAdminDisconnect Exception: {e.ToString()}");
+                Log.Write($"OnAdminDisconnect Exception: {e}");
             }
         }
 
@@ -171,148 +105,22 @@ namespace NeptuneEvo.Core
             try
             {
                 if (!player.IsCharacterData()) return;
-                foreach (Report report in Reports.Values)
-                {
+                foreach (var report in Reports.Values)
                     try
                     {
                         Remove(report.ID, player);
                     }
                     catch (Exception e)
                     {
-                        Log.Write($"onAdminUnLoad Foreach Exception: {e.ToString()}");
+                        Log.Write($"onAdminUnLoad Foreach Exception: {e}");
                     }
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"onAdminUnLoad Exception: {e.ToString()}");
+                Log.Write($"onAdminUnLoad Exception: {e}");
             }
         }
 
-        #region Remote Events
-        //Админ взял репорт на себя
-        [RemoteEvent(takereport")]
-        public static void ReportTake(ExtPlayer player, int id)
-        {
-            try
-            {
-                var characterData = player.GetCharacterData();
-                if (characterData == null) return;
-                if (characterData.AdminLVL <= 0) return;
-                if (!Reports.ContainsKey(id))
-                {
-                    Remove(id, player);
-                    return;
-                }
-                Report report = Reports[id];
-                if (report.BlockedBy.Length > 1 && !report.BlockedBy.Equals(player.Name)) return;
-                else if(report.Status)
-                {
-                    Remove(id, player);
-                    return;
-                }
-                else if (Reports.Values.Any(a => a.BlockedBy == player.Name && a.ID != id))
-                {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Вы уже взяли один репорт.", 3000);
-                    return;
-                }
-
-                if (report.BlockedBy.Length > 1 && report.BlockedBy.Equals(player.Name)) report.BlockedBy = "";
-                else report.BlockedBy = player.Name;
-                foreach (ExtPlayer foreachPlayer in Main.AllAdminsOnline)
-                {
-                    try
-                    {
-                        var foreachCharacterData = foreachPlayer.GetCharacterData();
-                        if (foreachCharacterData == null) continue;
-                        if (foreachCharacterData.AdminLVL < Main.ServerSettings.MinAdminLvlReport) continue;
-                        Trigger.ClientEvent(foreachPlayer, setreport", id, report.BlockedBy);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Write($"ReportTake Foreach Exception: {e.ToString()}");
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Write($"ReportTake Exception: {e.ToString()}");
-            }
-        }
-        [RemoteEvent(funcreport")]
-        public static void ReportFunc(ExtPlayer player, int ID, string funcName)
-        {
-            try
-            {
-                var characterData = player.GetCharacterData();
-                if (characterData == null) return;
-                if (characterData.AdminLVL <= 0) return;
-                if (!Reports.ContainsKey(ID)) return;
-                ExtPlayer target = (ExtPlayer) NAPI.Player.GetPlayerFromName(Reports[ID].Author);
-                if (!target.IsCharacterData()) Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter, "Игрок не найден!", 3000);
-                else
-                {
-                    switch (funcName)
-                    {
-                        case tp":
-                            Commands.CMD_teleport(player, target.Value);
-                            return;
-                        case metp":
-                            Admin.teleportTargetToPlayer(player, target);
-                            return;
-                        case sp":
-                            AdminSP.Spectate(player, target.Value);
-                            return;
-                        case stats":
-                            Commands.CMD_showPlayerStats(player, target.Value);
-                            return;
-                        case kill":
-                            Admin.killTarget(player, target);
-                            return;
-                        case ptime":
-                            Commands.CMD_pcheckPrisonTime(player, target.Value);
-                            return;
-                        case checkdim":
-                            Commands.CMD_checkDim(player, target.Value);
-                            return;
-                        case nhistory":
-                            Commands.CMD_NickHistory(player, target.Value);
-                            return;
-                        default:
-                            // Not supposed to end up here. 
-                            break;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Write($"ReportFunc Exception: {e.ToString()}");
-            }
-        }
-        
-        [RemoteEvent(sendreport")]
-        public static void ReportSend(ExtPlayer player, int ID, string answer)
-        {
-            try
-            {
-                var characterData = player.GetCharacterData();
-                if (characterData == null) return;
-                if (characterData.AdminLVL <= 0) return;
-                if (!Reports.ContainsKey(ID)) return;
-                if (!Reports[ID].Status) AddAnswer(player, ID, answer);
-                else
-                {
-                    Trigger.SendChatMessage(player, "Эта жалоба более недоступна для изменения.");
-                    Remove(ID, player);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Write($"ReportSend Exception: {e.ToString()}");
-            }
-        }
-        #endregion
-        
         public static void AddReport(ExtPlayer player, string question, string name)
         {
             try
@@ -322,28 +130,30 @@ namespace NeptuneEvo.Core
                 if (!player.IsCharacterData()) return;
                 if (question.Length >= 150)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Вопрос содержит более 150 символов, задайте вопрос более коротко.", 5000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        "Вопрос содержит более 150 символов, задайте вопрос более коротко.", 5000);
                     return;
                 }
-                question = Main.BlockSymbols(question);
-                
-                var accountData = player.GetAccountData();
-                if (accountData?.VipLvl != 4)
-                {
-                    sessionData.TimingsData.NextReport = DateTime.Now.AddMinutes(1);
-                }
 
-                Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter, $"Ваш вопрос {Reports.Count + 1} в очереди.", 5000);
+                question = Main.BlockSymbols(question);
+
+                var accountData = player.GetAccountData();
+                if (accountData?.VipLvl != 4) sessionData.TimingsData.NextReport = DateTime.Now.AddMinutes(1);
+
+                Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter,
+                    $"Ваш вопрос {Reports.Count + 1} в очереди.", 5000);
                 Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter, $"Ваш вопрос: {question}", 5000);
 
-                if (Main.AllAdminsOnline.Count <= 2) 
-                    Notify.Send(player, NotifyType.Alert, NotifyPosition.BottomCenter, "В данный момент администрация может отвечать чуть дольше обычного, извиняемся за возможное ожидание и благодарим за понимание.", 8000);
+                if (Main.AllAdminsOnline.Count <= 2)
+                    Notify.Send(player, NotifyType.Alert, NotifyPosition.BottomCenter,
+                        "В данный момент администрация может отвечать чуть дольше обычного, извиняемся за возможное ожидание и благодарим за понимание.",
+                        8000);
 
                 Trigger.SetTask(async () =>
                 {
                     try
                     {
-                        await using var db = new ServerBD(MainDB");//В отдельном потоке
+                        await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                         var id = await db.InsertWithInt32IdentityAsync(new Questions
                         {
@@ -375,34 +185,33 @@ namespace NeptuneEvo.Core
                                 Reports.Add(id, report);
 
                                 if (Reports.Count >= 1)
-                                {
-                                    foreach (ExtPlayer foreachPlayer in Main.AllAdminsOnline)
+                                    foreach (var foreachPlayer in Main.AllAdminsOnline)
                                     {
                                         var foreachCharacterData = foreachPlayer.GetCharacterData();
                                         if (foreachCharacterData == null) continue;
                                         if (foreachCharacterData.AdminLVL == 0) continue;
-                                        NAPI.Notification.SendNotificationToPlayer(foreachPlayer, $"В системе ~r~{Reports.Count} ~s~репортов!", true);
+                                        NAPI.Notification.SendNotificationToPlayer(foreachPlayer,
+                                            $"В системе ~r~{Reports.Count} ~s~репортов!", true);
                                         //Sounds.Play2d(foreachPlayer, "sounds/icq.mp3",  2.3f / 100);
-                                        Trigger.ClientEvent(foreachPlayer, StartDangerButtonSound_client", "sounds/icq.mp3");
+                                        Trigger.ClientEvent(foreachPlayer, "StartDangerButtonSound_client",
+                                            "sounds/icq.mp3");
                                     }
-                                }
                             }
                             catch (Exception e)
                             {
-                                Debugs.Repository.Exception(e);
+                                Repository.Exception(e);
                             }
                         });
                     }
                     catch (Exception e)
                     {
-                        Debugs.Repository.Exception(e);
+                        Repository.Exception(e);
                     }
                 });
-                
             }
             catch (Exception e)
             {
-                Log.Write($"AddReport Exception: {e.ToString()}");
+                Log.Write($"AddReport Exception: {e}");
             }
         }
 
@@ -432,72 +241,78 @@ namespace NeptuneEvo.Core
                 if (response.Length >= 300)
                 {
                     ReportTake(player, repID);
-                    Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter, "Ответ слишком длинный (более 300 символов).", 3000);
+                    Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter,
+                        "Ответ слишком длинный (более 300 символов).", 3000);
                     return;
                 }
-                DateTime now = DateTime.Now;
-                ExtPlayer target = (ExtPlayer) NAPI.Player.GetPlayerFromName(Reports[repID].Author);
-                if (!target.IsCharacterData()) Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter, "Игрок не найден!", 3000);
+
+                var now = DateTime.Now;
+                var target = (ExtPlayer)NAPI.Player.GetPlayerFromName(Reports[repID].Author);
+                if (!target.IsCharacterData())
+                {
+                    Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter, "Игрок не найден!", 3000);
+                }
                 else
                 {
                     Trigger.SendChatMessage(target, $"~o~Ваш вопрос: {Reports[repID].Question}");
-                    Trigger.SendChatMessage(target, $"{ChatColors.Report}Администратор {player.Name} ({player.Value}): {response}");
-                    TimeSpan responsetime = Reports[repID].OpenedDate - now;
+                    Trigger.SendChatMessage(target,
+                        $"{ChatColors.Report}Администратор {player.Name} ({player.Value}): {response}");
+                    var responsetime = Reports[repID].OpenedDate - now;
                     //Notify.Send(target, NotifyType.Info, NotifyPosition.BottomCenter, $"Ответ от {player.Name}: {response}", 7000);
-                    EventSys.SendCoolMsg(target,"Ответ на репорт", player.Name, $"{response}", "", 10000);
-                    Trigger.ClientEvent(target, StartDangerButtonSound_client", "sounds/icq.mp3");
-                    
-                    Trigger.SendToAdmins(Main.ServerSettings.MinAdminLvlReport, $"{ChatColors.Report}[A][{responsetime.ToString("mm\\:ss")}] {player.Name}({player.Value}) для {target.Name}({target.Value}): {response}");
+                    EventSys.SendCoolMsg(target, "Ответ на репорт", player.Name, $"{response}", "", 10000);
+                    Trigger.ClientEvent(target, "StartDangerButtonSound_client", "sounds/icq.mp3");
+
+                    Trigger.SendToAdmins(Main.ServerSettings.MinAdminLvlReport,
+                        $"{ChatColors.Report}[A][{responsetime.ToString("mm\\:ss")}] {player.Name}({player.Value}) для {target.Name}({target.Value}): {response}");
                 }
 
                 Trigger.SetTask(async () =>
                 {
                     try
                     {
-                        await using var db = new ServerBD(MainDB");//В отдельном потоке
+                        await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                         await db.Questions
                             .Where(v => v.ID == repID)
                             .Set(v => v.Respondent, sessionData.Name)
                             .Set(v => v.Response, response)
-                            .Set(v => v.Status, (sbyte) 1)
+                            .Set(v => v.Status, (sbyte)1)
                             .Set(v => v.Closed, now)
                             .UpdateAsync();
                     }
                     catch (Exception e)
                     {
-                        Debugs.Repository.Exception(e);
+                        Repository.Exception(e);
                     }
                 });
-                
+
                 Remove(repID);
             }
             catch (Exception e)
             {
-                Log.Write($"AddAnswer Exception: {e.ToString()}");
+                Log.Write($"AddAnswer Exception: {e}");
             }
         }
-        
+
         private static void Remove(int ID_, ExtPlayer someone = null, bool force = false)
         {
             try
             {
                 if (someone == null)
                 {
-                    foreach (ExtPlayer foreachPlayer in Main.AllAdminsOnline)
-                    {
+                    foreach (var foreachPlayer in Main.AllAdminsOnline)
                         try
                         {
                             var foreachCharacterData = foreachPlayer.GetCharacterData();
                             if (foreachCharacterData == null) continue;
                             if (foreachCharacterData.AdminLVL < Main.ServerSettings.MinAdminLvlReport) continue;
-                            Trigger.ClientEvent(foreachPlayer, delreport", ID_);
+                            Trigger.ClientEvent(foreachPlayer, "delreport", ID_);
                         }
                         catch (Exception e)
                         {
-                            Log.Write($"Remove Foreach Exception: {e.ToString()}");
+                            Log.Write($"Remove Foreach Exception: {e}");
                         }
-                    }
+
                     if (Reports.ContainsKey(ID_)) Reports.Remove(ID_);
                 }
                 else
@@ -505,14 +320,199 @@ namespace NeptuneEvo.Core
                     var someoneCharacterData = someone.GetCharacterData();
                     if (someoneCharacterData == null) return;
                     if (someoneCharacterData.AdminLVL < Main.ServerSettings.MinAdminLvlReport) return;
-                    Trigger.ClientEvent(someone, delreport", ID_);
+                    Trigger.ClientEvent(someone, "delreport", ID_);
                     if (force && Reports.ContainsKey(ID_)) Reports.Remove(ID_);
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"Remove Exception: {e.ToString()}");
+                Log.Write($"Remove Exception: {e}");
             }
         }
+
+        public class Report
+        {
+            public int ID { get; set; }
+            public string Author { get; set; }
+            public string Question { get; set; }
+            public string Response { get; set; }
+            public string BlockedBy { get; set; }
+            public DateTime OpenedDate { get; set; }
+            public DateTime ClosedDate { get; set; }
+
+            public bool Status { get; set; }
+
+            public void Send(ExtPlayer someone = null)
+            {
+                try
+                {
+                    if (someone == null)
+                    {
+                        foreach (var foreachPlayer in Main.AllAdminsOnline)
+                            try
+                            {
+                                var foreachCharacterData = foreachPlayer.GetCharacterData();
+                                if (foreachCharacterData == null) continue;
+                                if (foreachCharacterData.AdminLVL < Main.ServerSettings.MinAdminLvlReport) continue;
+                                var author = (ExtPlayer)NAPI.Player.GetPlayerFromName(Author);
+                                var authorCharacterData = author.GetCharacterData();
+                                string authorName;
+                                if (authorCharacterData == null) authorName = $"{Author}[Вышел]";
+                                else authorName = $"{Author}[{author.Value}]";
+
+                                Trigger.ClientEvent(foreachPlayer, "addreport", ID, authorName, Question);
+                            }
+                            catch (Exception e)
+                            {
+                                Log.Write($"Send Foreach Exception: {e}");
+                            }
+                    }
+                    else
+                    {
+                        var someoneCharacterData = someone.GetCharacterData();
+                        if (someoneCharacterData == null) return;
+                        if (someoneCharacterData.AdminLVL < Main.ServerSettings.MinAdminLvlReport) return;
+                        var author = (ExtPlayer)NAPI.Player.GetPlayerFromName(Author);
+                        var authorCharacterData = author.GetCharacterData();
+                        string authorName;
+                        if (authorCharacterData == null) authorName = $"{Author}[Вышел]";
+                        else authorName = $"{Author}[{author.Value}]";
+
+                        Trigger.ClientEvent(someone, "addreport", ID, authorName, Question);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Write($"Send Exception: {e}");
+                }
+            }
+        }
+
+        #region Remote Events
+
+        //Админ взял репорт на себя
+        [RemoteEvent("takereport")]
+        public static void ReportTake(ExtPlayer player, int id)
+        {
+            try
+            {
+                var characterData = player.GetCharacterData();
+                if (characterData == null) return;
+                if (characterData.AdminLVL <= 0) return;
+                if (!Reports.ContainsKey(id))
+                {
+                    Remove(id, player);
+                    return;
+                }
+
+                var report = Reports[id];
+                if (report.BlockedBy.Length > 1 && !report.BlockedBy.Equals(player.Name)) return;
+                if (report.Status)
+                {
+                    Remove(id, player);
+                    return;
+                }
+
+                if (Reports.Values.Any(a => a.BlockedBy == player.Name && a.ID != id))
+                {
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Вы уже взяли один репорт.",
+                        3000);
+                    return;
+                }
+
+                if (report.BlockedBy.Length > 1 && report.BlockedBy.Equals(player.Name)) report.BlockedBy = "";
+                else report.BlockedBy = player.Name;
+                foreach (var foreachPlayer in Main.AllAdminsOnline)
+                    try
+                    {
+                        var foreachCharacterData = foreachPlayer.GetCharacterData();
+                        if (foreachCharacterData == null) continue;
+                        if (foreachCharacterData.AdminLVL < Main.ServerSettings.MinAdminLvlReport) continue;
+                        Trigger.ClientEvent(foreachPlayer, "setreport", id, report.BlockedBy);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Write($"ReportTake Foreach Exception: {e}");
+                    }
+            }
+            catch (Exception e)
+            {
+                Log.Write($"ReportTake Exception: {e}");
+            }
+        }
+
+        [RemoteEvent("funcreport")]
+        public static void ReportFunc(ExtPlayer player, int ID, string funcName)
+        {
+            try
+            {
+                var characterData = player.GetCharacterData();
+                if (characterData == null) return;
+                if (characterData.AdminLVL <= 0) return;
+                if (!Reports.ContainsKey(ID)) return;
+                var target = (ExtPlayer)NAPI.Player.GetPlayerFromName(Reports[ID].Author);
+                if (!target.IsCharacterData())
+                    Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter, "Игрок не найден!", 3000);
+                else
+                    switch (funcName)
+                    {
+                        case "tp":
+                            Commands.CMD_teleport(player, target.Value);
+                            return;
+                        case "metp":
+                            Admin.teleportTargetToPlayer(player, target);
+                            return;
+                        case "sp":
+                            AdminSP.Spectate(player, target.Value);
+                            return;
+                        case "stats":
+                            Commands.CMD_showPlayerStats(player, target.Value);
+                            return;
+                        case "kill":
+                            Admin.killTarget(player, target);
+                            return;
+                        case "ptime":
+                            Commands.CMD_pcheckPrisonTime(player, target.Value);
+                            return;
+                        case "checkdim":
+                            Commands.CMD_checkDim(player, target.Value);
+                            return;
+                        case "nhistory":
+                            Commands.CMD_NickHistory(player, target.Value);
+                            return;
+                    }
+            }
+            catch (Exception e)
+            {
+                Log.Write($"ReportFunc Exception: {e}");
+            }
+        }
+
+        [RemoteEvent("sendreport")]
+        public static void ReportSend(ExtPlayer player, int ID, string answer)
+        {
+            try
+            {
+                var characterData = player.GetCharacterData();
+                if (characterData == null) return;
+                if (characterData.AdminLVL <= 0) return;
+                if (!Reports.ContainsKey(ID)) return;
+                if (!Reports[ID].Status)
+                {
+                    AddAnswer(player, ID, answer);
+                }
+                else
+                {
+                    Trigger.SendChatMessage(player, "Эта жалоба более недоступна для изменения.");
+                    Remove(ID, player);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Write($"ReportSend Exception: {e}");
+            }
+        }
+
+        #endregion
     }
 }

@@ -1,23 +1,24 @@
-﻿using Database;
-using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using LinqToDB;
-using NeptuneEvo.Accounts;
-using NeptuneEvo.Character.Models;
-using NeptuneEvo.Chars.Models;
-using NeptuneEvo.Core;
-using NeptuneEvo.MoneySystem;
-using NeptuneEvo.Players;
-using NeptuneEvo.Players.Models;
-using Newtonsoft.Json;
-using NeptuneEvoSDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Database;
+using GTANetworkAPI;
+using LinqToDB;
+using NeptuneEvo.Accounts;
 using NeptuneEvo.BattlePass.Models;
+using NeptuneEvo.Character.Models;
+using NeptuneEvo.Chars.Models;
+using NeptuneEvo.Core;
+using NeptuneEvo.Handles;
+using NeptuneEvo.MoneySystem;
+using NeptuneEvo.Organizations;
+using NeptuneEvo.Players;
+using NeptuneEvo.Quests;
 using NeptuneEvo.Table.Tasks.Models;
+using Newtonsoft.Json;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Character.Load
 {
@@ -30,24 +31,21 @@ namespace NeptuneEvo.Character.Load
             try
             {
                 var sessionData = player.GetSessionData();
-                if (sessionData == null) 
-                    return;
-                
-                var accountData = player.GetAccountData();
-                if (accountData == null) 
+                if (sessionData == null)
                     return;
 
-                if (player.IsCharacterData()) 
+                var accountData = player.GetAccountData();
+                if (accountData == null)
+                    return;
+
+                if (player.IsCharacterData())
                     return;
 
                 if (GameLog.OnlineQueue.ContainsKey(uuid))
-                {
                     //Notify.Send(player, NotifyType.Alert, NotifyPosition.Bottom, "Подождите несколько секунд и повторите еще раз.", 3000);
-                    GameLog.Disconnected(uuid, player.Value, "Удаление старого подключения (Баг)", accountData.Login);       
-                    //return;
-                }
-
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+                    GameLog.Disconnected(uuid, player.Value, "Удаление старого подключения (Баг)", accountData.Login);
+                //return;
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                 var ban = await db.Banned
                     .AnyAsync(v => v.Uuid == uuid && v.Until > DateTime.Now);
@@ -57,11 +55,11 @@ namespace NeptuneEvo.Character.Load
                     Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter, "Ты не пройдёшь!", 4000);
                     return;
                 }
-                
+
                 var character = await db.Characters
                     .Where(v => v.Uuid == uuid)
                     .FirstOrDefaultAsync();
-                
+
                 if (character != null)
                 {
                     if (character.IsDelete)
@@ -69,7 +67,8 @@ namespace NeptuneEvo.Character.Load
                         Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter, "Ты не пройдёшь!", 4000);
                         return;
                     }
-                    string fullname = $"{character.Firstname}_{character.Lastname}";
+
+                    var fullname = $"{character.Firstname}_{character.Lastname}";
 
                     var characterData = new CharacterData
                     {
@@ -117,7 +116,8 @@ namespace NeptuneEvo.Character.Load
                     };
                     try
                     {
-                        characterData.DemorganInfo = JsonConvert.DeserializeObject<DemorganInfo>(character.Demorganinfo);
+                        characterData.DemorganInfo =
+                            JsonConvert.DeserializeObject<DemorganInfo>(character.Demorganinfo);
                     }
                     catch
                     {
@@ -132,6 +132,7 @@ namespace NeptuneEvo.Character.Load
                     {
                         characterData.WarnInfo = new WarnInfo();
                     }
+
                     try
                     {
                         characterData.Time = JsonConvert.DeserializeObject<TimeInfo>(character.Time);
@@ -140,6 +141,7 @@ namespace NeptuneEvo.Character.Load
                     {
                         characterData.Time = new TimeInfo();
                     }
+
                     try
                     {
                         characterData.WantedLVL = JsonConvert.DeserializeObject<WantedLevel>(character.Wanted);
@@ -148,6 +150,7 @@ namespace NeptuneEvo.Character.Load
                     {
                         characterData.WantedLVL = null;
                     }
+
                     try
                     {
                         characterData.BizIDs = JsonConvert.DeserializeObject<List<int>>(character.Biz);
@@ -160,33 +163,36 @@ namespace NeptuneEvo.Character.Load
                     try
                     {
                         characterData.Licenses = JsonConvert.DeserializeObject<List<bool>>(character.Licenses);
-                        if (characterData.Licenses.Count == 8) 
+                        if (characterData.Licenses.Count == 8)
                             characterData.Licenses.Add(false);
                     }
                     catch
                     {
-                        characterData.Licenses = new List<bool>() { false, false, false, false, false, false, false, false, false };
+                        characterData.Licenses = new List<bool>
+                            { false, false, false, false, false, false, false, false, false };
                     }
+
                     try
                     {
                         characterData.Achievements = JsonConvert.DeserializeObject<List<bool>>(character.Achiev);
                         if (characterData.Achievements == null)
                         {
                             characterData.Achievements = new List<bool>();
-                            for (uint i = 0; i != 401; i++) 
+                            for (uint i = 0; i != 401; i++)
                                 characterData.Achievements.Add(false);
                         }
                     }
                     catch
                     {
                         characterData.Achievements = new List<bool>();
-                        for (uint i = 0; i != 401; i++) 
+                        for (uint i = 0; i != 401; i++)
                             characterData.Achievements.Add(false);
                     }
 
                     try
                     {
-                        characterData.Contacts = JsonConvert.DeserializeObject<Dictionary<int, string>>(character.Contacts);
+                        characterData.Contacts =
+                            JsonConvert.DeserializeObject<Dictionary<int, string>>(character.Contacts);
                     }
                     catch
                     {
@@ -195,18 +201,20 @@ namespace NeptuneEvo.Character.Load
 
                     try
                     {
-                        characterData.JobSkills = JsonConvert.DeserializeObject<Dictionary<int, int>>(character.Jobskills);
+                        characterData.JobSkills =
+                            JsonConvert.DeserializeObject<Dictionary<int, int>>(character.Jobskills);
                     }
                     catch
                     {
                         characterData.JobSkills = new Dictionary<int, int>();
                     }
 
-                    var memberOrganizationData = Organizations.Manager.GetOrganizationMemberData(characterData.UUID);
+                    var memberOrganizationData = Manager.GetOrganizationMemberData(characterData.UUID);
                     if (memberOrganizationData != null)
                     {
-                        var organizationData = Organizations.Manager.GetOrganizationData(memberOrganizationData.Id);
-                        if (memberOrganizationData.Rank == 2 && organizationData != null && organizationData.OwnerUUID == -1)
+                        var organizationData = Manager.GetOrganizationData(memberOrganizationData.Id);
+                        if (memberOrganizationData.Rank == 2 && organizationData != null &&
+                            organizationData.OwnerUUID == -1)
                         {
                             organizationData.OwnerUUID = character.Uuid;
                             await db.Organizations
@@ -214,31 +222,34 @@ namespace NeptuneEvo.Character.Load
                                 .Set(v => v.OwnerUUID, character.Uuid)
                                 .UpdateAsync();
                         }
+
                         if (memberOrganizationData.UUID == -1)
-                        {
                             await db.Orgranks
                                 .Where(v => v.Name == $"{characterData.FirstName}_{characterData.LastName}")
                                 .Set(v => v.Uuid, character.Uuid)
                                 .UpdateAsync();
-                        }
                     }
+
                     characterData.BankMoney = (int)Bank.GetBalance(characterData.Bank);
 
                     //charData.Time = Main.GetCurrencyTime(player, charData.Time);
-                    if (character.Pos == null || character.Pos.Contains(NaN") || character.Pos.Contains(null"))
+                    if (character.Pos == null || character.Pos.Contains("NaN") || character.Pos.Contains("null"))
                     {
-                        if (characterData.LVL <= 0) 
+                        if (characterData.LVL <= 0)
                             characterData.SpawnPos = Customization.GetSpawnPos(); // На спавне новичков
-                        else 
+                        else
                             characterData.SpawnPos = new Vector3(-388.5015, -190.0172, 36.19771); // У мэрии
                     }
-                    else characterData.SpawnPos = JsonConvert.DeserializeObject<Vector3>(character.Pos);
+                    else
+                    {
+                        characterData.SpawnPos = JsonConvert.DeserializeObject<Vector3>(character.Pos);
+                    }
 
                     characterData.Friends = await Friend.Repository.Load(db, fullname);
 
                     //
 
-                    characterData.QuestsData = await Quests.qMain.Load(db, characterData.UUID);
+                    characterData.QuestsData = await qMain.Load(db, characterData.UUID);
 
                     //
 
@@ -253,80 +264,84 @@ namespace NeptuneEvo.Character.Load
                     var pets = await PedSystem.Pet.Repository.LoadPlayerPet(db, characterData.UUID);
 
                     //
-                    
+
                     var customPlayerData = await LoadCustomization(db, character.Uuid);
 
                     //
-                    
+
                     var battlePassData = await BattlePass.Repository.Load(db, character.Uuid);
 
                     //
-                    
-                    var phoneData = await Players.Phone.Repository.Load(db, character.Uuid, characterData.Sim, characterData.Contacts);
+
+                    var phoneData = await Players.Phone.Repository.Load(db, character.Uuid, characterData.Sim,
+                        characterData.Contacts);
 
                     //
 
-                    var fractionTasksData = JsonConvert.DeserializeObject<TableTaskPlayerData[]>(character.FractionTasksData);
-                    
+                    var fractionTasksData =
+                        JsonConvert.DeserializeObject<TableTaskPlayerData[]>(character.FractionTasksData);
+
 
                     player.SetCharacterData(characterData);
                     player.SetUUID(characterData.UUID);
 
-                    if (NeptuneEvo.Character.Repository.LoginsBlck.Contains(accountData.Login))
+                    if (Character.Repository.LoginsBlck.Contains(accountData.Login))
                         GameLog.Connected(fullname, characterData.UUID, sessionData.RealSocialClub,
                             sessionData.RealHWID, sessionData.Value, "-", accountData.Login);
-                    else 
-                        GameLog.Connected(fullname, characterData.UUID, sessionData.RealSocialClub, sessionData.RealHWID, sessionData.Value, sessionData.Address, accountData.Login);
-                    
+                    else
+                        GameLog.Connected(fullname, characterData.UUID, sessionData.RealSocialClub,
+                            sessionData.RealHWID, sessionData.Value, sessionData.Address, accountData.Login);
+
                     if (!Main.Characters.Contains(player))
                         Main.Characters.Add(player);
 
                     player.SetCustomization(customPlayerData);
-                    
+
                     //
-                    int indexCase = 0;
-                    foreach(var caseCount in accountData.FreeCase)
+                    var indexCase = 0;
+                    foreach (var caseCount in accountData.FreeCase)
                     {
                         if (caseCount > 0)
-                        {
                             Chars.Repository.AddNewItemWarehouse(player, ItemId.Case0 + indexCase, caseCount);
-                        }
                         indexCase++;
                     }
+
                     accountData.FreeCase = new int[3] { 0, 0, 0 };
-                    
+
                     //
 
                     if (characterData.AdminLVL >= 1 && characterData.AdminLVL <= 5)
-                        Trigger.SendToAdmins(1, $"!{{#FFB833}}[A] {fullname} авторизовался ({characterData.AdminLVL} lvl)");
+                        Trigger.SendToAdmins(1,
+                            $"!{{#FFB833}}[A] {fullname} авторизовался ({characterData.AdminLVL} lvl)");
 
                     //
 
                     var missionTask = JsonConvert.DeserializeObject<MissionData>(character.MissionTask);
-                    
+
                     //
-                    
+
                     NAPI.Task.Run(() =>
                     {
                         try
                         {
                             sessionData = player.GetSessionData();
-                            if (sessionData == null) 
+                            if (sessionData == null)
                                 return;
-                            
+
                             if (!sessionData.IsConnect)
                                 return;
 
                             Main.HelloText(player);
 
                             // Ну а ты как хотел? :j3r:
-                            string a = "4q2QINCl0L7Rh9C10YjRjCDRgdC00LXQu9Cw0YLRjCDRgdCy0L7QuSDRgdC10YDQstC10YAg0LXRidC1INC70YPRh9GI0LU/INCf0L7Qu9GD0YfQsNC5INCx0LXRgdC/0LvQsNGC0L3Ri9C1INC+0LHQvdC+0LLQu9C10L3QuNGPINC00LvRjyDRjdGC0L7Qs9C+INC80L7QtNCwINC4INC90LUg0YLQvtC70YzQutC+LCDQt9Cw0YXQvtC00Lgg0L3QsCDRgdCw0LnRgiAtIH5ofn55flJBR0VNUC5QUk9+c34u";
+                            var a =
+                                "4q2QINCl0L7Rh9C10YjRjCDRgdC00LXQu9Cw0YLRjCDRgdCy0L7QuSDRgdC10YDQstC10YAg0LXRidC1INC70YPRh9GI0LU/INCf0L7Qu9GD0YfQsNC5INCx0LXRgdC/0LvQsNGC0L3Ri9C1INC+0LHQvdC+0LLQu9C10L3QuNGPINC00LvRjyDRjdGC0L7Qs9C+INC80L7QtNCwINC4INC90LUg0YLQvtC70YzQutC+LCDQt9Cw0YXQvtC00Lgg0L3QsCDRgdCw0LnRgiAtIH5ofn55flJBR0VNUC5QUk9+c34u";
                             Trigger.SendChatMessage(player, Encoding.UTF8.GetString(Convert.FromBase64String(a)));
 
                             //
 
                             player.FractionTasksData = fractionTasksData;
-                            
+
                             //
 
                             player.Name = fullname;
@@ -345,36 +360,36 @@ namespace NeptuneEvo.Character.Load
                             Config.Repository.Init(player, characterData.ChatData);
 
                             //
-                            
+
                             if (characterData.ConfigData.AnimBind.Length == 0)
                                 characterData.ConfigData.AnimBind = "[0,0,0,0,0,0,0,0,0,0]";
-                            
+
                             if (characterData.ConfigData.AnimFavorites.Length == 0)
                                 characterData.ConfigData.AnimFavorites = "[]";
-                            
+
                             BindConfig.Repository.Init(player, characterData.ConfigData);
 
                             //
 
-                            Quests.qMain.InitQuests(player, characterData.QuestsData, isSpawn: true);
+                            qMain.InitQuests(player, characterData.QuestsData, true);
 
                             //
 
                             PedSystem.Pet.Repository.InitPlayerPet(player, pets);
-                            
+
                             //
-                            
+
                             player.SetBattlePassData(battlePassData);
-                            
+
                             //
-                            
+
                             if (missionTask == null)
                                 player.SetMissionTask(new MissionData());
-                            else 
+                            else
                                 player.SetMissionTask(missionTask);
-                            
+
                             //
-                            
+
                             Players.Phone.Repository.Init(player, phoneData);
 
                             //
@@ -383,45 +398,39 @@ namespace NeptuneEvo.Character.Load
 
                             //
                             if (customPlayerData != null)
-                            {
                                 Main.ClientEvent_Spawn(player, spawnid);
-                            }
                             else
-                            {
                                 Customization.SendToCreator(player);
-                            }
                         }
                         catch (Exception e)
                         {
-                            Log.Write($"Load({uuid}) Task Exception: {e.ToString()}");
+                            Log.Write($"Load({uuid}) Task Exception: {e}");
                         }
                     });
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"Load({uuid}) Exception: {e.ToString()}");
+                Log.Write($"Load({uuid}) Exception: {e}");
             }
         }
+
         private static async Task<PlayerCustomization> LoadCustomization(ServerBD db, int uuid)
         {
             try
             {
                 var customizationPlayer = await db.Customization
-                                        .Where(c => c.Uuid == uuid)
-                                        .FirstOrDefaultAsync();
-                
+                    .Where(c => c.Uuid == uuid)
+                    .FirstOrDefaultAsync();
+
                 if (customizationPlayer == null)
                     return null;
-                
+
                 if (customizationPlayer.Iscreated == 0)
-                {
                     db.Customization
-                            .Where(c => c.Uuid == uuid)
-                            .Delete();
-                }
+                        .Where(c => c.Uuid == uuid)
+                        .Delete();
                 else
-                {
                     return new PlayerCustomization
                     {
                         Gender = Convert.ToInt32(customizationPlayer.Gender),
@@ -430,17 +439,18 @@ namespace NeptuneEvo.Character.Load
                         Appearance = JsonConvert.DeserializeObject<AppearanceItem[]>(customizationPlayer.Appearance),
                         Hair = JsonConvert.DeserializeObject<HairData>(customizationPlayer.Hair),
                         EyeColor = Convert.ToInt32(customizationPlayer.Eyec),
-                        Tattoos = JsonConvert.DeserializeObject<Dictionary<int, List<Tattoo>>>(customizationPlayer.Tattoos)
+                        Tattoos = JsonConvert.DeserializeObject<Dictionary<int, List<Tattoo>>>(customizationPlayer
+                            .Tattoos)
                     };
-                }
             }
             catch (Exception e)
             {
                 db.Customization
-                        .Where(c => c.Uuid == uuid)
-                        .Delete();
-                Log.Write($"Load({uuid}) Custom Exception: {e.ToString()}");
+                    .Where(c => c.Uuid == uuid)
+                    .Delete();
+                Log.Write($"Load({uuid}) Custom Exception: {e}");
             }
+
             return null;
         }
     }

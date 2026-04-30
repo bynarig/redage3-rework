@@ -1,36 +1,47 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
+﻿using System;
 using System.Collections.Generic;
-using System;
-using Localization;
-using NeptuneEvo.Core;
-using NeptuneEvoSDK;
-using NeptuneEvo.Chars;
-using NeptuneEvo.Functions;
+using GTANetworkAPI;
+using NeptuneEvo.Localization;
 using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
 using NeptuneEvo.Character;
+using NeptuneEvo.Chars;
+using NeptuneEvo.Core;
+using NeptuneEvo.Functions;
+using NeptuneEvo.Handles;
 using NeptuneEvo.Jobs.Models;
+using NeptuneEvo.MoneySystem;
+using NeptuneEvo.Players;
 using NeptuneEvo.Quests;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Jobs
 {
-    class Electrician : Script
+    internal class Electrician : Script
     {
         private static readonly nLog Log = new nLog("Jobs.Electrician");
+
+        private static readonly List<Checkpoint> Checkpoints = new List<Checkpoint>
+        {
+            new Checkpoint(new Vector3(678.6784, 163.7561, 79.80791), 338.0567),
+            new Checkpoint(new Vector3(697.9194, 158.3429, 79.8203), 162.1701),
+            new Checkpoint(new Vector3(696.8144, 149.2776, 79.83644), 174.3819),
+            new Checkpoint(new Vector3(701.6469, 110.9194, 79.81911), 163.4535),
+            new Checkpoint(new Vector3(697.663, 104.4758, 79.63456), 162.01),
+            new Checkpoint(new Vector3(658.8223, 114.3996, 79.80294), 346.9411),
+            new Checkpoint(new Vector3(663.0648, 122.4777, 79.80295), 345.3615),
+            new Checkpoint(new Vector3(671.8508, 145.1318, 79.80048), 345.2057)
+        };
 
         [ServerEvent(Event.ResourceStart)]
         public void Event_ResourceStart()
         {
             try
             {
-                NAPI.TextLabel.CreateTextLabel("~w~Ryan Nelson", new Vector3(724.8585, 134.1029, 81.95643), 30f, 0.3f, 0, new Color(255, 255, 255), true, NAPI.GlobalDimension);
+                NAPI.TextLabel.CreateTextLabel("~w~Ryan Nelson", new Vector3(724.8585, 134.1029, 81.95643), 30f, 0.3f,
+                    0, new Color(255, 255, 255), true, NAPI.GlobalDimension);
 
                 if (Main.ServerSettings.IsDeleteProp)
                 {
-
                     NAPI.World.DeleteWorldProp(1046551856, new Vector3(732.2359, 133.4224, 79.84549), 30f);
                     NAPI.World.DeleteWorldProp(1046551856, new Vector3(722.1532, 139.4459, 79.84549), 30f);
 
@@ -98,13 +109,16 @@ namespace NeptuneEvo.Jobs
                     NAPI.World.DeleteWorldProp(-1767254195, new Vector3(689.3761, 92.99287, 79.75075), 30f);
                 }
 
-                CustomColShape.CreateCylinderColShape(new Vector3(724.9625, 133.9959, 79.83643), 1, 2, 0, ColShapeEnums.Electrician);
+                CustomColShape.CreateCylinderColShape(new Vector3(724.9625, 133.9959, 79.83643), 1, 2, 0,
+                    ColShapeEnums.Electrician);
 
-                NAPI.TextLabel.CreateTextLabel(Main.StringToU16("~w~Нажмите\n~r~'Взаимодействие'"), new Vector3(724.9625, 133.9959, 80.95643), 30f, 0.4f, 0, new Color(255, 255, 255), true, 0);
-                NAPI.Marker.CreateMarker(1, new Vector3(724.9625, 133.9959, 79.83643) - new Vector3(0, 0, 0.7), new Vector3(), new Vector3(), 1, new Color(255, 255, 255, 220));
+                NAPI.TextLabel.CreateTextLabel(Main.StringToU16("~w~Нажмите\n~r~'Взаимодействие'"),
+                    new Vector3(724.9625, 133.9959, 80.95643), 30f, 0.4f, 0, new Color(255, 255, 255), true, 0);
+                NAPI.Marker.CreateMarker(1, new Vector3(724.9625, 133.9959, 79.83643) - new Vector3(0, 0, 0.7),
+                    new Vector3(), new Vector3(), 1, new Color(255, 255, 255, 220));
 
-                int i = 0;
-                foreach (Checkpoint Check in Checkpoints)
+                var i = 0;
+                foreach (var Check in Checkpoints)
                 {
                     CustomColShape.CreateCylinderColShape(Check.Position, 1, 2, 0, ColShapeEnums.ElectricianPoint, i);
                     i++;
@@ -112,10 +126,10 @@ namespace NeptuneEvo.Jobs
             }
             catch (Exception e)
             {
-                Log.Write($"Event_ResourceStart Exception: {e.ToString()}");
+                Log.Write($"Event_ResourceStart Exception: {e}");
             }
         }
-        
+
         [Interaction(ColShapeEnums.Electrician)]
         public static void OnElectrician(ExtPlayer player)
         {
@@ -127,7 +141,8 @@ namespace NeptuneEvo.Jobs
                 if (characterData == null) return;
                 if (characterData.WorkID != (int)JobsId.Electrician)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoElectrician), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.NoElectrician), 3000);
                     return;
                 }
 
@@ -138,25 +153,25 @@ namespace NeptuneEvo.Jobs
             }
             catch (Exception e)
             {
-                Log.Write($"StartWorkDay Exception: {e.ToString()}");
+                Log.Write($"StartWorkDay Exception: {e}");
             }
         }
 
         public static void StartWork(ExtPlayer player)
         {
             var sessionData = player.GetSessionData();
-            if (sessionData == null) 
+            if (sessionData == null)
                 return;
-            
+
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
-            
+
             var gender = characterData.Gender;
             //ClothesComponents.ClearClothes(player, gender);
             if (gender)
             {
-                ClothesComponents.SetSpecialAccessories(player,1, 24, 2);
+                ClothesComponents.SetSpecialAccessories(player, 1, 24, 2);
                 ClothesComponents.SetSpecialClothes(player, 3, 16, 0);
                 ClothesComponents.SetSpecialClothes(player, 11, 153, 10);
                 ClothesComponents.SetSpecialClothes(player, 4, 0, 5);
@@ -164,52 +179,45 @@ namespace NeptuneEvo.Jobs
             }
             else
             {
-                ClothesComponents.SetSpecialAccessories(player,1, 26, 2);
+                ClothesComponents.SetSpecialAccessories(player, 1, 26, 2);
                 ClothesComponents.SetSpecialClothes(player, 3, 17, 0);
                 ClothesComponents.SetSpecialClothes(player, 11, 150, 1);
                 ClothesComponents.SetSpecialClothes(player, 4, 1, 5);
                 ClothesComponents.SetSpecialClothes(player, 6, 52, 0);
             }
+
             Chars.Repository.LoadAccessories(player);
 
-            int check = WorkManager.rnd.Next(0, Checkpoints.Count - 1);
+            var check = WorkManager.rnd.Next(0, Checkpoints.Count - 1);
             sessionData.WorkData.WorkCheck = check;
             sessionData.WorkData.OnWork = true;
-            Trigger.ClientEvent(player, createCheckpoint", 15, 1, Checkpoints[check].Position, 1, 0, 255, 0, 0);
-            Trigger.ClientEvent(player, createWorkBlip", Checkpoints[check].Position);
-            Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.StartWorkDay), 3000);
+            Trigger.ClientEvent(player, "createCheckpoint", 15, 1, Checkpoints[check].Position, 1, 0, 255, 0, 0);
+            Trigger.ClientEvent(player, "createWorkBlip", Checkpoints[check].Position);
+            Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter,
+                LangFunc.GetText(LangType.Ru, DataName.StartWorkDay), 3000);
         }
 
         public static bool EndWork(ExtPlayer player)
         {
             var sessionData = player.GetSessionData();
-            if (sessionData == null) 
+            if (sessionData == null)
                 return false;
-            
+
             if (sessionData.WorkData.OnWork)
             {
-                Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.EndWorkDay), 3000);
+                Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.EndWorkDay), 3000);
                 sessionData.WorkData.OnWork = false;
                 Customization.ApplyCharacter(player);
-                Trigger.ClientEvent(player, deleteCheckpoint", 15);
-                Trigger.ClientEvent(player, deleteWorkBlip");
+                Trigger.ClientEvent(player, "deleteCheckpoint", 15);
+                Trigger.ClientEvent(player, "deleteWorkBlip");
                 return true;
             }
+
             return false;
         }
-        
-        private static List<Checkpoint> Checkpoints = new List<Checkpoint>()
-        {
-            new Checkpoint(new Vector3(678.6784, 163.7561, 79.80791), 338.0567),
-            new Checkpoint(new Vector3(697.9194, 158.3429, 79.8203), 162.1701),
-            new Checkpoint(new Vector3(696.8144, 149.2776, 79.83644), 174.3819),
-            new Checkpoint(new Vector3(701.6469, 110.9194, 79.81911), 163.4535),
-            new Checkpoint(new Vector3(697.663, 104.4758, 79.63456), 162.01),
-            new Checkpoint(new Vector3(658.8223, 114.3996, 79.80294), 346.9411),
-            new Checkpoint(new Vector3(663.0648, 122.4777, 79.80295), 345.3615),
-            new Checkpoint(new Vector3(671.8508, 145.1318, 79.80048), 345.2057),
-        };
-        [Interaction(ColShapeEnums.ElectricianPoint, In: true)]
+
+        [Interaction(ColShapeEnums.ElectricianPoint, true)]
         public void InElectricianPoint(ExtPlayer player, int shapeId)
         {
             try
@@ -220,24 +228,28 @@ namespace NeptuneEvo.Jobs
                 if (accountData == null) return;
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
-                if (characterData.WorkID != (int)JobsId.Electrician || !sessionData.WorkData.OnWork || shapeId != sessionData.WorkData.WorkCheck) return;
+                if (characterData.WorkID != (int)JobsId.Electrician || !sessionData.WorkData.OnWork ||
+                    shapeId != sessionData.WorkData.WorkCheck) return;
                 if (Checkpoints[shapeId].Position.DistanceTo(player.Position) > 3) return;
 
-                int payment = Convert.ToInt32(Main.ElectricianPayment * Group.GroupPayAdd[accountData.VipLvl] * Main.ServerSettings.MoneyMultiplier);
+                var payment = Convert.ToInt32(Main.ElectricianPayment * Group.GroupPayAdd[accountData.VipLvl] *
+                                              Main.ServerSettings.MoneyMultiplier);
 
-                (byte, float) jobLevelInfo = characterData.JobSkills.ContainsKey(0) ? Main.GetPlayerJobLevelBonus(0, characterData.JobSkills[0]) : (0, 1);
+                var jobLevelInfo = characterData.JobSkills.ContainsKey(0)
+                    ? Main.GetPlayerJobLevelBonus(0, characterData.JobSkills[0])
+                    : (0, 1);
                 if (jobLevelInfo.Item1 >= 1) payment = Convert.ToInt32(payment * jobLevelInfo.Item2);
-                
-                MoneySystem.Wallet.Change(player, payment);
-                GameLog.Money($server", $"player({characterData.UUID})", payment, $electricianCheck");
+
+                Wallet.Change(player, payment);
+                GameLog.Money("server", $"player({characterData.UUID})", payment, "electricianCheck");
                 BattlePass.Repository.UpdateReward(player, 22);
                 BattlePass.Repository.UpdateReward(player, 156);
 
                 NAPI.Entity.SetEntityPosition(player, Checkpoints[shapeId].Position + new Vector3(0, 0, 1.2));
                 NAPI.Entity.SetEntityRotation(player, new Vector3(0, 0, Checkpoints[shapeId].Heading));
                 Main.OnAntiAnim(player);
-                Trigger.PlayAnimation(player, amb"@prop_human_movie_studio_light@base", base", 39);
-                // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, electric");
+                Trigger.PlayAnimation(player, "amb@prop_human_movie_studio_light@base", "base", 39);
+                // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "electric");
                 sessionData.WorkData.WorkCheck = -1;
 
                 if (characterData.JobSkills.ContainsKey(0))
@@ -245,25 +257,34 @@ namespace NeptuneEvo.Jobs
                     if (characterData.JobSkills[0] < 15000)
                         characterData.JobSkills[0] += 1;
                 }
-                else characterData.JobSkills.Add(0, 1);
-                
+                else
+                {
+                    characterData.JobSkills.Add(0, 1);
+                }
+
                 if (qMain.GetQuestsLine(player, Zdobich.QuestName) == (int)zdobich_quests.Stage11)
                 {
                     sessionData.WorkData.PointsCount += payment;
-                    if (sessionData.WorkData.PointsCount < qMain.GetQuestsData(player, Zdobich.QuestName, (int) zdobich_quests.Stage11))
-                        sessionData.WorkData.PointsCount = qMain.GetQuestsData(player, Zdobich.QuestName, (int) zdobich_quests.Stage11) + payment;
-                    
+                    if (sessionData.WorkData.PointsCount <
+                        qMain.GetQuestsData(player, Zdobich.QuestName, (int)zdobich_quests.Stage11))
+                        sessionData.WorkData.PointsCount =
+                            qMain.GetQuestsData(player, Zdobich.QuestName, (int)zdobich_quests.Stage11) + payment;
+
                     if (sessionData.WorkData.PointsCount >= 500)
                     {
-                        qMain.UpdateQuestsStage(player, Zdobich.QuestName, (int)zdobich_quests.Stage11, 1, isUpdateHud: true);
-                        qMain.UpdateQuestsComplete(player, Zdobich.QuestName, (int) zdobich_quests.Stage11, true);
-                        Trigger.SendChatMessage(player, "!{#fc0}" + LangFunc.GetText(LangType.Ru, DataName.QuestPartComplete));
+                        qMain.UpdateQuestsStage(player, Zdobich.QuestName, (int)zdobich_quests.Stage11, 1, true);
+                        qMain.UpdateQuestsComplete(player, Zdobich.QuestName, (int)zdobich_quests.Stage11, true);
+                        Trigger.SendChatMessage(player,
+                            "!{#fc0}" + LangFunc.GetText(LangType.Ru, DataName.QuestPartComplete));
                     }
                     else
                     {
-                        qMain.UpdateQuestsData(player, Zdobich.QuestName, (int)zdobich_quests.Stage11, sessionData.WorkData.PointsCount.ToString());
+                        qMain.UpdateQuestsData(player, Zdobich.QuestName, (int)zdobich_quests.Stage11,
+                            sessionData.WorkData.PointsCount.ToString());
                         //todo translate (было DataName.PointsQuestGot)
-                        Trigger.SendChatMessage(player, LangFunc.GetText(LangType.Ru, DataName.YouEarnedJob, sessionData.WorkData.PointsCount, 500 - sessionData.WorkData.PointsCount));
+                        Trigger.SendChatMessage(player,
+                            LangFunc.GetText(LangType.Ru, DataName.YouEarnedJob, sessionData.WorkData.PointsCount,
+                                500 - sessionData.WorkData.PointsCount));
                     }
                 }
 
@@ -279,37 +300,37 @@ namespace NeptuneEvo.Jobs
                         Trigger.StopAnimation(player);
                         Main.OffAntiAnim(player);
 
-                        int nextCheck = WorkManager.rnd.Next(0, Checkpoints.Count - 1);
+                        var nextCheck = WorkManager.rnd.Next(0, Checkpoints.Count - 1);
                         while (nextCheck == shapeId) nextCheck = WorkManager.rnd.Next(0, Checkpoints.Count - 1);
 
                         sessionData.WorkData.WorkCheck = nextCheck;
 
-                        Trigger.ClientEvent(player, createCheckpoint", 15, 1, Checkpoints[nextCheck].Position, 1, 0, 255, 0, 0);
-                        Trigger.ClientEvent(player, createWorkBlip", Checkpoints[nextCheck].Position);
-          
+                        Trigger.ClientEvent(player, "createCheckpoint", 15, 1, Checkpoints[nextCheck].Position, 1, 0,
+                            255, 0, 0);
+                        Trigger.ClientEvent(player, "createWorkBlip", Checkpoints[nextCheck].Position);
                     }
                     catch (Exception e)
                     {
-                        Log.Write($"PlayerEnterCheckpoint Task Exception: {e.ToString()}");
+                        Log.Write($"PlayerEnterCheckpoint Task Exception: {e}");
                     }
                 }, 4000);
             }
             catch (Exception e)
             {
-                Log.Write($"PlayerEnterCheckpoint Exception: {e.ToString()}");
+                Log.Write($"PlayerEnterCheckpoint Exception: {e}");
             }
         }
 
         internal class Checkpoint
         {
-            public Vector3 Position { get; }
-            public double Heading { get; }
-
             public Checkpoint(Vector3 pos, double rot)
             {
                 Position = pos;
                 Heading = rot;
             }
+
+            public Vector3 Position { get; }
+            public double Heading { get; }
         }
     }
 }

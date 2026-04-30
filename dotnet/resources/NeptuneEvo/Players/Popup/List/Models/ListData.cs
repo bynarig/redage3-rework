@@ -2,13 +2,13 @@
 {
     public class ListData
     {
-        public string Name;
         public object Id;
+        public string Name;
 
         public ListData(string name, object id)
         {
-            this.Name = name;
-            this.Id = id;
+            Name = name;
+            Id = id;
         }
     }
 }

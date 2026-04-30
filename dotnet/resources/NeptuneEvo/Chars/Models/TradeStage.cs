@@ -1,21 +1,23 @@
 ﻿namespace NeptuneEvo.Chars.Models
 {
     /// <summary>
-    /// Событие для трейда персонажа
+    ///     Событие для трейда персонажа
     /// </summary>
     public enum TradeStage
     {
         /// <summary>
-        /// Ошибка
+        ///     Ошибка
         /// </summary>
         none,
+
         /// <summary>
-        /// Проверка на активные предложения
+        ///     Проверка на активные предложения
         /// </summary>
         choose,
+
         /// <summary>
-        /// Успешно
+        ///     Успешно
         /// </summary>
-        confirmed,
+        confirmed
     }
 }

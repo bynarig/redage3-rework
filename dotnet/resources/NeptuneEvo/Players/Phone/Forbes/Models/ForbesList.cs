@@ -2,8 +2,8 @@
 {
     public class ForbesList
     {
-        public ForbesType Type;
         public string Name;
         public int Price;
+        public ForbesType Type;
     }
 }

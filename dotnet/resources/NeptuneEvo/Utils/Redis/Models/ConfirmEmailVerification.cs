@@ -2,7 +2,7 @@
 {
     public class ConfirmEmailVerification
     {
-        public string Hash;
         public string Ga;
+        public string Hash;
     }
 }

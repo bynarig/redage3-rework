@@ -5,7 +5,9 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
     public class Events : Script
     {
         [ServerEvent(Event.ResourceStart)]
-        public void ResourceInit() =>
+        public void ResourceInit()
+        {
             Repository.ResourceInit();
+        }
     }
 }

@@ -7,6 +7,5 @@ namespace NeptuneEvo.Handles
         public ExtMarker(NetHandle handle) : base(handle)
         {
         }
-        
     }
 }

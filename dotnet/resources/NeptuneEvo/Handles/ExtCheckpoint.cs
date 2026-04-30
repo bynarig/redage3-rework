@@ -7,6 +7,5 @@ namespace NeptuneEvo.Handles
         public ExtCheckpoint(NetHandle handle) : base(handle)
         {
         }
-        
     }
 }

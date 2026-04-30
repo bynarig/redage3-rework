@@ -1,16 +1,10 @@
 ﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Accounts.Registration.Models;
-using NeptuneEvo.Players;
-using NeptuneEvoSDK;
-using System;
-using System.Threading.Tasks;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Accounts.Registration
 {
-    class Events : Script
+    internal class Events : Script
     {
         private static readonly nLog Log = new nLog("Accounts.Registration.Events");
-
     }
 }

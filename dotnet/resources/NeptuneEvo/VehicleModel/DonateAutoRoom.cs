@@ -1,32 +1,37 @@
 ﻿using System;
 using System.Linq;
 using GTANetworkAPI;
-using Localization;
+using NeptuneEvo.Localization;
 using NeptuneEvo.Character;
 using NeptuneEvo.Core;
 using NeptuneEvo.Functions;
 using NeptuneEvo.Handles;
 using NeptuneEvo.Players;
 using NeptuneEvo.Quests.Models;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.PedSystem.Repository;
 
 namespace NeptuneEvo.VehicleModel
 {
     public class DonateAutoRoom : Script
     {
         public static readonly nLog Log = new nLog("VehicleModel.DonateAutoRoom");
-        
+
         public static Vector3 NpcBuyPosition = new Vector3(-1101.3359, -1351.1681, 5.0338033);
-        private static float NpcBuyRotation = -155.546776f;
+
+        private static readonly float NpcBuyRotation = -155.546776f;
+
         //
-        public static string NpcName = npc_donateautoroom";
+        public static string NpcName = "npc_donateautoroom";
+
         [ServerEvent(Event.ResourceStart)]
         public void Event_ResourceStart()
         {
- 
             Main.CreateBlip(new Main.BlipData(595, "Exotic DonateRoom", NpcBuyPosition, 1, true));
-            PedSystem.Repository.CreateQuest(a_f_m_fatbla_01", NpcBuyPosition, NpcBuyRotation, title: "~y~NPC~w~ Доната Редбаксовна", colShapeEnums: ColShapeEnums.DonateAutoroom);
+            Repository.CreateQuest("a_f_m_fatbla_01", NpcBuyPosition, NpcBuyRotation,
+                title: "~y~NPC~w~ Доната Редбаксовна", colShapeEnums: ColShapeEnums.DonateAutoroom);
         }
+
         [Interaction(ColShapeEnums.DonateAutoroom)]
         public static void OpenDialog(ExtPlayer player, int index)
         {
@@ -37,14 +42,18 @@ namespace NeptuneEvo.VehicleModel
                 if (!player.IsCharacterData()) return;
                 if (sessionData.CuffedData.Cuffed)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.IsCuffed), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.IsCuffed), 3000);
                     return;
                 }
+
                 if (sessionData.DeathData.InDeath)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.IsDying), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.IsDying), 3000);
                     return;
                 }
+
                 if (Main.IHaveDemorgan(player, true)) return;
 
                 player.SelectQuest(new PlayerQuestModel(NpcName, 0, 0, false, DateTime.Now));
@@ -52,19 +61,21 @@ namespace NeptuneEvo.VehicleModel
             }
             catch (Exception e)
             {
-                Log.Write($"OpenDialog Exception: {e.ToString()}");
+                Log.Write($"OpenDialog Exception: {e}");
             }
         }
+
         public static void Perform(ExtPlayer player)
         {
             try
             {
-
-                if (!FunctionsAccess.IsWorking(OpenDonateAutoroom"))
+                if (!FunctionsAccess.IsWorking("OpenDonateAutoroom"))
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                     return;
                 }
+
                 var sessionData = player.GetSessionData();
                 if (sessionData == null) return;
                 var characterData = player.GetCharacterData();
@@ -72,14 +83,18 @@ namespace NeptuneEvo.VehicleModel
 
                 if (sessionData.CuffedData.Cuffed)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.IsCuffed), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.IsCuffed), 3000);
                     return;
                 }
+
                 if (sessionData.DeathData.InDeath)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.IsDying), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.IsDying), 3000);
                     return;
                 }
+
                 if (Main.IHaveDemorgan(player, true)) return;
 
                 var donateVehiclesInfo = BusinessManager.BusProductsData
@@ -87,22 +102,23 @@ namespace NeptuneEvo.VehicleModel
                     .Where(b => b.Value.OtherPrice > 0)
                     .Select(b => b.Key)
                     .ToList();
-                
+
                 if (donateVehiclesInfo.Count < 1)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoVehAccessed), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.NoVehAccessed), 3000);
                     return;
                 }
 
                 characterData.ExteriorPos = player.Position;
                 //NAPI.Entity.SetEntityPosition(player, new Vector3(CamPosition.X, CamPosition.Y - 2, CamPosition.Z));
                 Trigger.UniqueDimension(player);
-                
-                CarRoom.OpenCarromMenuGos(player, donateVehiclesInfo, isDonate: true);
+
+                CarRoom.OpenCarromMenuGos(player, donateVehiclesInfo, true);
             }
             catch (Exception e)
             {
-                Log.Write($"Perform Exception: {e.ToString()}");
+                Log.Write($"Perform Exception: {e}");
             }
         }
     }

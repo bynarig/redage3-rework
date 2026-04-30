@@ -51,39 +51,39 @@ namespace Database
 		partial void InitMappingSchema();
 	}
 
-	[Table(payments")]
+	[Table("payments")]
 	public partial class Payments
 	{
-		[Column(id"),           PrimaryKey,  Identity] public int       Id           { get; set; } // int(10)
-		[Column(unitpayId"),    NotNull              ] public string    UnitpayId    { get; set; } // varchar(255)
-		[Column(account"),      NotNull              ] public string    Account      { get; set; } // varchar(255)
-		[Column(sum"),          NotNull              ] public float     Sum          { get; set; } // float
-		[Column(itemsCount"),   NotNull              ] public int       ItemsCount   { get; set; } // int(11)
-		[Column(dateCreate"),   NotNull              ] public DateTime  DateCreate   { get; set; } // datetime
-		[Column(dateComplete"),    Nullable          ] public DateTime? DateComplete { get; set; } // datetime
-		[Column(status"),       NotNull              ] public sbyte     Status       { get; set; } // tinyint(4)
-		[Column(isComplete"),   NotNull              ] public sbyte     IsComplete   { get; set; } // tinyint(4)
+		[Column("id"),           PrimaryKey,  Identity] public int       Id           { get; set; } // int(10)
+		[Column("unitpayId"),    NotNull              ] public string    UnitpayId    { get; set; } // varchar(255)
+		[Column("account"),      NotNull              ] public string    Account      { get; set; } // varchar(255)
+		[Column("sum"),          NotNull              ] public float     Sum          { get; set; } // float
+		[Column("itemsCount"),   NotNull              ] public int       ItemsCount   { get; set; } // int(11)
+		[Column("dateCreate"),   NotNull              ] public DateTime  DateCreate   { get; set; } // datetime
+		[Column("dateComplete"),    Nullable          ] public DateTime? DateComplete { get; set; } // datetime
+		[Column("status"),       NotNull              ] public sbyte     Status       { get; set; } // tinyint(4)
+		[Column("isComplete"),   NotNull              ] public sbyte     IsComplete   { get; set; } // tinyint(4)
 	}
 
-	[Table(verifyConfirm")]
+	[Table("verifyConfirm")]
 	public partial class VerifyConfirms
 	{
-		[Column(hash"),       PrimaryKey, NotNull] public string   Hash       { get; set; } // varchar(64)
-		[Column(email"),                  NotNull] public string   Email      { get; set; } // varchar(128)
-		[Column(socialclub"),             NotNull] public string   Socialclub { get; set; } // varchar(50)
-		[Column(data"),                   NotNull] public DateTime Data       { get; set; } // datetime
-		[Column(serverId"),               NotNull] public sbyte    ServerId   { get; set; } // tinyint(2)
-		[Column(type"),                   NotNull] public sbyte    Type       { get; set; } // tinyint(2)
+		[Column("hash"),       PrimaryKey, NotNull] public string   Hash       { get; set; } // varchar(64)
+		[Column("email"),                  NotNull] public string   Email      { get; set; } // varchar(128)
+		[Column("socialclub"),             NotNull] public string   Socialclub { get; set; } // varchar(50)
+		[Column("data"),                   NotNull] public DateTime Data       { get; set; } // datetime
+		[Column("serverId"),               NotNull] public sbyte    ServerId   { get; set; } // tinyint(2)
+		[Column("type"),                   NotNull] public sbyte    Type       { get; set; } // tinyint(2)
 	}
 
-	[Table(verifyConfirmTest")]
+	[Table("verifyConfirmTest")]
 	public partial class VerifyConfirmTests
 	{
-		[Column(hash"),       PrimaryKey, NotNull] public string   Hash       { get; set; } // varchar(64)
-		[Column(email"),                  NotNull] public string   Email      { get; set; } // varchar(128)
-		[Column(socialclub"),             NotNull] public string   Socialclub { get; set; } // varchar(50)
-		[Column(data"),                   NotNull] public DateTime Data       { get; set; } // datetime
-		[Column(serverId"),               NotNull] public sbyte    ServerId   { get; set; } // tinyint(2)
+		[Column("hash"),       PrimaryKey, NotNull] public string   Hash       { get; set; } // varchar(64)
+		[Column("email"),                  NotNull] public string   Email      { get; set; } // varchar(128)
+		[Column("socialclub"),             NotNull] public string   Socialclub { get; set; } // varchar(50)
+		[Column("data"),                   NotNull] public DateTime Data       { get; set; } // datetime
+		[Column("serverId"),               NotNull] public sbyte    ServerId   { get; set; } // tinyint(2)
 	}
 
 	public static partial class TableExtensions

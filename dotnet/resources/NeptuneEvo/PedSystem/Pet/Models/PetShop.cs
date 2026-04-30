@@ -1,13 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace NeptuneEvo.PedSystem.Pet.Models
+﻿namespace NeptuneEvo.PedSystem.Pet.Models
 {
-    class PetShop
+    internal class PetShop
     {
-        public int Price { set; get; } = 0;
-        public bool isDonate { set; get; } = false;
-        public uint Ped { set; get; } = 0;
-
         public PetShop(int Price, bool isDonate, uint Ped)
         {
             this.Price = Price;
@@ -15,5 +9,8 @@ namespace NeptuneEvo.PedSystem.Pet.Models
             this.Ped = Ped;
         }
 
+        public int Price { get; set; }
+        public bool isDonate { get; set; }
+        public uint Ped { get; set; }
     }
 }

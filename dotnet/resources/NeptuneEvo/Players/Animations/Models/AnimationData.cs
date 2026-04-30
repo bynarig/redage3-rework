@@ -1,5 +1,4 @@
-﻿using System;
-using NeptuneEvo.Core;
+﻿using NeptuneEvo.Core;
 
 namespace NeptuneEvo.Players.Animations.Models
 {
@@ -7,13 +6,13 @@ namespace NeptuneEvo.Players.Animations.Models
     {
         public string AnimDict;
         public string AnimName;
-        public int Flag;
-        public string StopAnimDict = String.Empty;
-        public string StopAnimName = String.Empty;
-        public int StopFlag;
         public uint Attachment = 0;
+        public int Flag;
         public string Sound;
         public SoundData SoundData = null;
         public float SoundRange = 10f;
+        public string StopAnimDict = string.Empty;
+        public string StopAnimName = string.Empty;
+        public int StopFlag;
     }
 }

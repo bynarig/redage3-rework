@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Database;
 using LinqToDB;
-using Localization;
+using NeptuneEvo.Localization;
 using NeptuneEvo.Character;
 using NeptuneEvo.Handles;
 using NeptuneEvo.Organizations.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Players.Models;
 using NeptuneEvo.Table.Models;
-using Newtonsoft.Json;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Organizations.Player
 {
@@ -24,18 +21,18 @@ namespace NeptuneEvo.Organizations.Player
                 var memberOrganizationData = Manager.GetOrganizationMemberData(player.GetUUID());
                 if (memberOrganizationData == null)
                     return;
-                
+
                 var organizationData = Manager.GetOrganizationData(memberOrganizationData.Id);
-                if (organizationData == null) 
+                if (organizationData == null)
                     return;
 
                 memberOrganizationData.SetPlayerId(player.Id);
-                
+
                 player.SetOrganizationData(memberOrganizationData);
-                
-                player.SetSharedData(organization", memberOrganizationData.Id);
-                if(organizationData.OwnerUUID == player.GetUUID()) 
-                    player.SetSharedData(leader", true);
+
+                player.SetSharedData("organization", memberOrganizationData.Id);
+                if (organizationData.OwnerUUID == player.GetUUID())
+                    player.SetSharedData("leader", true);
             }
             catch (Exception e)
             {
@@ -48,35 +45,35 @@ namespace NeptuneEvo.Organizations.Player
             var memberOrganizationData = Manager.GetOrganizationMemberData(player.GetUUID());
             if (memberOrganizationData == null)
                 return;
-                
+
             memberOrganizationData.SetPlayerId();
             memberOrganizationData.IsSave = true;
         }
-        
+
         public static void AddOrganizationMemberData(this ExtPlayer player, int orgId, int rank = 0)
         {
             try
             {
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return;
 
                 var name = player.GetName();
 
                 var date = DateTime.Now;
-            
+
                 Trigger.SetTask(async () =>
                 {
                     try
                     {
-                        await using var db = new ServerBD(MainDB");//В отдельном потоке
+                        await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                         await db.InsertAsync(new Orgranks
                         {
                             Uuid = characterData.UUID,
                             Name = name,
                             Id = orgId,
-                            Rank = (sbyte) rank,
+                            Rank = (sbyte)rank,
                             Avatar = "",
                             Access = "[]",
                             @lock = "[]",
@@ -91,22 +88,22 @@ namespace NeptuneEvo.Organizations.Player
                         Debugs.Repository.Exception(e);
                     }
                 });
-                
+
                 if (!Manager.AllMembers.ContainsKey(orgId))
                     Manager.AllMembers.Add(orgId, new List<OrganizationMemberData>());
-                
+
                 var memberOrganizationData = new OrganizationMemberData
                 {
                     UUID = characterData.UUID,
                     Name = name,
                     Id = orgId,
-                    Rank = (byte) rank,
+                    Rank = (byte)rank,
                     Date = date,
                     LastLoginDate = date
                 };
-                
+
                 Manager.AllMembers[orgId].Add(memberOrganizationData);
-            
+
                 Init(player);
             }
             catch (Exception e)
@@ -114,6 +111,7 @@ namespace NeptuneEvo.Organizations.Player
                 Debugs.Repository.Exception(e);
             }
         }
+
         public static void RemoveOrganizationMemberData(this ExtPlayer player, bool isBdDell = true)
         {
             var memberOrganizationData = Manager.GetOrganizationMemberData(player.GetUUID());
@@ -122,6 +120,7 @@ namespace NeptuneEvo.Organizations.Player
 
             RemoveOrganizationMemberData(memberOrganizationData.Id, memberOrganizationData.UUID, isBdDell);
         }
+
         public static void RemoveOrganizationMemberData(int orgId, int uuid, bool isBdDell = true)
         {
             try
@@ -135,25 +134,23 @@ namespace NeptuneEvo.Organizations.Player
                 var player = Main.GetPlayerByUUID(uuid);
                 if (player != null)
                 {
-                
-                    player.SetSharedData(organization", 0);
-                    player.SetSharedData(leader", false);
-            
+                    player.SetSharedData("organization", 0);
+                    player.SetSharedData("leader", false);
+
                     player.SetOrganizationData();
 
-                    Trigger.ClientEvent(player, LeaveRadio");
+                    Trigger.ClientEvent(player, "LeaveRadio");
                     Chars.Repository.isRadio(player);
-                
+
                     Manager.RemovePlayer(player);
                 }
-                
+
                 if (isBdDell)
-                {
                     Trigger.SetTask(async () =>
                     {
                         try
                         {
-                            await using var db = new ServerBD(MainDB"); //В отдельном потоке
+                            await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                             await db.Orgranks
                                 .Where(v => v.Uuid == memberOrganizationData.UUID && v.Id == memberOrganizationData.Id)
@@ -164,22 +161,21 @@ namespace NeptuneEvo.Organizations.Player
                             Debugs.Repository.Exception(e);
                         }
                     });
-                }
-                
             }
             catch (Exception e)
             {
                 Debugs.Repository.Exception(e);
             }
         }
-        
+
         public static OrganizationMemberData GetOrganizationMemberData(this ExtPlayer player)
         {
             if (player != null)
                 return player.OrganizationData;
-            
+
             return null;
         }
+
         public static OrganizationData GetOrganizationData(this ExtPlayer player)
         {
             var memberOrganizationData = player.GetOrganizationMemberData();
@@ -189,26 +185,30 @@ namespace NeptuneEvo.Organizations.Player
 
             return null;
         }
+
         public static string GetOrganizationName(this ExtPlayer player)
         {
             var organizationData = player.GetOrganizationData();
             if (organizationData != null)
                 return organizationData.Name;
 
-            return String.Empty;
+            return string.Empty;
         }
+
         public static string GetOrganizationRankName(this ExtPlayer player)
         {
             var memberOrganizationData = player.GetOrganizationMemberData();
             if (memberOrganizationData != null)
                 return Manager.GetOrganizationRankName(memberOrganizationData.Id, memberOrganizationData.Rank);
 
-            return String.Empty;
+            return string.Empty;
         }
 
-        public static bool IsOrganizationMemberData(this ExtPlayer player) =>
-            player.GetOrganizationMemberData() != null;
-        
+        public static bool IsOrganizationMemberData(this ExtPlayer player)
+        {
+            return player.GetOrganizationMemberData() != null;
+        }
+
         public static void SetName(string oldName, string newName, bool isSave = true)
         {
             try
@@ -220,7 +220,7 @@ namespace NeptuneEvo.Organizations.Player
                 memberOrganizationData.Name = newName;
                 if (isSave)
                     memberOrganizationData.IsSave = true;
-                
+
                 var player = Main.GetPlayerByUUID(memberOrganizationData.UUID);
 
                 if (player != null)
@@ -236,20 +236,20 @@ namespace NeptuneEvo.Organizations.Player
                 Debugs.Repository.Exception(e);
             }
         }
+
         public static bool SetRank(int orgId, int uuid, int newRank, bool isSave = true)
         {
-            
             var memberOrganizationData = Manager.GetOrganizationMemberData(uuid, orgId);
             if (memberOrganizationData == null)
                 return false;
 
             if (memberOrganizationData.Rank == newRank)
                 return false;
-            
-            memberOrganizationData.Rank = (byte) newRank;
+
+            memberOrganizationData.Rank = (byte)newRank;
             if (isSave)
                 memberOrganizationData.IsSave = true;
-            
+
             var player = Main.GetPlayerByUUID(uuid);
 
             if (player != null)
@@ -257,13 +257,14 @@ namespace NeptuneEvo.Organizations.Player
                 memberOrganizationData = player.GetOrganizationMemberData();
 
                 if (memberOrganizationData != null)
-                    memberOrganizationData.Rank = (byte) newRank;
+                    memberOrganizationData.Rank = (byte)newRank;
             }
-            
+
             return true;
         }
 
-        public static void UpdateAccess(int orgId, int uuid,  List<RankToAccess> access, List<RankToAccess> locks, bool isSave = true)
+        public static void UpdateAccess(int orgId, int uuid, List<RankToAccess> access, List<RankToAccess> locks,
+            bool isSave = true)
         {
             var memberOrganizationData = Manager.GetOrganizationMemberData(uuid, orgId);
             if (memberOrganizationData == null)
@@ -273,7 +274,7 @@ namespace NeptuneEvo.Organizations.Player
             memberOrganizationData.Lock = locks;
             if (isSave)
                 memberOrganizationData.IsSave = true;
-            
+
             var player = Main.GetPlayerByUUID(uuid);
 
             if (player != null)
@@ -287,12 +288,13 @@ namespace NeptuneEvo.Organizations.Player
                 }
             }
         }
+
         public static bool SetDepartment(int orgId, int uuid, int departmentId, int rank, bool isSave = true)
         {
             var memberOrganizationData = Manager.GetOrganizationMemberData(uuid, orgId);
             if (memberOrganizationData == null)
                 return false;
-            
+
             if (memberOrganizationData.DepartmentId == departmentId && memberOrganizationData.DepartmentRank == rank)
                 return false;
 
@@ -316,9 +318,9 @@ namespace NeptuneEvo.Organizations.Player
 
             return true;
         }
-        
+
         //
-        
+
         public static bool IsOrganizationAccess(this ExtPlayer player, RankToAccess command, bool notify = true)
         {
             try
@@ -326,39 +328,42 @@ namespace NeptuneEvo.Organizations.Player
                 var memberOrganizationData = player.GetOrganizationMemberData();
                 if (memberOrganizationData == null)
                 {
-                    if (notify) 
-                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, $"Вы не состоите в семье", 3000);
-                    
+                    if (notify)
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Вы не состоите в семье",
+                            3000);
+
                     return false;
                 }
-                
+
                 var organizationData = Manager.GetOrganizationData(memberOrganizationData.Id);
-                if (organizationData == null) 
+                if (organizationData == null)
                 {
-                    if (notify) 
-                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, $"Вы не состоите в семье", 3000);
-                    
+                    if (notify)
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Вы не состоите в семье",
+                            3000);
+
                     return false;
                 }
-                
+
                 //Владелец
-                
-                if (organizationData.OwnerUUID == player.GetUUID() && organizationData.DefaultAccess.Contains(command)) 
+
+                if (organizationData.OwnerUUID == player.GetUUID() && organizationData.DefaultAccess.Contains(command))
                     return true;
-                        
+
                 //Персональный
-                
-                if (memberOrganizationData.Access.Contains(command)) 
+
+                if (memberOrganizationData.Access.Contains(command))
                     return true;
-                
-                if (memberOrganizationData.Lock.Contains(command)) 
+
+                if (memberOrganizationData.Lock.Contains(command))
                 {
-                    if (notify) 
-                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, $"Вы не состоите в семье", 3000);
-                    
+                    if (notify)
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Вы не состоите в семье",
+                            3000);
+
                     return false;
                 }
-                
+
                 //Отряд
 
                 var departmentId = memberOrganizationData.DepartmentId;
@@ -371,65 +376,68 @@ namespace NeptuneEvo.Organizations.Player
                     if (departmentData.Ranks.ContainsKey(departmentRank))
                     {
                         var departmentDataRank = departmentData.Ranks[departmentRank];
-                     
-                        if (departmentDataRank.Access.Contains(command)) 
+
+                        if (departmentDataRank.Access.Contains(command))
                             return true;
-                
-                        if (departmentDataRank.Lock.Contains(command)) 
+
+                        if (departmentDataRank.Lock.Contains(command))
                         {
-                            if (notify) 
-                                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, $"Вы не состоите в семье", 3000);
-                    
+                            if (notify)
+                                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                    "Вы не состоите в семье", 3000);
+
                             return false;
                         }
                     }
                 }
-                
+
                 //Ранг
-                
+
                 var rank = memberOrganizationData.Rank;
                 if (organizationData.Ranks.ContainsKey(rank) && organizationData.Ranks[rank].Access.Contains(command))
                     return true;
-                
-                if (notify) 
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoDostup), 3000);
+
+                if (notify)
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.NoDostup), 3000);
             }
             catch (Exception e)
             {
                 Debugs.Repository.Exception(e);
             }
+
             return false;
         }
-        
-        
+
+
         public static bool IsOrganizationDepartmentAccess(this ExtPlayer player, int departmentId, int rank)
         {
             var memberOrganizationData = player.GetOrganizationMemberData();
             if (memberOrganizationData == null)
                 return false;
-                        
+
             var organizationData = Manager.GetOrganizationData(memberOrganizationData.Id);
-            if (organizationData == null)    
-                return false; 
-            
+            if (organizationData == null)
+                return false;
+
             if (organizationData.IsLeader(memberOrganizationData.UUID))
                 return true;
-            
+
             if (!organizationData.Departments.ContainsKey(departmentId))
                 return false;
-            
+
             if (memberOrganizationData.DepartmentId == departmentId && memberOrganizationData.DepartmentRank >= rank)
                 return true;
 
             return false;
         }
-        
+
         public static void SetAvatar(int orgId, int uuid, string png)
         {
             var memberOrganizationData = Manager.GetOrganizationMemberData(uuid, orgId);
             if (memberOrganizationData == null)
                 return;
-            
+
             memberOrganizationData.Avatar = png;
             memberOrganizationData.IsSave = true;
 
@@ -443,35 +451,36 @@ namespace NeptuneEvo.Organizations.Player
                     memberOrganizationData.Avatar = png;
             }
         }
+
         public static void UpdateOrganizationTime(this ExtPlayer player)
         {
             var memberOrganizationData = player.GetOrganizationMemberData();
             if (memberOrganizationData == null)
                 return;
-            
-            DateTime now = DateTime.Now;
-            int thisday = now.Day;
-            int thismonth = now.Month;
-            int thisyear = now.Year;
+
+            var now = DateTime.Now;
+            var thisday = now.Day;
+            var thismonth = now.Month;
+            var thisyear = now.Year;
 
             if (memberOrganizationData.Time.Year != thisyear)
             {
                 memberOrganizationData.Time.Year = thisyear;
                 memberOrganizationData.Time.YearTime = 0;
             }
-            
+
             if (memberOrganizationData.Time.Month != thismonth)
             {
                 memberOrganizationData.Time.Month = thismonth;
                 memberOrganizationData.Time.MonthTime = 0;
             }
-            
+
             if (memberOrganizationData.Time.Day != thisday)
             {
                 memberOrganizationData.Time.Day = thisday;
                 memberOrganizationData.Time.TodayTime = 0;
             }
-            
+
             if (memberOrganizationData.Time.Week != Main.WeekInfo)
             {
                 memberOrganizationData.Time.Week = Main.WeekInfo;
@@ -485,11 +494,12 @@ namespace NeptuneEvo.Organizations.Player
             memberOrganizationData.Time.YearTime++;
 
             var time = memberOrganizationData.Time;
-            
-            memberOrganizationData = Manager.GetOrganizationMemberData(memberOrganizationData.UUID, memberOrganizationData.Id);
+
+            memberOrganizationData =
+                Manager.GetOrganizationMemberData(memberOrganizationData.UUID, memberOrganizationData.Id);
             if (memberOrganizationData == null)
                 return;
-            
+
             memberOrganizationData.Time = time;
         }
     }

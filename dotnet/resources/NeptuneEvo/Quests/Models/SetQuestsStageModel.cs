@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NeptuneEvo.Quests.Models
 {
-    class SetQuestsStageModel
+    internal class SetQuestsStageModel
     {
-        public int Status { set; get; }
-        public int Line { set; get; }
-        public DateTime Time { set; get; }
-        public bool Complete { set; get; }
-        public string Data { set; get; }
-
         public SetQuestsStageModel(int Status, int Line, DateTime Time, bool Complete, string Data)
         {
             this.Status = Status;
@@ -20,5 +12,11 @@ namespace NeptuneEvo.Quests.Models
             this.Complete = Complete;
             this.Data = Data;
         }
+
+        public int Status { get; set; }
+        public int Line { get; set; }
+        public DateTime Time { get; set; }
+        public bool Complete { get; set; }
+        public string Data { get; set; }
     }
 }

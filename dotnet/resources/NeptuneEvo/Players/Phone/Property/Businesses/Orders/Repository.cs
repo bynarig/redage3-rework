@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Localization;
+using NeptuneEvo.Localization;
 using NeptuneEvo.Accounts;
 using NeptuneEvo.Character;
 using NeptuneEvo.Core;
@@ -11,7 +11,7 @@ using NeptuneEvo.Jobs;
 using NeptuneEvo.Jobs.Models;
 using NeptuneEvo.VehicleData.LocalData;
 using Newtonsoft.Json;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Players.Phone.Property.Businesses.Orders
 {
@@ -19,38 +19,42 @@ namespace NeptuneEvo.Players.Phone.Property.Businesses.Orders
     {
         public static int GetPrice(int amount, string name, float coef)
         {
-            
-            var price = Convert.ToInt32(amount * BusinessManager.BusProductsData[name].Price * 0.5 * Main.ServerSettings.MoneyMultiplier);
-            var max = Convert.ToInt32(Main.PricesSettings.DalnoboyMoney[0] * coef * Main.ServerSettings.MoneyMultiplier);
-            var min = Convert.ToInt32(Main.PricesSettings.DalnoboyMoney[1] * coef * Main.ServerSettings.MoneyMultiplier);
-            
-            if (price > max) 
+            var price = Convert.ToInt32(amount * BusinessManager.BusProductsData[name].Price * 0.5 *
+                                        Main.ServerSettings.MoneyMultiplier);
+            var max = Convert.ToInt32(Main.PricesSettings.DalnoboyMoney[0] * coef *
+                                      Main.ServerSettings.MoneyMultiplier);
+            var min = Convert.ToInt32(Main.PricesSettings.DalnoboyMoney[1] * coef *
+                                      Main.ServerSettings.MoneyMultiplier);
+
+            if (price > max)
                 price = max;
-            else if (price < min) 
+            else if (price < min)
                 price = min;
 
             return price;
         }
-        
+
         public static void Open(ExtPlayer player)
         {
             var sessionData = player.GetSessionData();
-            if (sessionData == null) 
+            if (sessionData == null)
                 return;
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
             var accountData = player.GetAccountData();
-            if (accountData == null) 
+            if (accountData == null)
                 return;
-            
+
             var orders = new List<List<object>>();
             var selectedOrders = new List<object>();
-            
+
             if (characterData.WorkID != (int)JobsId.Trucker)
             {
-                Trigger.ClientEvent(player, "client.phone.truck.init", JsonConvert.SerializeObject(selectedOrders), JsonConvert.SerializeObject(orders));
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.YouAreNotDalnoboy), 3000);
+                Trigger.ClientEvent(player, "client.phone.truck.init", JsonConvert.SerializeObject(selectedOrders),
+                    JsonConvert.SerializeObject(orders));
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.YouAreNotDalnoboy), 3000);
                 return;
             }
             /*if (!sessionData.WorkData.OnWork)
@@ -65,7 +69,6 @@ namespace NeptuneEvo.Players.Phone.Property.Businesses.Orders
 
                 if (BusinessManager.Orders.ContainsKey(uid))
                 {
-
                     var bizId = BusinessManager.Orders[uid];
                     var biz = BusinessManager.BizList[bizId];
                     var bizOrder = biz.Orders.FirstOrDefault(o => o.UID == uid);
@@ -79,12 +82,16 @@ namespace NeptuneEvo.Players.Phone.Property.Businesses.Orders
                         selectedOrders.Add(biz.EnterPoint.Z);
                     }
                     else
-                        Jobs.Truckers.CancelOrder(player);
+                    {
+                        Truckers.CancelOrder(player);
+                    }
                 }
                 else
-                    Jobs.Truckers.CancelOrder(player);
+                {
+                    Truckers.CancelOrder(player);
+                }
             }
-            
+
             if (sessionData.OrderData.Order == -1)
             {
                 var coef = Group.GroupPayAdd[accountData.VipLvl];
@@ -108,68 +115,78 @@ namespace NeptuneEvo.Players.Phone.Property.Businesses.Orders
                 }
             }
 
-            Trigger.ClientEvent(player, "client.phone.truck.init", JsonConvert.SerializeObject(selectedOrders), JsonConvert.SerializeObject(orders));
+            Trigger.ClientEvent(player, "client.phone.truck.init", JsonConvert.SerializeObject(selectedOrders),
+                JsonConvert.SerializeObject(orders));
         }
 
         public static void Take(ExtPlayer player, int uid)
         {
             var sessionData = player.GetSessionData();
-            if (sessionData == null) 
+            if (sessionData == null)
                 return;
             var accountData = player.GetAccountData();
-            if (accountData == null) 
+            if (accountData == null)
                 return;
-            
-            if (!FunctionsAccess.IsWorking(phonetruck"))
+
+            if (!FunctionsAccess.IsWorking("phonetruck"))
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.FunctionOffByAdmins), 3000);
                 return;
             }
-            
+
             if (sessionData.OrderData.Order != -1)
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.AlreadyTakeOrder), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.AlreadyTakeOrder), 3000);
                 Open(player);
                 return;
             }
 
             if (!Truckers.IsPointProduct(player.Position))
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.YouMustBeAtZagruzka), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.YouMustBeAtZagruzka), 3000);
 
                 var pos = Truckers.GetNearestGetProduct(player.Position);
-                Trigger.ClientEvent(player, createWaypoint", pos.X, pos.Y);
+                Trigger.ClientEvent(player, "createWaypoint", pos.X, pos.Y);
                 return;
             }
-            
-            var vehicle = (ExtVehicle)player.Vehicle; 
-            var vehicleLocalData = vehicle.GetVehicleLocalData(); 
-            if (vehicleLocalData == null || vehicleLocalData.WorkId != JobsId.Trucker) 
-            { 
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.MustWorkCar), 3000); 
-                return; 
-            } 
-            
-            //Trigger.ClientEvent(player, createWaypoint", biz.UnloadPoint.X, biz.UnloadPoint.Y);
+
+            var vehicle = (ExtVehicle)player.Vehicle;
+            var vehicleLocalData = vehicle.GetVehicleLocalData();
+            if (vehicleLocalData == null || vehicleLocalData.WorkId != JobsId.Trucker)
+            {
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.MustWorkCar), 3000);
+                return;
+            }
+
+            //Trigger.ClientEvent(player, "createWaypoint", biz.UnloadPoint.X, biz.UnloadPoint.Y);
             if (!BusinessManager.Orders.ContainsKey(uid))
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoOrderExists), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.NoOrderExists), 3000);
                 Open(player);
                 return;
             }
-            
+
             var bizId = BusinessManager.Orders[uid];
             var biz = BusinessManager.BizList[bizId];
             var bizOrder = biz.Orders.FirstOrDefault(o => o.UID == uid);
             if (bizOrder == null || bizOrder.Taked)
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.ThisOrderTaken), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.ThisOrderTaken), 3000);
                 Open(player);
                 return;
             }
+
             bizOrder.Taked = true;
             sessionData.OrderData.Order = uid;
-            Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.OrderDeliveryTaken, bizOrder.Name, BusinessManager.BusinessTypeNames[biz.Type]), 3000);
+            Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter,
+                LangFunc.GetText(LangType.Ru, DataName.OrderDeliveryTaken, bizOrder.Name,
+                    BusinessManager.BusinessTypeNames[biz.Type]), 3000);
             Truckers.playerGotProducts(player);
             Open(player);
         }
@@ -179,6 +196,5 @@ namespace NeptuneEvo.Players.Phone.Property.Businesses.Orders
             Truckers.CancelOrder(player);
             Open(player);
         }
-        
     }
 }

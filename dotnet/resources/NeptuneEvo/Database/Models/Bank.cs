@@ -4,21 +4,25 @@ using System.Linq;
 using System.Threading;
 using Database;
 using LinqToDB;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Database.Models
 {
     public class Bank
     {
         private static readonly nLog Log = new nLog("Database.GameLog");
-                
+
+        //Dell
+        private static readonly List<int> DellList = new List<int>();
+
         public static void Start()
         {
             var thread = new Thread(Worker);
             thread.IsBackground = true;
-            thread.Name = BankSave";
+            thread.Name = "BankSave";
             thread.Start();
         }
+
         private static async void Worker()
         {
             while (true)
@@ -35,33 +39,31 @@ namespace NeptuneEvo.Database.Models
 
                     if (banks.Count > 0 || dellList.Count > 0)
                     {
-                        await using var db = new ServerBD(MainDB");//В отдельном потоке 
+                        await using var db = new ServerBD("MainDB"); //В отдельном потоке 
 
                         foreach (var bankId in banks)
                             await MoneySystem.Bank.Save(db, bankId);
 
                         //
-                    
+
                         foreach (var bankId in dellList)
                             await db.Money
                                 .Where(m => m.Id == bankId)
                                 .DeleteAsync();
-                    
                     }
                 }
                 catch (Exception e)
                 {
                     Debugs.Repository.Exception(e);
                 }
-                
+
                 Thread.Sleep(1000 * 30);
             }
         }
 
-        //Dell
-        private static List<int> DellList = new List<int>();
-
-        public static void OnDell(int id) => DellList.Add(id);
-
+        public static void OnDell(int id)
+        {
+            DellList.Add(id);
+        }
     }
 }

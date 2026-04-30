@@ -5,19 +5,18 @@ namespace NeptuneEvo.Players.Models
 {
     public class WarData
     {
-        public ushort ObjectId;
-        public WarType Type;
-        public string MapName;
-        public ushort MapId;
-        public Vector3 Position;//Место проведения битвы
-        public float Range;//Место проведения битвы
         public ushort AttackingId;
+        public bool IsAttacking;
+        public bool IsWarZone;
+        public ushort MapId;
+        public string MapName;
+        public ushort ObjectId;
+        public Vector3 Position; //Место проведения битвы
         public ushort ProtectingId;
-        
+        public float Range; //Место проведения битвы
+        public WarType Type;
+
         //
         public ushort WarId;
-        public bool IsWarZone;
-        public bool IsAttacking;
-        
     }
 }

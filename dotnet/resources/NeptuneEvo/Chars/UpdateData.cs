@@ -1,27 +1,27 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
-using NeptuneEvo.Character;
-using NeptuneEvo.Fractions;
-using NeptuneEvoSDK;
-using System;
-using System.Runtime.CompilerServices;
+﻿using System;
 using System.Threading;
-using Localization;
+using GTANetworkAPI;
+using NeptuneEvo.Localization;
+using NeptuneEvo.Accounts;
+using NeptuneEvo.Character;
 using NeptuneEvo.Core;
-using NeptuneEvo.Quests;
+using NeptuneEvo.Database.Models;
+using NeptuneEvo.Handles;
+using NeptuneEvo.MoneySystem;
+using NeptuneEvo.Players;
+using NeptuneEvo.Utils.Analytics;
+using NeptuneEvo.SDK;
+using GameLog = NeptuneEvo.Core.GameLog;
 
 namespace NeptuneEvo.Chars
 {
-    class UpdateData : Script
+    internal class UpdateData : Script
     {
         /// <summary>
-        /// Логгер
+        ///     Логгер
         /// </summary>
         private static readonly nLog Log = new nLog("Chars.UpdateData");
+
         public static void RedBucks(ExtPlayer player, int value, string msg)
         {
             try
@@ -29,19 +29,21 @@ namespace NeptuneEvo.Chars
                 var accountData = player.GetAccountData();
                 if (accountData == null) return;
                 accountData.RedBucks += value;
-                
-                Database.Models.Money.AddDonateUpdate(accountData.Login, accountData.RedBucks);
-                
-                Trigger.ClientEvent(player, "client.accountStore.Redbucks", accountData.RedBucks); 
-                
-                if (msg != String.Empty)
-                    GameLog.AccountLog(accountData.Login, accountData.HWID, accountData.IP, accountData.SocialClub, $"{msg} ({value} RedBucks)");
+
+                Money.AddDonateUpdate(accountData.Login, accountData.RedBucks);
+
+                Trigger.ClientEvent(player, "client.accountStore.Redbucks", accountData.RedBucks);
+
+                if (msg != string.Empty)
+                    GameLog.AccountLog(accountData.Login, accountData.HWID, accountData.IP, accountData.SocialClub,
+                        $"{msg} ({value} RedBucks)");
             }
             catch (Exception e)
             {
-                Log.Write($"RedBucks Exception: {e.ToString()}");
+                Log.Write($"RedBucks Exception: {e}");
             }
         }
+
         public static byte CanIChange(ExtPlayer player, int value, bool errortext = false)
         {
             try
@@ -54,17 +56,23 @@ namespace NeptuneEvo.Chars
                 //    if(errortext) Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Подобные денежные операции недоступны для администрации.", 3000);
                 //    return 1;
                 //}
-                if (Core.Admin.IsServerStoping)
+                if (Admin.IsServerStoping)
                 {
-                    if (errortext) Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.ServRestarting), 3000);
+                    if (errortext)
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                            LangFunc.GetText(LangType.Ru, DataName.ServRestarting), 3000);
                     return 2;
                 }
+
                 if (0 > value)
                     return 3;
-                
+
                 if (characterData.Money < value)
                 {
-                    if (errortext) Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoMoneyForIt, MoneySystem.Wallet.Format(value - characterData.Money)), 5000);
+                    if (errortext)
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                            LangFunc.GetText(LangType.Ru, DataName.NoMoneyForIt,
+                                Wallet.Format(value - characterData.Money)), 5000);
                     return 3;
                 }
 
@@ -72,37 +80,39 @@ namespace NeptuneEvo.Chars
             }
             catch (Exception e)
             {
-                Log.Write($"Money Exception: {e.ToString()}");
+                Log.Write($"Money Exception: {e}");
                 return 0;
             }
         }
+
         public static void Work(ExtPlayer player, int value)
         {
             try
             {
                 var sessionData = player.GetSessionData();
-                if (sessionData == null) 
+                if (sessionData == null)
                     return;
-                
+
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return;
-                
-                if (characterData.WorkID == value) 
+
+                if (characterData.WorkID == value)
                     return;
-                
+
                 characterData.WorkID = value;
-                
+
                 if (sessionData.WorkData != null)
                     sessionData.WorkData.PointsCount = 0;
-                
+
                 Trigger.ClientEvent(player, "client.charStore.WorkID", value);
             }
             catch (Exception e)
             {
-                Log.Write($"WorkId Exception: {e.ToString()}");
+                Log.Write($"WorkId Exception: {e}");
             }
         }
+
         public static void Level(ExtPlayer player, int value)
         {
             try
@@ -115,73 +125,81 @@ namespace NeptuneEvo.Chars
             }
             catch (Exception e)
             {
-                Log.Write($"Level Exception: {e.ToString()}");
+                Log.Write($"Level Exception: {e}");
             }
         }
+
         public static void Exp(ExtPlayer player, int value, int salary = 0)
         {
             try
             {
                 var accountData = player.GetAccountData();
-                if (accountData == null) 
+                if (accountData == null)
                     return;
-                
+
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return;
-                
+
                 //int wasexp = characterData.EXP;
                 characterData.EXP += value;
                 if (characterData.EXP >= 3 + characterData.LVL * 3)
                 {
-                    if (characterData.LVL == 5) 
-                        player.SetSharedData(NewUser", false);
-                    
+                    if (characterData.LVL == 5)
+                        player.SetSharedData("NewUser", false);
+
                     characterData.EXP = characterData.EXP - (3 + characterData.LVL * 3);
                     Level(player, 1);
-                    Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NewLvl, characterData.LVL), 15000);
-                    Utils.Analytics.HelperThread.AddEvent(levelup", accountData.Email, accountData.Ga, characterData.LVL);
-                    //Trigger.ClientEvent(player, ExpUP", 999999, characterData.EXP, characterData.LVL, (3 + characterData.LVL * 3));
-                } 
-                //else Trigger.ClientEvent(player, payday", wasexp, characterData.EXP, characterData.LVL, (3 + characterData.LVL * 3));
-                Trigger.ClientEvent(player, payday", characterData.EXP, characterData.LVL, salary);
+                    Notify.Send(player, NotifyType.Warning, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.NewLvl, characterData.LVL), 15000);
+                    HelperThread.AddEvent("levelup", accountData.Email, accountData.Ga, characterData.LVL);
+                    //Trigger.ClientEvent(player, "ExpUP", 999999, characterData.EXP, characterData.LVL, (3 + characterData.LVL * 3));
+                }
+
+                //else Trigger.ClientEvent(player, "payday", wasexp, characterData.EXP, characterData.LVL, (3 + characterData.LVL * 3));
+                Trigger.ClientEvent(player, "payday", characterData.EXP, characterData.LVL, salary);
             }
             catch (Exception e)
             {
-                Log.Write($"Exp Exception: {e.ToString()}");
+                Log.Write($"Exp Exception: {e}");
             }
         }
+
         public static uint GetPlayerDimension(ExtPlayer player)
         {
             try
             {
                 if (player == null) return 0;
-                if (Thread.CurrentThread.Name != Main")
+                if (Thread.CurrentThread.Name != "Main")
                 {
-                    SessionData sessionData = player.GetSessionData();
+                    var sessionData = player.GetSessionData();
                     if (sessionData != null) return sessionData.Dimension;
                 }
+
                 return player.Dimension;
             }
             catch (Exception e)
             {
-                Main.Log.Write($"GetPlayerDimension Exception: {e.ToString()}");                
+                Main.Log.Write($"GetPlayerDimension Exception: {e}");
             }
+
             return 0;
         }
+
         // НЕТ БЕЗОПАСНОСТИ ПОТОКОВ, При неправильном использовании сервер может падать
         public static uint GetVehicleDimension(ExtVehicle vehicle)
         {
             try
             {
-                if (Thread.CurrentThread.Name != Main") return 0;
+                if (Thread.CurrentThread.Name != "Main") return 0;
                 if (vehicle == null) return 0;
                 return vehicle.Dimension;
             }
             catch (Exception e)
             {
-                Main.Log.Write($"GetVehicleDimension Exception: {e.ToString()}");
+                Main.Log.Write($"GetVehicleDimension Exception: {e}");
             }
+
             return 0;
         }
     }

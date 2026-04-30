@@ -1,9 +1,9 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Chars.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using GTANetworkAPI;
+using NeptuneEvo.Chars.Models;
 using NeptuneEvo.Fractions.Models;
+using NeptuneEvo.Handles;
 using NeptuneEvo.Players.Popup.Models;
 using NeptuneEvo.Table.Tasks.Models;
 
@@ -11,6 +11,9 @@ namespace NeptuneEvo.Players.Models
 {
     public class SessionData
     {
+        public bool IsWarMarker = false;
+
+        public TableTaskPlayerData[] TasksData = null;
         public int Value { get; set; } = -1;
         public uint Dimension { get; set; } = 0;
         public string Name { get; set; } = "";
@@ -47,9 +50,9 @@ namespace NeptuneEvo.Players.Models
         public List<uint> Attachments { get; set; } = new List<uint>();
         public WeaponData LastActive { get; set; } = new WeaponData();
         public AntiKill KillData { get; set; } = new AntiKill();
-        public string RealSocialClub { get; set; } = NONE";
+        public string RealSocialClub { get; set; } = "NONE";
         public string SocialClubName { get; set; } = null;
-        public string RealHWID { get; set; } = NONE";
+        public string RealHWID { get; set; } = "NONE";
         public string Address { get; set; } = null;
         public int InsideSafeZone { get; set; } = -1;
         public bool IsSafeZone { get; set; } = false;
@@ -138,7 +141,7 @@ namespace NeptuneEvo.Players.Models
 
 
         public ExtPed SelectPed { get; set; } = null;
-        public string DelObjects { get; set; } 
+        public string DelObjects { get; set; }
         public int SelectUUID { get; set; } = 0;
 
         public Dictionary<int, Dictionary<int, ComponentVariation>> Clothes { get; set; } =
@@ -146,9 +149,9 @@ namespace NeptuneEvo.Players.Models
 
         public Dictionary<int, Dictionary<int, ComponentVariation>> Accessory { get; set; } =
             new Dictionary<int, Dictionary<int, ComponentVariation>>();
-        
+
         public TempEditableClothingData TempClothingData { get; set; } = new TempEditableClothingData();
-        
+
         public int LastCashOperationSum { get; set; } = 0;
         public int LastBankOperationSum { get; set; } = 0;
         public int LastSellOperationSum { get; set; } = 0;
@@ -158,13 +161,10 @@ namespace NeptuneEvo.Players.Models
         public bool IsTicketRender { get; set; } = false;
         public bool IsInitMission { get; set; } = false;
         public PopupData PopupData { get; set; } = new PopupData();
-        public bool HitPoint { get; set; } = false; 
-        public bool IsRadioInterceptor { get; set; } = false; 
-        
+        public bool HitPoint { get; set; } = false;
+        public bool IsRadioInterceptor { get; set; } = false;
+
         public WarData WarData { get; set; } = new WarData();
         public TableTaskData TableTaskData { get; set; } = new TableTaskData();
-        public bool IsWarMarker = false;
-        
-        public TableTaskPlayerData[] TasksData = null;
     }
 }

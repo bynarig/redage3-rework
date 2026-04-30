@@ -7,6 +7,5 @@ namespace NeptuneEvo.Handles
         public ExtPickup(NetHandle handle) : base(handle)
         {
         }
-        
     }
 }

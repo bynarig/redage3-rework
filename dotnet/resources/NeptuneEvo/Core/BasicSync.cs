@@ -1,51 +1,48 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
+﻿using System;
+using GTANetworkAPI;
 using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
 using NeptuneEvo.Character;
-using NeptuneEvo.Chars;
-using Newtonsoft.Json;
-using NeptuneEvoSDK;
-using System;
+using NeptuneEvo.Handles;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Core
 {
-    class BasicSync : Script
+    internal class BasicSync : Script
     {
         private static readonly nLog Log = new nLog("Core.BasicSync");
-        [RemoteEvent(invisible")]
+
+        [RemoteEvent("invisible")]
         public static void SetInvisible(ExtPlayer player, bool toggle)
         {
             try
             {
                 var accountData = player.GetAccountData();
-                if (accountData == null) 
+                if (accountData == null)
                     return;
 
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return;
 
                 if (characterData.AdminLVL == 0 && accountData.VipLvl != 5) return;
-                player.Transparency = (toggle) ? 0 : 255;
+                player.Transparency = toggle ? 0 : 255;
                 if (toggle)
                 {
-                    player.SetSharedData(INVISIBLE", true);
-                    Trigger.ClientEvent(player, SetINVISIBLE", true);
+                    player.SetSharedData("INVISIBLE", true);
+                    Trigger.ClientEvent(player, "SetINVISIBLE", true);
                 }
                 else
                 {
-                    player.ResetSharedData(INVISIBLE");
-                    Trigger.ClientEvent(player, SetINVISIBLE", false);
+                    player.ResetSharedData("INVISIBLE");
+                    Trigger.ClientEvent(player, "SetINVISIBLE", false);
                 }
+
                 var adminConfig = characterData.ConfigData.AdminOption;
                 adminConfig.Invisible = toggle;
             }
             catch (Exception e)
             {
-                Log.Write($"SetInvisible Exception: {e.ToString()}");
+                Log.Write($"SetInvisible Exception: {e}");
             }
         }
 
@@ -62,7 +59,7 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"GetInvisible Exception: {e.ToString()}");
+                Log.Write($"GetInvisible Exception: {e}");
                 return false;
             }
         }

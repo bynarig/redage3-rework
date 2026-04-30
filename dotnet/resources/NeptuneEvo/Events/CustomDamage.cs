@@ -1,25 +1,22 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Accounts;
+﻿using System;
+using System.Collections.Generic;
+using GTANetworkAPI;
+using NeptuneEvo.Character;
 using NeptuneEvo.Chars;
 using NeptuneEvo.Chars.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
-using NeptuneEvo.Character;
-using NeptuneEvoSDK;
-using System;
-using System.Collections.Generic;
 using NeptuneEvo.Core;
-
-
+using NeptuneEvo.Handles;
+using NeptuneEvo.Players;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.PedSystem.Pet.Repository;
 
 namespace NeptuneEvo.Events
 {
-    class CustomDamage : Script
+    internal class CustomDamage : Script
     {
         private static readonly nLog Log = new nLog("Functions.CommandsAccess");
 
-        private static IReadOnlyDictionary<uint, float> WeaponDamage = new Dictionary<uint, float>()
+        private static readonly IReadOnlyDictionary<uint, float> WeaponDamage = new Dictionary<uint, float>
         {
             { (uint)WeaponHash.Unarmed, 7f },
             /* Handguns */
@@ -127,10 +124,9 @@ namespace NeptuneEvo.Events
             { (uint)WeaponHash.Parachute, 0f }
         };
 
-        public static IReadOnlyDictionary<ItemId, int> WeaponsHP = new Dictionary<ItemId, int>()
+        public static IReadOnlyDictionary<ItemId, int> WeaponsHP = new Dictionary<ItemId, int>
 
         {
-
             /* Pistols */
 
             { ItemId.Pistol, 500 },
@@ -148,7 +144,7 @@ namespace NeptuneEvo.Events
             { ItemId.PistolMk2, 600 },
             { ItemId.SNSPistolMk2, 600 },
             { ItemId.RevolverMk2, 600 },
-            
+
             /* SMG */
 
             { ItemId.MicroSMG, 1500 },
@@ -176,8 +172,8 @@ namespace NeptuneEvo.Events
             { ItemId.BullpupRifleMk2, 4000 },
             { ItemId.MilitaryRifle, 4000 },
             { ItemId.TacticalRifle, 3500 },
-            { ItemId.HeavyRifle, 4000},
-            { ItemId.CombatRifle, 4000},
+            { ItemId.HeavyRifle, 4000 },
+            { ItemId.CombatRifle, 4000 },
 
             /* Sniper */
 
@@ -186,8 +182,8 @@ namespace NeptuneEvo.Events
             { ItemId.MarksmanRifle, 500 },
             { ItemId.HeavySniperMk2, 350 },
             { ItemId.MarksmanRifleMk2, 500 },
-            { ItemId.PrecisionRifle, 600},
-            
+            { ItemId.PrecisionRifle, 600 },
+
             /* Shotguns */
 
             { ItemId.PumpShotgun, 400 },
@@ -199,7 +195,7 @@ namespace NeptuneEvo.Events
             { ItemId.DoubleBarrelShotgun, 400 },
             { ItemId.SweeperShotgun, 400 },
             { ItemId.PumpShotgunMk2, 500 },
-            { ItemId.CombatShotgun, 600},
+            { ItemId.CombatShotgun, 600 },
 
             /* NEW WEAPONS */
 
@@ -218,23 +214,21 @@ namespace NeptuneEvo.Events
             { ItemId.Widowmaker, 9999 },
 
             //Custom
-            {ItemId.Glock, 9999 }
-
-
+            { ItemId.Glock, 9999 }
         };
 
-        private static List<uint> ExceptionToDist = new List<uint>()
+        private static List<uint> ExceptionToDist = new List<uint>
 
         {
             /* Sniper */
-            (uint)WeaponHash.Sniperrifle, 
+            (uint)WeaponHash.Sniperrifle,
             (uint)WeaponHash.Heavysniper,
             (uint)WeaponHash.Marksmanrifle,
             (uint)WeaponHash.Heavysniper_mk2,
             (uint)WeaponHash.Marksmanrifle_mk2
         };
 
-        private static float[] BoneMultiplier = new float[]
+        private static float[] BoneMultiplier =
         {
             0.90f, // 0 - таз
             0.90f, // 1 - нога
@@ -256,8 +250,20 @@ namespace NeptuneEvo.Events
             0.85f, // 17 - левая рука
             0.60f, // 18 - левая ладонь
             1.20f, // 19 - горло
-            1.25f, // 20 - голова
+            1.25f // 20 - голова
         };
+
+        private static readonly IReadOnlyDictionary<uint, float> PedDamage = new Dictionary<uint, float>
+        {
+            { (uint)PedHash.Chop, 20f }, //
+            { (uint)PedHash.Husky, 20f }, //
+            { (uint)PedHash.Poodle, 10f }, //
+            { (uint)PedHash.Pug, 10f }, //
+            { (uint)PedHash.Rottweiler, 20f }, //
+            { (uint)PedHash.Shepherd, 20f }, //
+            { (uint)PedHash.Westy, 20f } //
+        };
+
         private void PlayerDamage(ExtPlayer player, ExtPlayer attackPlayer, uint weapon, int damage)
         {
             var sessionData = player.GetSessionData();
@@ -266,7 +272,7 @@ namespace NeptuneEvo.Events
 
             if (player.Armor > 0)
             {
-                int oldArmor = player.Armor;
+                var oldArmor = player.Armor;
                 if (damage > oldArmor)
                 {
                     player.Armor = 0;
@@ -301,37 +307,26 @@ namespace NeptuneEvo.Events
             var sessionData = player.GetSessionData();
             if (sessionData == null)
                 return;
-            
+
             var weapon = (uint)player.CurrentWeapon;
 
             if (!WeaponDamage.ContainsKey(weapon))
                 return;
-            
+
             if (WeaponDamage[weapon] <= 0f)
                 return;
-            
+
             if (target == null)
                 return;
 
-            PedSystem.Pet.Repository.AttackPlayerToPet(target, player);
+            Repository.AttackPlayerToPet(target, player);
 
 
             //if (!ExceptionToDist.Contains(Weapon))
             //    damage = Convert.ToInt32(damage * dist);
 
-            PedSystem.Pet.Repository.Damage(target, -damage);
+            Repository.Damage(target, -damage);
         }
-
-        private static IReadOnlyDictionary<uint, float> PedDamage = new Dictionary<uint, float>()
-        {
-            { (uint)PedHash.Chop, 20f },//
-            { (uint)PedHash.Husky, 20f },//
-            { (uint)PedHash.Poodle, 10f },//
-            { (uint)PedHash.Pug, 10f },//
-            { (uint)PedHash.Rottweiler, 20f },//
-            { (uint)PedHash.Shepherd, 20f },//
-            { (uint)PedHash.Westy, 20f },//
-        };
 
         [RemoteEvent("server.damage.petToPet")]
         public void server_weapon_damage_petToPet(ExtPlayer player, ExtPed target, ExtPed ped, int damage)
@@ -346,43 +341,42 @@ namespace NeptuneEvo.Events
             if (PedDamage[model] <= 0f)
                 return;
 
-            PedSystem.Pet.Repository.Damage(target, -damage);
-
+            Repository.Damage(target, -damage);
         }
+
         [RemoteEvent("server.damage.petToPlayer")]
         public void server_weapon_damage_petToPlayer(ExtPlayer player, ExtPlayer target, ExtPed ped, int damage)
         {
-
             if (ped == null)
                 return;
             var targetSessionData = target.GetSessionData();
             if (targetSessionData == null)
                 return;
-            else if (targetSessionData.IsSafeZone)
+            if (targetSessionData.IsSafeZone)
                 return;
 
-            uint model = ped.Model;
+            var model = ped.Model;
 
             if (!PedDamage.ContainsKey(model))
                 return;
 
             PlayerDamage(target, null, model, damage);
-
         }
-        [RemoteEvent(deletearmor")]
+
+        [RemoteEvent("deletearmor")]
         public void ClientEvent_DeleteArmor(ExtPlayer player)
         {
             try
             {
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return;
                 var sessionData = player.GetSessionData();
-                if (sessionData == null) 
+                if (sessionData == null)
                     return;
-                var ItemStruct = Chars.Repository.isItem(player, accessories", ItemId.BodyArmor);
+                var ItemStruct = Chars.Repository.isItem(player, "accessories", ItemId.BodyArmor);
                 if (ItemStruct == null) return;
-                Chars.Repository.RemoveIndex(player, ItemStruct.Location, ItemStruct.Index, 1);
+                Chars.Repository.RemoveIndex(player, ItemStruct.Location, ItemStruct.Index);
                 //Trigger.ClientEvent(player, "client.isArmor", false);
                 sessionData.ArmorHealth = -1;
                 ClothesComponents.ClearClothes(player, 9, characterData.Gender);
@@ -390,10 +384,9 @@ namespace NeptuneEvo.Events
             }
             catch (Exception e)
             {
-                Log.Write($"ClientEvent_DeleteArmor Exception: {e.ToString()}");
+                Log.Write($"ClientEvent_DeleteArmor Exception: {e}");
             }
         }
-
 
 
         [RemoteEvent("server.weaponShot")]
@@ -407,42 +400,44 @@ namespace NeptuneEvo.Events
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
 
-                var Item = Chars.Repository.GetItemData(player, fastSlots", sessionData.ActiveWeap.Index);
+                var Item = Chars.Repository.GetItemData(player, "fastSlots", sessionData.ActiveWeap.Index);
 
                 if (Item.ItemId == ItemId.Debug) return;
-                
-                if (!Item.Data.Contains(_"))
+
+                if (!Item.Data.Contains("_"))
                 {
-                    int newHP = WeaponsHP.ContainsKey(Item.ItemId) ? WeaponsHP[Item.ItemId] : 100;
+                    var newHP = WeaponsHP.ContainsKey(Item.ItemId) ? WeaponsHP[Item.ItemId] : 100;
 
                     Item.Data += $"_{newHP}";
 
-                    Chars.Repository.SetItemData(player, fastSlots", Item.Index, Item, true, isWeaponShot:true);
+                    Chars.Repository.SetItemData(player, "fastSlots", Item.Index, Item, true, isWeaponShot: true);
                 }
-                else if (Item.Data.Contains(_") && Convert.ToInt32(Item.Data.Split(_")[1]) >= 1)
+                else if (Item.Data.Contains("_") && Convert.ToInt32(Item.Data.Split("_")[1]) >= 1)
                 {
-                    int currentHP = Convert.ToInt32(Item.Data.Split(_")[1]);
+                    var currentHP = Convert.ToInt32(Item.Data.Split("_")[1]);
 
                     currentHP -= count;
 
                     if (currentHP <= 0)
                     {
-                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Ваше оружие сломалось.", 3000);
+                        Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Ваше оружие сломалось.",
+                            3000);
 
-                        Chars.Repository.Remove(player, $"char_{characterData.UUID}", fastSlots", Item.ItemId, 1);
+                        Chars.Repository.Remove(player, $"char_{characterData.UUID}", "fastSlots", Item.ItemId);
 
                         WeaponRepository.RemoveHands(player);
                     }
                     else
                     {
-                        Item.Data = $"{Item.Data.Split(_")[0]}_{currentHP}";
-                        Chars.Repository.SetItemData(player, fastSlots", sessionData.ActiveWeap.Index, Item, true, isWeaponShot:true);
+                        Item.Data = $"{Item.Data.Split("_")[0]}_{currentHP}";
+                        Chars.Repository.SetItemData(player, "fastSlots", sessionData.ActiveWeap.Index, Item, true,
+                            isWeaponShot: true);
                     }
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"ServerWeaponShot Exception: {e.ToString()}");
+                Log.Write($"ServerWeaponShot Exception: {e}");
             }
         }
 
@@ -452,7 +447,7 @@ namespace NeptuneEvo.Events
             try
             {
                 if (!player.IsCharacterData()) return;
-                InventoryItemData Item = Repository.GetItemData(player, accessories", 7);
+                InventoryItemData Item = Repository.GetItemData(player, "accessories", 7);
 
                 bool isDell = true;
 
@@ -475,7 +470,7 @@ namespace NeptuneEvo.Events
                 if (Item != null && isDell)
                 {
                     player.Armor = 0;
-                    Repository.RemoveIndex(player, accessories", 7, 1);
+                    Repository.RemoveIndex(player, "accessories", 7, 1);
                     ClothesComponents.SetSpecialClothes(player, 9, 0, 0);
                     ClothesComponents.UpdateClothes(player);
                 }
@@ -487,7 +482,7 @@ namespace NeptuneEvo.Events
                 Log.Write($"ParachuteState Exception: {e.ToString()}");
             }
         }*/
-        [RemoteEvent(Server_ChangeHealthState")]
+        [RemoteEvent("Server_ChangeHealthState")]
         public void Server_ChangeHealthState(ExtPlayer player, int health)
         {
             try
@@ -498,7 +493,7 @@ namespace NeptuneEvo.Events
             }
             catch (Exception e)
             {
-                Log.Write($"ParachuteState Exception: {e.ToString()}");
+                Log.Write($"ParachuteState Exception: {e}");
             }
         }
     }

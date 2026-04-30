@@ -4,6 +4,6 @@
     {
         DoorClosed,
         DoorOpen,
-        DoorBroken,
+        DoorBroken
     }
 }

@@ -16,7 +16,6 @@
         Tent = 99999994,
         Helper = 99999993,
         Tinder = 99999992,
-        LiveStream = 99999991,
-        
+        LiveStream = 99999991
     }
 }

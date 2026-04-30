@@ -1,22 +1,18 @@
 using System;
 using System.Collections.Generic;
 using GTANetworkAPI;
-using Localization;
-using NeptuneEvo.Handles;
-
-using NeptuneEvo.Players;
+using NeptuneEvo.Chars.Models;
 using NeptuneEvo.Functions;
+using NeptuneEvo.Handles;
+using NeptuneEvo.Players;
 using NeptuneEvo.Quests;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.Character.Repository;
 
 namespace NeptuneEvo.Core
 {
-    class SafeZones : Script
+    internal class SafeZones : Script
     {
-        private static readonly nLog Log = new nLog("Core.SafeZones");
-
-        private static List<int> GreenZoneDisabled = new List<int>();
-        
         public enum ZoneName
         {
             lspd = 1,
@@ -89,12 +85,18 @@ namespace NeptuneEvo.Core
             vagos = 70,
             new1 = 71,
             newarena = 80
-
         }
 
-        public static bool IsSafeZone(int index, ZoneName name) => index == (int) name;
+        private static readonly nLog Log = new nLog("Core.SafeZones");
 
-        [RemoteEvent(IsSafeZone")]
+        private static readonly List<int> GreenZoneDisabled = new List<int>();
+
+        public static bool IsSafeZone(int index, ZoneName name)
+        {
+            return index == (int)name;
+        }
+
+        [RemoteEvent("IsSafeZone")]
         public void IsSafeZone(ExtPlayer player, bool toggled)
         {
             try
@@ -102,66 +104,68 @@ namespace NeptuneEvo.Core
                 var sessionData = player.GetSessionData();
 
                 if (sessionData == null) return;
-                
+
                 sessionData.IsSafeZone = toggled;
-                
-                player.SetSharedData(SZ", toggled);
+
+                player.SetSharedData("SZ", toggled);
             }
             catch (Exception e)
             {
-                Log.Write($"OpenInventory Exception: {e.ToString()}");
+                Log.Write($"OpenInventory Exception: {e}");
             }
         }
-        [RemoteEvent(inGreenZone")]
+
+        [RemoteEvent("inGreenZone")]
         public void InSafeZone(ExtPlayer player, int index)
         {
             var sessionData = player.GetSessionData();
-            if (sessionData == null) 
+            if (sessionData == null)
                 return;
-            
-            if (!GreenZoneDisabled.Contains(index) && !sessionData.WarData.IsWarZone) 
-                Trigger.ClientEvent(player, safeZone", true);
-                
+
+            if (!GreenZoneDisabled.Contains(index) && !sessionData.WarData.IsWarZone)
+                Trigger.ClientEvent(player, "safeZone", true);
+
             if (IsSafeZone(index, ZoneName.EMS))
-                qMain.UpdateQuestsStage(player, Zdobich.QuestName, (int)zdobich_quests.Stage31, 1, isUpdateHud: true);
-                
+                qMain.UpdateQuestsStage(player, Zdobich.QuestName, (int)zdobich_quests.Stage31, 1, true);
+
             if (IsSafeZone(index, ZoneName.lspd))
-                qMain.UpdateQuestsStage(player, Zdobich.QuestName, (int)zdobich_quests.Stage33, 1, isUpdateHud: true);
-                
+                qMain.UpdateQuestsStage(player, Zdobich.QuestName, (int)zdobich_quests.Stage33, 1, true);
+
             sessionData.InsideSafeZone = index;
         }
-        
-        [RemoteEvent(outGreenZone")]
+
+        [RemoteEvent("outGreenZone")]
         public void OutSafeZone(ExtPlayer player, int index)
         {
-
             var sessionData = player.GetSessionData();
 
             if (sessionData == null) return;
-            
-            if (!GreenZoneDisabled.Contains(index)) 
-                Trigger.ClientEvent(player, safeZone", false);
-            
-            if (sessionData.InsideSafeZone == index) 
-                sessionData.InsideSafeZone = -1;
 
+            if (!GreenZoneDisabled.Contains(index))
+                Trigger.ClientEvent(player, "safeZone", false);
+
+            if (sessionData.InsideSafeZone == index)
+                sessionData.InsideSafeZone = -1;
         }
+
         [Command(AdminCommands.Szstate)]
         public static void CMD_SZState(ExtPlayer player, int sz)
         {
             try
             {
                 if (!CommandsAccess.CanUseCmd(player, AdminCommands.Szstate)) return;
-                
+
                 var state = GreenZoneDisabled.Contains(sz);
-                
+
                 ChangeDamageState(sz, state);
-                
+
                 if (!state)
-                    Trigger.SendToAdmins(2, $"{Chars.Models.ChatColors.StrongOrange}[A] {player.Name} ({player.Value}) выключил возможность драться и получать урон в зоне #{sz}");
-                else 
-                    Trigger.SendToAdmins(2, $"{Chars.Models.ChatColors.StrongOrange}[A] {player.Name} ({player.Value}) включил возможность драться и получать урон в зоне #{sz}");
-                
+                    Trigger.SendToAdmins(2,
+                        $"{ChatColors.StrongOrange}[A] {player.Name} ({player.Value}) выключил возможность драться и получать урон в зоне #{sz}");
+                else
+                    Trigger.SendToAdmins(2,
+                        $"{ChatColors.StrongOrange}[A] {player.Name} ({player.Value}) включил возможность драться и получать урон в зоне #{sz}");
+
                 if (!state)
                     GreenZoneDisabled.Add(sz);
                 else
@@ -169,39 +173,38 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"CMD_SZState Exception: {e.ToString()}");
+                Log.Write($"CMD_SZState Exception: {e}");
             }
         }
 
-        public static void ChangeDamageState(int sz, bool state) // Позволяет по ключу открыть или закрыть возможность драться в любой доступной сэйфзоне.
+        public static void
+            ChangeDamageState(int sz,
+                bool state) // Позволяет по ключу открыть или закрыть возможность драться в любой доступной сэйфзоне.
         {
             try
             {
-                foreach (ExtPlayer foreachPlayer in NeptuneEvo.Character.Repository.GetPlayers())
-                {
+                foreach (var foreachPlayer in Repository.GetPlayers())
                     try
                     {
-
                         var foreachSessionData = foreachPlayer.GetSessionData();
 
                         if (foreachSessionData == null) continue;
                         if (foreachSessionData.InsideSafeZone == sz)
                         {
-                            if (state) 
-                                Trigger.ClientEvent(foreachPlayer, safeZone", true);
-                            else 
-                                Trigger.ClientEvent(foreachPlayer, safeZone", false);
+                            if (state)
+                                Trigger.ClientEvent(foreachPlayer, "safeZone", true);
+                            else
+                                Trigger.ClientEvent(foreachPlayer, "safeZone", false);
                         }
                     }
                     catch (Exception e)
                     {
-                        Log.Write($"ChangeDamageState Foreach Exception: {e.ToString()}");
+                        Log.Write($"ChangeDamageState Foreach Exception: {e}");
                     }
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"ChangeDamageState Exception: {e.ToString()}");
+                Log.Write($"ChangeDamageState Exception: {e}");
             }
         }
     }

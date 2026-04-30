@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeptuneEvo.Character.BindConfig.Models
+﻿namespace NeptuneEvo.Character.BindConfig.Models
 {
     public class AdminOption
     {

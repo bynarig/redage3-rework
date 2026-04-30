@@ -1,55 +1,54 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
+﻿using System;
+using System.Linq;
+using GTANetworkAPI;
+using NeptuneEvo.Localization;
+using NeptuneEvo.Accounts;
+using NeptuneEvo.Character;
 using NeptuneEvo.Chars;
 using NeptuneEvo.Chars.Models;
 using NeptuneEvo.Core;
-using NeptuneEvoSDK;
-using System;
-
-using Newtonsoft.Json;
 using NeptuneEvo.Functions;
-using System.Linq;
-using Localization;
-using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
+using NeptuneEvo.Handles;
+using NeptuneEvo.NewCasino;
 using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
-using NeptuneEvo.Character;
+using Newtonsoft.Json;
+using NeptuneEvo.SDK;
 using Repository = NeptuneEvo.Chars.Repository;
 
 namespace NeptuneEvo.Events
 {
-    class GiftsListModel
+    internal class GiftsListModel
     {
-        public int Id { set; get; } = 0;
-        public Vector3 Position { set; get; } = new Vector3();
-        public Vector3 Rotation { set; get; } = new Vector3();
-
         public GiftsListModel(int Id, Vector3 Position, Vector3 Rotation)
         {
             this.Id = Id;
             this.Position = Position;
             this.Rotation = Rotation;
         }
+
+        public int Id { get; set; }
+        public Vector3 Position { get; set; } = new Vector3();
+        public Vector3 Rotation { get; set; } = new Vector3();
     }
-    class Festive : Script
+
+    internal class Festive : Script
     {
         private static readonly nLog Log = new nLog("Events.Festive");
 
-        
+
         public static DateTime DateTimeEnd = new DateTime(2023, 1, 30);
-        
+
         public static bool isEvent = DateTime.Now < DateTimeEnd ? true : false;
-        
+
         public static ItemId EventCoins = ItemId.Giftcoin;
         public static string EventCoinsName = Repository.ItemsInfo[EventCoins].Name;
-        
+
 
         public static int MaxGiftsCount = 160;
 
-        private static GiftsListModel[] GiftsListData = new GiftsListModel[]
+        private static readonly GiftsListModel[] GiftsListData =
         {
-                      new GiftsListModel(0, new Vector3(-2285.59131, 353.3171, 175.404083), new Vector3(0.00, 0.00, 0.00)),
+            new GiftsListModel(0, new Vector3(-2285.59131, 353.3171, 175.404083), new Vector3(0.00, 0.00, 0.00)),
             new GiftsListModel(1, new Vector3(-25.6684418, -1423.82117, 30.62255), new Vector3(0.00, 0.00, 0.00)),
             new GiftsListModel(2, new Vector3(5.11801147, 41.33201, 70.53516), new Vector3(0.00, 0.00, 0.00)),
             new GiftsListModel(3, new Vector3(-1360.6825, -757.5558, 21.3029785), new Vector3(0.00, 0.00, 0.00)),
@@ -247,18 +246,18 @@ namespace NeptuneEvo.Events
             new GiftsListModel(195, new Vector3(-1552.08521, -2399.309, 6.031447), new Vector3(0.00, 0.00, 0.00)),
             new GiftsListModel(196, new Vector3(-552.1727, -2238.12549, 121.368004), new Vector3(0.00, 0.00, 0.00)),
             new GiftsListModel(197, new Vector3(-275.309723, -2432.89233, 121.366592), new Vector3(0.00, 0.00, 0.00)),
-            new GiftsListModel(198, new Vector3(-51.34083, -2255.71362, 6.810603), new Vector3(0.00, 0.00, 0.00)),
-
+            new GiftsListModel(198, new Vector3(-51.34083, -2255.71362, 6.810603), new Vector3(0.00, 0.00, 0.00))
         };
-            
 
-        public static void Init ()
+
+        public static void Init()
         {
             if (isEvent)
             {
-                PedSystem.Repository.CreateQuest(dedmoroz", new Vector3(-1640.6166, -1096.9696, 13.024864), -42f, title: "~y~NPC~w~ Санта Клаус\nОбмен подарков", colShapeEnums: ColShapeEnums.Festive);
-                Main.CreateBlip(new Main.BlipData(607, "Санта Клаус", new Vector3(-1640.6166, -1096.9696, 13.024864), 0, true));
-
+                PedSystem.Repository.CreateQuest("dedmoroz", new Vector3(-1640.6166, -1096.9696, 13.024864), -42f,
+                    title: "~y~NPC~w~ Санта Клаус\nОбмен подарков", colShapeEnums: ColShapeEnums.Festive);
+                Main.CreateBlip(new Main.BlipData(607, "Санта Клаус", new Vector3(-1640.6166, -1096.9696, 13.024864), 0,
+                    true));
             }
         }
 
@@ -266,46 +265,46 @@ namespace NeptuneEvo.Events
         {
             try
             {
-                if (!isEvent) 
+                if (!isEvent)
                     return;
 
                 var accountData = player.GetAccountData();
-                if (accountData == null) 
+                if (accountData == null)
                     return;
 
                 var collectionGifts = accountData.CollectionGifts;
-                if (accountData.CollectionGifts.Count == MaxGiftsCount) 
+                if (accountData.CollectionGifts.Count == MaxGiftsCount)
                     return;
 
                 var randomGiftsListData = GiftsListData.ToList();
-                foreach (int index in collectionGifts)
-                {
-                    randomGiftsListData.Remove(GiftsListData[index]);
-                }
-                randomGiftsListData = NewCasino.Horses.Shuffle(randomGiftsListData);
-                randomGiftsListData.RemoveRange(MaxGiftsCount - collectionGifts.Count, (randomGiftsListData.Count - MaxGiftsCount + collectionGifts.Count));
+                foreach (var index in collectionGifts) randomGiftsListData.Remove(GiftsListData[index]);
+                randomGiftsListData = Horses.Shuffle(randomGiftsListData);
+                randomGiftsListData.RemoveRange(MaxGiftsCount - collectionGifts.Count,
+                    randomGiftsListData.Count - MaxGiftsCount + collectionGifts.Count);
 
                 Trigger.ClientEvent(player, "client.events.open", JsonConvert.SerializeObject(randomGiftsListData));
             }
             catch (Exception e)
             {
-                Log.Write($"InitPlayerData Exception: {e.ToString()}");
+                Log.Write($"InitPlayerData Exception: {e}");
             }
         }
+
         [Interaction(ColShapeEnums.Festive)]
         public static void OnFestive(ExtPlayer player)
         {
             try
             {
                 if (!player.IsCharacterData()) return;
-                Trigger.ClientEvent(player, openInput", $"Обмен {EventCoinsName} | 3 = 1 RB", "Вводите числа, кратные 3 - 3, 6, 9 и т.д.", 3, sell_festive");
+                Trigger.ClientEvent(player, "openInput", $"Обмен {EventCoinsName} | 3 = 1 RB",
+                    "Вводите числа, кратные 3 - 3, 6, 9 и т.д.", 3, "sell_festive");
             }
             catch (Exception e)
             {
-                Log.Write($"OnFestive Exception: {e.ToString()}");
+                Log.Write($"OnFestive Exception: {e}");
             }
         }
-         
+
 
         [RemoteEvent("server.events.collect")]
         public static void EventsCollect(ExtPlayer player, int index)
@@ -318,18 +317,21 @@ namespace NeptuneEvo.Events
                 if (accountData == null) return;
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
-                if (sessionData.AntiAnimDown || (characterData.AdminLVL >= 1 && characterData.AdminLVL <= 5) || Main.IHaveDemorgan(player)) return;
+                if (sessionData.AntiAnimDown || (characterData.AdminLVL >= 1 && characterData.AdminLVL <= 5) ||
+                    Main.IHaveDemorgan(player)) return;
                 if (Main.IHaveDemorgan(player)) return;
                 if (accountData.CollectionGifts.Contains(index))
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "Вы уже собрали эту коробку, поищите другие!", 8000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        "Вы уже собрали эту коробку, поищите другие!", 8000);
                     return;
                 }
-                int rand = new Random().Next(4, 14);
+
+                var rand = new Random().Next(4, 14);
                 if (Repository.isFreeSlots(player, EventCoins, rand) != 0) return;
                 Main.OnAntiAnim(player);
-                Trigger.PlayAnimation(player, anim"@mp_snowball", pickup_snowball", 39);
-                // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, pickup_snowball");
+                Trigger.PlayAnimation(player, "anim@mp_snowball", "pickup_snowball", 39);
+                // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "pickup_snowball");
 
                 NAPI.Task.Run(() =>
                 {
@@ -340,18 +342,19 @@ namespace NeptuneEvo.Events
                         Main.OffAntiAnim(player);
                         if (Repository.isFreeSlots(player, EventCoins, rand) != 0) return;
                         accountData.CollectionGifts.Add(index);
-                        Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", EventCoins, rand);
-                        Trigger.ClientEvent(player, "client.events.confirming", rand, accountData.CollectionGifts.Count, MaxGiftsCount);
+                        Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", EventCoins, rand);
+                        Trigger.ClientEvent(player, "client.events.confirming", rand, accountData.CollectionGifts.Count,
+                            MaxGiftsCount);
                     }
                     catch (Exception e)
                     {
-                        Log.Write($"EventsCollect Task #1 Exception: {e.ToString()}");
+                        Log.Write($"EventsCollect Task #1 Exception: {e}");
                     }
                 }, 5000);
             }
             catch (Exception e)
             {
-                Log.Write($"EventsCollect Exception: {e.ToString()}");
+                Log.Write($"EventsCollect Exception: {e}");
             }
         }
 
@@ -361,21 +364,24 @@ namespace NeptuneEvo.Events
             try
             {
                 if (!CommandsAccess.CanUseCmd(player, AdminCommands.givehc)) return;
-                ExtPlayer target = Main.GetPlayerByID(id);
+                var target = Main.GetPlayerByID(id);
                 var targetCharacterData = target.GetCharacterData();
                 if (targetCharacterData == null)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CantFindPlayerWithId), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.CantFindPlayerWithId), 3000);
                     return;
                 }
-                Chars.Repository.AddNewItem(target, $"char_{targetCharacterData.UUID}", inventory", ItemId.Giftcoin, amount);
-                //GameLog.Money($"player({characterData.UUID})", $"player({targetCharacterData.UUID})", amount, admin");
+
+                Repository.AddNewItem(target, $"char_{targetCharacterData.UUID}", "inventory", ItemId.Giftcoin, amount);
+                //GameLog.Money($"player({characterData.UUID})", $"player({targetCharacterData.UUID})", amount, "admin");
                 GameLog.Admin($"{player.Name}", $"givehc({amount})", $"{target.Name}");
-                Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы выдали человеку {target.Name} {amount} Подарков", 5000);
+                Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                    $"Вы выдали человеку {target.Name} {amount} Подарков", 5000);
             }
             catch (Exception e)
             {
-                Log.Write($"CMD_givehc Exception: {e.ToString()}");
+                Log.Write($"CMD_givehc Exception: {e}");
             }
         }
 
@@ -385,29 +391,35 @@ namespace NeptuneEvo.Events
             try
             {
                 if (!CommandsAccess.CanUseCmd(player, AdminCommands.givehcrad)) return;
-                foreach (ExtPlayer foreachPlayer in Main.GetPlayersInRadiusOfPosition(player.Position, (float)radius, UpdateData.GetPlayerDimension(player)))
+                foreach (var foreachPlayer in Main.GetPlayersInRadiusOfPosition(player.Position, radius,
+                             UpdateData.GetPlayerDimension(player)))
                 {
                     var foreachCharacterData = foreachPlayer.GetCharacterData();
                     if (foreachCharacterData == null) continue;
                     if (foreachPlayer.Value != player.Value)
                     {
-                        if (Chars.Repository.AddNewItem(foreachPlayer, $"char_{foreachCharacterData.UUID}", inventory", ItemId.Giftcoin, amount) == -1)
+                        if (Repository.AddNewItem(foreachPlayer, $"char_{foreachCharacterData.UUID}", "inventory",
+                                ItemId.Giftcoin, amount) == -1)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.NoSpaceInventory), 5000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                LangFunc.GetText(LangType.Ru, DataName.NoSpaceInventory), 5000);
                             return;
                         }
-                        //GameLog.Money($"player({characterData.UUID})", $"player({targetCharacterData.UUID})", amount, admin");
-                        GameLog.Admin($"{player.Name}", $"givehcrad({amount})", $"{foreachPlayer.Name}");
 
+                        //GameLog.Money($"player({characterData.UUID})", $"player({targetCharacterData.UUID})", amount, "admin");
+                        GameLog.Admin($"{player.Name}", $"givehcrad({amount})", $"{foreachPlayer.Name}");
                     }
                 }
-                Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы выдали игрокам в радиусе {radius} {amount} Подарков", 6000);
+
+                Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                    $"Вы выдали игрокам в радиусе {radius} {amount} Подарков", 6000);
             }
             catch (Exception e)
             {
-                Log.Write($"CMD_givehcrad Exception: {e.ToString()}");
+                Log.Write($"CMD_givehcrad Exception: {e}");
             }
         }
+
         [RemoteEvent("sever.events.buyItem")]
         public static void buyItem(ExtPlayer player, int index)
         {
@@ -415,86 +427,114 @@ namespace NeptuneEvo.Events
             {
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
-                int count = Chars.Repository.getCountItem($"char_{characterData.UUID}", EventCoins, bagsToggled:false);
-                Random rand = new Random();
+                var count = Repository.getCountItem($"char_{characterData.UUID}", EventCoins, false);
+                var rand = new Random();
                 switch (index)
                 {
                     case 0:
                         if (99999 > count)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "У вас нет столько подарков", 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                "У вас нет столько подарков", 3000);
                             return;
                         }
-                        if (Chars.Repository.isFreeSlots(player, ItemId.Leg, 1) != 0) return;
-                        Chars.Repository.Remove(player, $"char_{characterData.UUID}", inventory", EventCoins, 99999);
-                        Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", ItemId.Leg, 1, $"202_{rand.Next(0, 3)}_True");
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы успешно обменяли свои подарки на рождественские штаны", 6000);
+
+                        if (Repository.isFreeSlots(player, ItemId.Leg) != 0) return;
+                        Repository.Remove(player, $"char_{characterData.UUID}", "inventory", EventCoins, 99999);
+                        Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", ItemId.Leg, 1,
+                            $"202_{rand.Next(0, 3)}_True");
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            "Вы успешно обменяли свои подарки на рождественские штаны", 6000);
                         break;
                     case 1:
                         if (650 > count)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "У вас нет столько подарков", 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                "У вас нет столько подарков", 3000);
                             return;
                         }
-                        if (Chars.Repository.isFreeSlots(player, ItemId.Top, 1) != 0) return;
-                        Chars.Repository.Remove(player, $"char_{characterData.UUID}", inventory", EventCoins, 650);
-                        Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", ItemId.Top, 1, $"578_{rand.Next(0, 3)}_True");
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы успешно обменяли свои подарки на рождественский топ", 6000);
+
+                        if (Repository.isFreeSlots(player, ItemId.Top) != 0) return;
+                        Repository.Remove(player, $"char_{characterData.UUID}", "inventory", EventCoins, 650);
+                        Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", ItemId.Top, 1,
+                            $"578_{rand.Next(0, 3)}_True");
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            "Вы успешно обменяли свои подарки на рождественский топ", 6000);
                         break;
                     case 2:
                         if (1000 > count)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "У вас нет столько подарков", 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                "У вас нет столько подарков", 3000);
                             return;
                         }
-                        if (Chars.Repository.isFreeSlots(player, ItemId.Jewelry, 1) != 0) return;
-                        Chars.Repository.Remove(player, $"char_{characterData.UUID}", inventory", EventCoins, 1000);
-                        Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", ItemId.Jewelry, 1, $"214_{rand.Next(0, 3)}_True");
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы успешно обменяли свои подарки на леденцы", 6000);
+
+                        if (Repository.isFreeSlots(player, ItemId.Jewelry) != 0) return;
+                        Repository.Remove(player, $"char_{characterData.UUID}", "inventory", EventCoins, 1000);
+                        Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", ItemId.Jewelry, 1,
+                            $"214_{rand.Next(0, 3)}_True");
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            "Вы успешно обменяли свои подарки на леденцы", 6000);
                         break;
                     case 3:
                         if (650 > count)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "У вас нет столько подарков", 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                "У вас нет столько подарков", 3000);
                             return;
                         }
-                        if (Chars.Repository.isFreeSlots(player, ItemId.Leg, 1) != 0) return;
-                        Chars.Repository.Remove(player, $"char_{characterData.UUID}", inventory", EventCoins, 650);
-                        Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", ItemId.Leg, 1, $"223_{rand.Next(0, 3)}_False");
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы успешно обменяли свои подарки на рождественские штаны", 6000);
+
+                        if (Repository.isFreeSlots(player, ItemId.Leg) != 0) return;
+                        Repository.Remove(player, $"char_{characterData.UUID}", "inventory", EventCoins, 650);
+                        Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", ItemId.Leg, 1,
+                            $"223_{rand.Next(0, 3)}_False");
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            "Вы успешно обменяли свои подарки на рождественские штаны", 6000);
                         break;
                     case 4:
                         if (650 > count)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "У вас нет столько подарков", 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                "У вас нет столько подарков", 3000);
                             return;
                         }
-                        if (Chars.Repository.isFreeSlots(player, ItemId.Jewelry, 1) != 0) return;
-                        Chars.Repository.Remove(player, $"char_{characterData.UUID}", inventory", EventCoins, 650);
-                        Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", ItemId.Top, 1, $"605_{rand.Next(0, 3)}_False");
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы успешно обменяли свои подарки на рождественский топ", 6000);
+
+                        if (Repository.isFreeSlots(player, ItemId.Jewelry) != 0) return;
+                        Repository.Remove(player, $"char_{characterData.UUID}", "inventory", EventCoins, 650);
+                        Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", ItemId.Top, 1,
+                            $"605_{rand.Next(0, 3)}_False");
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            "Вы успешно обменяли свои подарки на рождественский топ", 6000);
                         break;
                     case 5:
                         if (1000 > count)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "У вас нет столько подарков", 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                "У вас нет столько подарков", 3000);
                             return;
                         }
-                        if (Chars.Repository.isFreeSlots(player, ItemId.Jewelry, 1) != 0) return;
-                        Chars.Repository.Remove(player, $"char_{characterData.UUID}", inventory", EventCoins, 1000);
-                        Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", ItemId.Jewelry, 1, $"176_{rand.Next(0, 3)}_False");
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы успешно обменяли свои подарки на леденцы", 6000);
+
+                        if (Repository.isFreeSlots(player, ItemId.Jewelry) != 0) return;
+                        Repository.Remove(player, $"char_{characterData.UUID}", "inventory", EventCoins, 1000);
+                        Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", ItemId.Jewelry, 1,
+                            $"176_{rand.Next(0, 3)}_False");
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            "Вы успешно обменяли свои подарки на леденцы", 6000);
                         break;
                     case 6:
                         if (1500 > count)
                         {
-                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, "У вас нет столько коинов", 3000);
+                            Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                                "У вас нет столько коинов", 3000);
                             return;
                         }
-                        if (Chars.Repository.isFreeSlots(player, ItemId.CarCoupon, 1) != 0) return;
-                        Chars.Repository.Remove(player, $"char_{characterData.UUID}", inventory", EventCoins, 1500);
-                        Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", ItemId.CarCoupon, 1, $snowbike");
-                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы успешно обменяли свои подарки на снегоход!", 6000);
+
+                        if (Repository.isFreeSlots(player, ItemId.CarCoupon) != 0) return;
+                        Repository.Remove(player, $"char_{characterData.UUID}", "inventory", EventCoins, 1500);
+                        Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", ItemId.CarCoupon, 1,
+                            "snowbike");
+                        Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                            "Вы успешно обменяли свои подарки на снегоход!", 6000);
                         break;
                     default:
                         return;
@@ -502,7 +542,7 @@ namespace NeptuneEvo.Events
             }
             catch (Exception e)
             {
-                Log.Write($"buyItem Exception: {e.ToString()}");
+                Log.Write($"buyItem Exception: {e}");
             }
         }
     }

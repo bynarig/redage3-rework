@@ -1,6 +1,6 @@
-﻿using GTANetworkAPI;
+﻿using System;
+using GTANetworkAPI;
 using NeptuneEvo.Handles;
-using System;
 
 namespace NeptuneEvo.Players.Models
 {
@@ -12,7 +12,7 @@ namespace NeptuneEvo.Players.Models
         public int WorkWay { get; set; } = -1;
         public int WorkCheck { get; set; } = -1;
         public bool OnDuty { get; set; } = false;
-        public string OnDutyName { get; set; } = String.Empty;
+        public string OnDutyName { get; set; } = string.Empty;
         public ExtPlayer Player { get; set; } = null;
         public int TimerCount { get; set; } = 0;
         public Vector3 Position { get; set; } = new Vector3();

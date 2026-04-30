@@ -2,7 +2,7 @@
 {
     public class PhoneContactsData
     {
-        public string Name;
         public string Avatar;
+        public string Name;
     }
 }

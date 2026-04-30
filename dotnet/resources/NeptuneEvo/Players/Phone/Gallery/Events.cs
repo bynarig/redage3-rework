@@ -6,11 +6,15 @@ namespace NeptuneEvo.Players.Phone.Gallery
     public class Events : Script
     {
         [RemoteEvent("server.phone.addGallery")]
-        public void AddGallery(ExtPlayer player, string link) =>
-            Repository.AddGallery(player, link);   
-        
+        public void AddGallery(ExtPlayer player, string link)
+        {
+            Repository.AddGallery(player, link);
+        }
+
         [RemoteEvent("server.phone.dellGallery")]
-        public void DellGallery(ExtPlayer player, string link) =>
-            Repository.DellGallery(player, link);       
+        public void DellGallery(ExtPlayer player, string link)
+        {
+            Repository.DellGallery(player, link);
+        }
     }
 }

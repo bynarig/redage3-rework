@@ -1,25 +1,23 @@
 ﻿using GTANetworkAPI;
 using NeptuneEvo.Handles;
 using NeptuneEvo.Players;
-using NeptuneEvoSDK;
-using System;
-using System.Threading.Tasks;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Accounts.Autorization
 {
-    class Events : Script
+    internal class Events : Script
     {
         private static readonly nLog Log = new nLog("Accounts.Autorization.Events");
 
-        [RemoteEvent(signin")]
+        [RemoteEvent("signin")]
         private void TryAutorize(ExtPlayer player, string loginOrEmail, string password)
         {
             var sessionData = player.GetSessionData();
             if (sessionData == null) return;
-            
+
             if (Players.Queue.Repository.List.Contains(player))
                 return;
-            
+
             Trigger.SetTask(async () =>
             {
                 password = Accounts.Repository.GetSha256(password);

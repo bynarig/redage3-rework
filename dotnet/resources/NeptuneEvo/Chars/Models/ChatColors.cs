@@ -1,7 +1,6 @@
-﻿
-namespace NeptuneEvo.Chars.Models
+﻿namespace NeptuneEvo.Chars.Models
 {
-    class ChatColors
+    internal class ChatColors
     {
         public static readonly string AdminChat = "!{#F3C109}";
         public static readonly string LAdmin = "!{#F3A509}";

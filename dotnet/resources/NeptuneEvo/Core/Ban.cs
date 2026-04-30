@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using Npgsql;
-using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
-using NeptuneEvo.Character;
-using NeptuneEvoSDK;
-using Database;
 using System.Threading.Tasks;
+using Database;
 using LinqToDB;
+using NeptuneEvo.Accounts;
+using NeptuneEvo.Character;
+using NeptuneEvo.Handles;
+using NeptuneEvo.Players;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Core
 {
-    class Ban
+    internal class Ban
     {
         private static readonly nLog Log = new nLog("Core.Ban");
 
@@ -25,7 +19,7 @@ namespace NeptuneEvo.Core
         {
             try
             {
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                 return await db.Banned
                     .Where(b => b.Hwid == hwid)
@@ -34,8 +28,9 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"Delete Exception: {e.ToString()}");
+                Log.Write($"Delete Exception: {e}");
             }
+
             return null;
         }
 
@@ -50,8 +45,9 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"Delete Exception: {e.ToString()}");
+                Log.Write($"Delete Exception: {e}");
             }
+
             return null;
         }
 
@@ -59,7 +55,7 @@ namespace NeptuneEvo.Core
         {
             try
             {
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                 return await db.Banned
                     .Where(b => b.Account.ToLower() == Login.ToLower())
@@ -67,8 +63,9 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"Delete Exception: {e.ToString()}");
+                Log.Write($"Delete Exception: {e}");
             }
+
             return null;
         }
 
@@ -91,7 +88,7 @@ namespace NeptuneEvo.Core
                         return;
                     }
 
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                     await db.InsertAsync(new Banneds
                     {
@@ -110,11 +107,13 @@ namespace NeptuneEvo.Core
                 }
                 catch (Exception e)
                 {
-                    Log.Write($"Online Exception: {e.ToString()}");
+                    Log.Write($"Online Exception: {e}");
                 }
             });
         }
-        public static void OfflineBanToNickName(string nickname, DateTime until, bool ishard, string reason, string admin)
+
+        public static void OfflineBanToNickName(string nickname, DateTime until, bool ishard, string reason,
+            string admin)
         {
             Trigger.SetTask(async () =>
             {
@@ -122,20 +121,20 @@ namespace NeptuneEvo.Core
                 {
                     if (!Main.PlayerUUIDs.ContainsKey(nickname)) return;
 
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                     var isBan = await db.Banned
                         .AnyAsync(b => b.Name.ToLower() == nickname.ToLower());
 
                     if (isBan) return;
 
-                    int uuid = Main.PlayerUUIDs[nickname];
+                    var uuid = Main.PlayerUUIDs[nickname];
                     if (uuid == -1) return;
 
-                    string ip = "";
-                    string socialclub = "";
-                    string login = "";
-                    string hwid = "";
+                    var ip = "";
+                    var socialclub = "";
+                    var login = "";
+                    var hwid = "";
 
                     if (ishard)
                     {
@@ -149,7 +148,7 @@ namespace NeptuneEvo.Core
                                 a.Hwid,
                                 a.Socialclub,
                                 a.Ip,
-                                a.Login,
+                                a.Login
                             })
                             .Where(a => a.Login.ToLower() == login.ToLower())
                             .FirstOrDefaultAsync();
@@ -179,10 +178,10 @@ namespace NeptuneEvo.Core
                 }
                 catch (Exception e)
                 {
-                    Log.Write($"Online Exception: {e.ToString()}");
+                    Log.Write($"Online Exception: {e}");
                 }
             });
-         }
+        }
 
         public static void OfflineBanToLogin(string login, DateTime until, bool ishard, string reason, string admin)
         {
@@ -190,16 +189,16 @@ namespace NeptuneEvo.Core
             {
                 try
                 {
-                    await using var db = new ServerBD(MainDB");//В отдельном потоке
+                    await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                     var isBan = await db.Banned
                         .AnyAsync(b => b.Account.ToLower() == login.ToLower());
 
                     if (isBan) return;
 
-                    string ip = "";
-                    string socialclub = "";
-                    string hwid = "";
+                    var ip = "";
+                    var socialclub = "";
+                    var hwid = "";
 
                     if (ishard)
                     {
@@ -209,7 +208,7 @@ namespace NeptuneEvo.Core
                                 a.Hwid,
                                 a.Socialclub,
                                 a.Ip,
-                                a.Login,
+                                a.Login
                             })
                             .Where(a => a.Login.ToLower() == login.ToLower())
                             .FirstOrDefaultAsync();
@@ -221,7 +220,7 @@ namespace NeptuneEvo.Core
                         login = account.Login;
                         hwid = account.Hwid;
                     }
-                    
+
                     await db.InsertAsync(new Banneds
                     {
                         Uuid = -1,
@@ -239,7 +238,7 @@ namespace NeptuneEvo.Core
                 }
                 catch (Exception e)
                 {
-                    Log.Write($"Online Exception: {e.ToString()}");
+                    Log.Write($"Online Exception: {e}");
                 }
             });
         }
@@ -248,7 +247,7 @@ namespace NeptuneEvo.Core
         {
             try
             {
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                 var isBan = await db.Banned
                     .AnyAsync(b => b.Name.ToLower() == nickname.ToLower());
@@ -264,8 +263,9 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"Delete Exception: {e.ToString()}");
+                Log.Write($"Delete Exception: {e}");
             }
+
             return false;
         }
 
@@ -273,7 +273,7 @@ namespace NeptuneEvo.Core
         {
             try
             {
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                 var isBan = await db.Banned
                     .AnyAsync(b => b.Name.ToLower() == nickname.ToLower());
@@ -288,15 +288,17 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"Delete Exception: {e.ToString()}");
+                Log.Write($"Delete Exception: {e}");
             }
+
             return false;
         }
+
         public static async Task<bool> PardonLogin(string login)
         {
             try
             {
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                 var isBan = await db.Banned
                     .AnyAsync(b => b.Account.ToLower() == login.ToLower());
@@ -311,25 +313,27 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"Delete Exception: {e.ToString()}");
+                Log.Write($"Delete Exception: {e}");
             }
+
             return false;
         }
+
         public static async void Delete()
         {
             try
             {
-                await using var db = new ServerBD(MainDB");//В отдельном потоке
+                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                 db.Banned
                     .Where(b => DateTime.Now > b.Until)
                     .Delete();
 
-                Log.Write($"Banned Deleted");
+                Log.Write("Banned Deleted");
             }
             catch (Exception e)
             {
-                Log.Write($"Delete Exception: {e.ToString()}");
+                Log.Write($"Delete Exception: {e}");
             }
         }
     }

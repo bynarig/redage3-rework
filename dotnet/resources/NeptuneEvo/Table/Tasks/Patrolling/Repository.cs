@@ -6,19 +6,20 @@ using NeptuneEvo.Core;
 using NeptuneEvo.Fractions.Player;
 using NeptuneEvo.Functions;
 using NeptuneEvo.Handles;
+using NeptuneEvo.MoneySystem;
 using NeptuneEvo.Players;
 using NeptuneEvo.Table.Tasks.Models;
 using NeptuneEvo.Table.Tasks.Patrolling.Models;
 using NeptuneEvo.Table.Tasks.Player;
 using NeptuneEvo.VehicleData.LocalData;
 using NeptuneEvo.VehicleData.LocalData.Models;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Table.Tasks.Patrolling
 {
     public class Repository
     {
-        public static List<PatrollingData> Patrollings = new List<PatrollingData>()
+        public static List<PatrollingData> Patrollings = new List<PatrollingData>
         {
             new PatrollingData(new Vector3(-1256.225, -619.0381, 27.727465), Fractions.Models.Fractions.CITY, false),
             new PatrollingData(new Vector3(-1221.8608, -613.9773, 27.525997), Fractions.Models.Fractions.CITY, false),
@@ -65,7 +66,6 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             new PatrollingData(new Vector3(-1462.9739, -734.75726, 25.160406), Fractions.Models.Fractions.CITY, false),
             new PatrollingData(new Vector3(-1405.7926, -729.2114, 24.266943), Fractions.Models.Fractions.CITY, false),
             new PatrollingData(new Vector3(-1328.2487, -672.1874, 27.137543), Fractions.Models.Fractions.CITY, false),
-
 
 
             new PatrollingData(new Vector3(-1220.3221, -498.48834, 81.724266), Fractions.Models.Fractions.CITY, true),
@@ -254,23 +254,31 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             new PatrollingData(new Vector3(-959.27075, 263.7596, 69.671036), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-1209.0089, 245.72504, 67.824905), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-1382.3931, 207.46179, 58.843464), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-1435.5446, -36.928932, 52.804237), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-1524.6296, -135.78793, 52.742287), Fractions.Models.Fractions.POLICE, false),
+            new PatrollingData(new Vector3(-1435.5446, -36.928932, 52.804237), Fractions.Models.Fractions.POLICE,
+                false),
+            new PatrollingData(new Vector3(-1524.6296, -135.78793, 52.742287), Fractions.Models.Fractions.POLICE,
+                false),
             new PatrollingData(new Vector3(-1625.1959, -270.44873, 52.98649), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-1788.9479, -312.6457, 43.792297), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-1997.152, -165.63522, 29.69407), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-2166.579, -318.33334, 13.178037), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-2132.2913, -371.54953, 13.129971), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-1991.4103, -465.53836, 11.667137), Fractions.Models.Fractions.POLICE, false),
+            new PatrollingData(new Vector3(-2132.2913, -371.54953, 13.129971), Fractions.Models.Fractions.POLICE,
+                false),
+            new PatrollingData(new Vector3(-1991.4103, -465.53836, 11.667137), Fractions.Models.Fractions.POLICE,
+                false),
             new PatrollingData(new Vector3(-1740.979, -692.47784, 10.335727), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-1595.752, -783.0592, 11.740644), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-1396.0168, -828.38324, 19.141579), Fractions.Models.Fractions.POLICE, false),
+            new PatrollingData(new Vector3(-1396.0168, -828.38324, 19.141579), Fractions.Models.Fractions.POLICE,
+                false),
             new PatrollingData(new Vector3(-1407.981, -763.7598, 22.069786), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-1515.1504, -683.4277, 28.59727), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-1493.2777, -634.72375, 30.281631), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-1397.6532, -576.45776, 30.435358), Fractions.Models.Fractions.POLICE, false),
+            new PatrollingData(new Vector3(-1493.2777, -634.72375, 30.281631), Fractions.Models.Fractions.POLICE,
+                false),
+            new PatrollingData(new Vector3(-1397.6532, -576.45776, 30.435358), Fractions.Models.Fractions.POLICE,
+                false),
             new PatrollingData(new Vector3(-1319.4304, -528.5588, 32.821396), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-1268.4808, -559.77576, 29.948454), Fractions.Models.Fractions.POLICE, false),
+            new PatrollingData(new Vector3(-1268.4808, -559.77576, 29.948454), Fractions.Models.Fractions.POLICE,
+                false),
             new PatrollingData(new Vector3(-1169.2819, -675.7398, 22.647078), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-1118.6882, -727.7626, 20.503237), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-1034.9261, -736.0162, 19.591213), Fractions.Models.Fractions.POLICE, false),
@@ -280,16 +288,22 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             new PatrollingData(new Vector3(-623.11456, -580.8458, 34.70794), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-624.0508, -449.5713, 34.886555), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-592.8198, -325.32684, 35.023697), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-473.25452, -269.03238, 35.868763), Fractions.Models.Fractions.POLICE, false),
+            new PatrollingData(new Vector3(-473.25452, -269.03238, 35.868763), Fractions.Models.Fractions.POLICE,
+                false),
             new PatrollingData(new Vector3(-418.86136, -289.30505, 35.53829), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-261.93622, -403.15875, 30.276148), Fractions.Models.Fractions.POLICE, false),
+            new PatrollingData(new Vector3(-261.93622, -403.15875, 30.276148), Fractions.Models.Fractions.POLICE,
+                false),
             new PatrollingData(new Vector3(-232.08899, -571.91473, 34.66944), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(-241.31047, -693.0808, 33.52899), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-275.84738, -813.77234, 31.850292), Fractions.Models.Fractions.POLICE, false),
+            new PatrollingData(new Vector3(-275.84738, -813.77234, 31.850292), Fractions.Models.Fractions.POLICE,
+                false),
             new PatrollingData(new Vector3(-179.96681, -906.4806, 29.430235), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-50.372105, -956.47784, 29.441505), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-100.72259, -1120.7435, 25.894571), Fractions.Models.Fractions.POLICE, false),
-            new PatrollingData(new Vector3(-100.02754, -1332.4106, 29.478003), Fractions.Models.Fractions.POLICE, false),
+            new PatrollingData(new Vector3(-50.372105, -956.47784, 29.441505), Fractions.Models.Fractions.POLICE,
+                false),
+            new PatrollingData(new Vector3(-100.72259, -1120.7435, 25.894571), Fractions.Models.Fractions.POLICE,
+                false),
+            new PatrollingData(new Vector3(-100.02754, -1332.4106, 29.478003), Fractions.Models.Fractions.POLICE,
+                false),
             new PatrollingData(new Vector3(-17.60837, -1375.966, 29.392216), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(125.10415, -1402.6366, 29.333431), Fractions.Models.Fractions.POLICE, false),
             new PatrollingData(new Vector3(78.18155, -1492.2083, 29.454636), Fractions.Models.Fractions.POLICE, false),
@@ -351,13 +365,15 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             new PatrollingData(new Vector3(-1000.60297, 508.87808, 281.85645), Fractions.Models.Fractions.POLICE, true),
             new PatrollingData(new Vector3(-433.7258, 426.14124, 287.34882), Fractions.Models.Fractions.POLICE, true),
             new PatrollingData(new Vector3(-5.9694533, 66.62714, 305.86322), Fractions.Models.Fractions.POLICE, true),
-            new PatrollingData(new Vector3(-0.65422887, -362.68286, 321.16125), Fractions.Models.Fractions.POLICE, true),
+            new PatrollingData(new Vector3(-0.65422887, -362.68286, 321.16125), Fractions.Models.Fractions.POLICE,
+                true),
             new PatrollingData(new Vector3(-237.28537, -572.1071, 322.78363), Fractions.Models.Fractions.POLICE, true),
             new PatrollingData(new Vector3(-630.05524, -501.48517, 282.80014), Fractions.Models.Fractions.POLICE, true),
             new PatrollingData(new Vector3(-1124.4049, -455.56717, 236.92079), Fractions.Models.Fractions.POLICE, true),
             new PatrollingData(new Vector3(-1232.3433, -773.9763, 222.76161), Fractions.Models.Fractions.POLICE, true),
             new PatrollingData(new Vector3(-618.12915, -1017.1297, 216.35843), Fractions.Models.Fractions.POLICE, true),
-            new PatrollingData(new Vector3(-127.670105, -1095.5613, 228.70741), Fractions.Models.Fractions.POLICE, true),
+            new PatrollingData(new Vector3(-127.670105, -1095.5613, 228.70741), Fractions.Models.Fractions.POLICE,
+                true),
             new PatrollingData(new Vector3(330.80554, -932.4854, 234.63297), Fractions.Models.Fractions.POLICE, true),
             new PatrollingData(new Vector3(902.56116, 106.94358, 262.12546), Fractions.Models.Fractions.POLICE, true),
             new PatrollingData(new Vector3(772.3645, 487.73227, 370.51892), Fractions.Models.Fractions.POLICE, true),
@@ -366,34 +382,43 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             new PatrollingData(new Vector3(217.92741, -941.92035, 232.74593), Fractions.Models.Fractions.POLICE, true),
 
             new PatrollingData(new Vector3(-435.78445, 6039.327, 31.507017), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-412.61078, 6002.9917, 31.723356), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-506.63486, 5839.2812, 34.352345), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-412.61078, 6002.9917, 31.723356), Fractions.Models.Fractions.SHERIFF,
+                false),
+            new PatrollingData(new Vector3(-506.63486, 5839.2812, 34.352345), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-676.1582, 5563.0376, 38.61126), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-936.7863, 5419.5073, 38.133423), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-1042.827, 5352.1626, 43.790836), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-1227.3765, 5268.103, 50.368282), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-1385.5404, 5102.8115, 61.327816), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-1385.5404, 5102.8115, 61.327816), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-1589.6523, 4917.3916, 61.51922), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-1815.1758, 4710.212, 57.17115), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-1989.1313, 4535.5815, 57.193897), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-1989.1313, 4535.5815, 57.193897), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-2198.298, 4385.116, 55.04932), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-2268.13, 4244.123, 44.05079), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-2334.9177, 4096.516, 34.318424), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-2434.3096, 3842.0745, 23.513044), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-2434.3096, 3842.0745, 23.513044), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-2546.675, 3470.0784, 13.70308), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-2596.7063, 3186.28, 14.189835), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-2656.3235, 2698.895, 16.823923), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-2691.6538, 2457.6228, 16.822334), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-2691.6538, 2457.6228, 16.822334), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-2720.8137, 2284.449, 19.321999), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-2582.4685, 2282.826, 30.162163), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-2379.8823, 2257.557, 33.1886), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-2095.6719, 2309.0474, 37.7643), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-1613.742, 2414.9814, 26.279442), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-1281.5988, 2504.8267, 20.73912), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-1066.1753, 2703.2893, 21.441378), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-889.29694, 2747.0261, 23.763391), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-1066.1753, 2703.2893, 21.441378), Fractions.Models.Fractions.SHERIFF,
+                false),
+            new PatrollingData(new Vector3(-889.29694, 2747.0261, 23.763391), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-670.0458, 2833.397, 29.861536), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-414.38754, 2859.8787, 38.462803), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-414.38754, 2859.8787, 38.462803), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-156.54396, 2852.378, 49.051365), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(88.53969, 2709.0332, 54.480194), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(271.41785, 2628.9495, 44.80214), Fractions.Models.Fractions.SHERIFF, false),
@@ -434,11 +459,13 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             new PatrollingData(new Vector3(345.20547, 6579.3105, 28.686556), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(163.55682, 6547.252, 32.061356), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(89.033966, 6597.265, 31.69093), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-10.954446, 6635.7886, 31.237652), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-10.954446, 6635.7886, 31.237652), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-166.499, 6496.158, 29.869123), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-151.36891, 6455.022, 31.526047), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-132.91626, 6402.582, 31.574314), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-212.92207, 6325.3115, 31.586805), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-212.92207, 6325.3115, 31.586805), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-380.28226, 6159.494, 31.467808), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-448.5584, 6074.729, 31.56399), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-580.1345, 6099.1177, 9.577941), Fractions.Models.Fractions.SHERIFF, false),
@@ -446,12 +473,14 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             new PatrollingData(new Vector3(-707.2044, 5824.845, 17.335377), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-778.2251, 5651.6177, 24.395594), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-780.172, 5510.0996, 34.809193), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-688.65576, 5536.5435, 38.020756), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-688.65576, 5536.5435, 38.020756), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-544.789, 5727.5137, 36.90692), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-321.9298, 6047.3345, 31.328764), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-239.1121, 6136.8657, 31.366148), Fractions.Models.Fractions.SHERIFF, false),
             new PatrollingData(new Vector3(-250.78296, 6181.5894, 31.52383), Fractions.Models.Fractions.SHERIFF, false),
-            new PatrollingData(new Vector3(-320.07416, 6219.9346, 31.490904), Fractions.Models.Fractions.SHERIFF, false),
+            new PatrollingData(new Vector3(-320.07416, 6219.9346, 31.490904), Fractions.Models.Fractions.SHERIFF,
+                false),
             new PatrollingData(new Vector3(-424.5723, 6114.294, 31.985092), Fractions.Models.Fractions.SHERIFF, false),
 
             new PatrollingData(new Vector3(-391.6895, 6049.8545, 84.425995), Fractions.Models.Fractions.SHERIFF, true),
@@ -481,7 +510,8 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             new PatrollingData(new Vector3(-1089.6853, 4943.7803, 370.72287), Fractions.Models.Fractions.SHERIFF, true),
             new PatrollingData(new Vector3(-560.32513, 5629.6733, 383.79056), Fractions.Models.Fractions.SHERIFF, true),
             new PatrollingData(new Vector3(-337.87354, 6110.58, 131.24107), Fractions.Models.Fractions.SHERIFF, true),
-            new PatrollingData(new Vector3(-123.263756, 6560.3555, 128.96007), Fractions.Models.Fractions.SHERIFF, true),
+            new PatrollingData(new Vector3(-123.263756, 6560.3555, 128.96007), Fractions.Models.Fractions.SHERIFF,
+                true),
             new PatrollingData(new Vector3(-91.34745, 6768.1987, 143.32439), Fractions.Models.Fractions.SHERIFF, true),
             new PatrollingData(new Vector3(-252.48663, 6534.621, 160.19574), Fractions.Models.Fractions.SHERIFF, true),
 
@@ -578,12 +608,16 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             new PatrollingData(new Vector3(-2425.977, 3287.6086, 139.09666), Fractions.Models.Fractions.ARMY, true),
             new PatrollingData(new Vector3(-2476.207, 3026.8855, 157.77496), Fractions.Models.Fractions.ARMY, true),
             new PatrollingData(new Vector3(-1928.0222, 2792.3298, 179.42023), Fractions.Models.Fractions.ARMY, true),
-            new PatrollingData(new Vector3(-2030.6284, 3109.938, 147.45532), Fractions.Models.Fractions.ARMY, true),
+            new PatrollingData(new Vector3(-2030.6284, 3109.938, 147.45532), Fractions.Models.Fractions.ARMY, true)
         };
 
-        public static bool IsFractionPatrolling(Fractions.Models.Fractions fraction, bool isAir) =>
-            Patrollings.Any(p => p.Fraction == fraction && p.IsAir == isAir);
-        
+        public static int Payment = 400;
+
+        public static bool IsFractionPatrolling(Fractions.Models.Fractions fraction, bool isAir)
+        {
+            return Patrollings.Any(p => p.Fraction == fraction && p.IsAir == isAir);
+        }
+
         public static void ResourceInit()
         {
             try
@@ -592,9 +626,11 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
                 foreach (var patrolling in Patrollings)
                 {
                     if (!patrolling.IsAir)
-                        CustomColShape.CreateCylinderColShape(patrolling.Position, 4, 3, 0, ColShapeEnums.Patrolling, index);
+                        CustomColShape.CreateCylinderColShape(patrolling.Position, 4, 3, 0, ColShapeEnums.Patrolling,
+                            index);
                     else
-                        CustomColShape.CreateSphereColShape(patrolling.Position, 15, 0, ColShapeEnums.Patrolling, index);
+                        CustomColShape.CreateSphereColShape(patrolling.Position, 15, 0, ColShapeEnums.Patrolling,
+                            index);
                     index++;
                 }
             }
@@ -604,29 +640,27 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             }
         }
 
-        public static int Payment = 400;
-
-        [Interaction(ColShapeEnums.Patrolling, In: true)]
+        [Interaction(ColShapeEnums.Patrolling, true)]
         public void InPatrolling(ExtPlayer player, int index)
         {
             try
             {
                 var sessionData = player.GetSessionData();
-                if (sessionData == null) 
+                if (sessionData == null)
                     return;
 
-                if (!NAPI.Player.IsPlayerInAnyVehicle(player)) 
+                if (!NAPI.Player.IsPlayerInAnyVehicle(player))
                     return;
-                
-                var vehicle = (ExtVehicle) player.Vehicle;
+
+                var vehicle = (ExtVehicle)player.Vehicle;
                 var vehicleLocalData = vehicle.GetVehicleLocalData();
                 if (vehicleLocalData == null)
                     return;
-                
+
                 var fracId = player.GetFractionId();
                 if (vehicleLocalData.Access != VehicleAccess.Fraction || vehicleLocalData.Fraction != fracId)
                     return;
-                
+
                 var tableTaskData = sessionData.TableTaskData;
                 if (!tableTaskData.IsPatrolling)
                     return;
@@ -635,16 +669,18 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
 
                 if (Patrollings.Count <= index)
                     return;
-                
+
                 var patrollingData = Patrollings[index];
-                var isEnd = Patrollings.Count <= (index + 1) || Patrollings[(index + 1)].Fraction != patrollingData.Fraction || Patrollings[(index + 1)].IsAir != patrollingData.IsAir;
-                
+                var isEnd = Patrollings.Count <= index + 1 ||
+                            Patrollings[index + 1].Fraction != patrollingData.Fraction ||
+                            Patrollings[index + 1].IsAir != patrollingData.IsAir;
+
                 var color = new Color(255, 0, 0);
 
                 if (isEnd)
                 {
                     if (patrollingData.IsAir)
-                    {   
+                    {
                         Fractions.Table.Tasks.Repository.MissionAdd(player, 1);
                         player.AddTableScore(TableTaskId.Item4);
                     }
@@ -656,44 +692,48 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
 
                     tableTaskData.IsPatrolling = false;
                     tableTaskData.PatrollingIndex = 0;
-                    Trigger.ClientEvent(player, deleteCheckpoint", 9);
-                    Trigger.ClientEvent(player, deleteWorkBlip");
-                    
-                    MoneySystem.Wallet.Change(player, Payment);
-                    GameLog.Money(server", $"player({player.GetUUID()})", Payment, Patrolling");
-                    Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter, $"Вы закончили патруль.", 7000);
+                    Trigger.ClientEvent(player, "deleteCheckpoint", 9);
+                    Trigger.ClientEvent(player, "deleteWorkBlip");
+
+                    Wallet.Change(player, Payment);
+                    GameLog.Money("server", $"player({player.GetUUID()})", Payment, "Patrolling");
+                    Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter, "Вы закончили патруль.", 7000);
                 }
                 else
                 {
                     index += 1;
-                    
+
                     patrollingData = Patrollings[index];
                     tableTaskData.PatrollingIndex = index;
-                    
+
                     var direction = new Vector3();
 
                     var type = patrollingData.IsAir ? 12 : 1;
 
-                    if (Patrollings.Count <= (index + 1) ||
-                        Patrollings[(index + 1)].Fraction != patrollingData.Fraction ||
-                        Patrollings[(index + 1)].IsAir != patrollingData.IsAir)
+                    if (Patrollings.Count <= index + 1 ||
+                        Patrollings[index + 1].Fraction != patrollingData.Fraction ||
+                        Patrollings[index + 1].IsAir != patrollingData.IsAir)
                     {
-                        var firstIndex = Patrollings.FindIndex(p => p.Fraction == patrollingData.Fraction && p.IsAir == patrollingData.IsAir);
+                        var firstIndex = Patrollings.FindIndex(p =>
+                            p.Fraction == patrollingData.Fraction && p.IsAir == patrollingData.IsAir);
                         direction = Patrollings[firstIndex].Position - new Vector3(0, 0, 1.12);
                         type = patrollingData.IsAir ? 14 : 4;
                     }
                     else
                     {
-                        direction = Patrollings[(index + 1)].Position - new Vector3(0, 0, 1.12);
+                        direction = Patrollings[index + 1].Position - new Vector3(0, 0, 1.12);
                     }
-                    
-                    if (patrollingData.IsAir) 
-                        Trigger.ClientEvent(player, createCheckpoint", 9, type, patrollingData.Position, 15, 0, color.Red, color.Green, color.Blue, direction);
+
+                    if (patrollingData.IsAir)
+                        Trigger.ClientEvent(player, "createCheckpoint", 9, type, patrollingData.Position, 15, 0,
+                            color.Red, color.Green, color.Blue, direction);
                     else
-                        Trigger.ClientEvent(player, createCheckpoint", 9, type, patrollingData.Position - new Vector3(0, 0, 1.12), 4, 0, color.Red, color.Green, color.Blue, direction);
-                    
-                    Trigger.ClientEvent(player, createWaypoint", patrollingData.Position.X, patrollingData.Position.Y);
-                    Trigger.ClientEvent(player, createWorkBlip", patrollingData.Position);
+                        Trigger.ClientEvent(player, "createCheckpoint", 9, type,
+                            patrollingData.Position - new Vector3(0, 0, 1.12), 4, 0, color.Red, color.Green, color.Blue,
+                            direction);
+
+                    Trigger.ClientEvent(player, "createWaypoint", patrollingData.Position.X, patrollingData.Position.Y);
+                    Trigger.ClientEvent(player, "createWorkBlip", patrollingData.Position);
                 }
             }
             catch (Exception e)
@@ -707,38 +747,42 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
             try
             {
                 var sessionData = player.GetSessionData();
-                if (sessionData == null) 
+                if (sessionData == null)
                     return false;
 
                 var tableTaskData = sessionData.TableTaskData;
-                
+
                 var fractionData = player.GetFractionData();
                 if (fractionData == null)
                     return false;
-                
-                
-                var index = Patrollings.FindIndex(p => p.Fraction == (Fractions.Models.Fractions) fractionData.Id && p.IsAir == isAir);
+
+
+                var index = Patrollings.FindIndex(p =>
+                    p.Fraction == (Fractions.Models.Fractions)fractionData.Id && p.IsAir == isAir);
 
                 if (Patrollings.Count <= index)
                     return false;
 
                 tableTaskData.IsPatrolling = true;
                 tableTaskData.PatrollingIndex = index;
-                
+
                 var color = new Color(255, 0, 0);
                 var patrollingData = Patrollings[index];
-                
-                if (patrollingData.IsAir) 
-                    Trigger.ClientEvent(player, createCheckpoint", 9, 12, patrollingData.Position, 15, 0, color.Red, color.Green, color.Blue, Patrollings[(index + 1)].Position);
-                else
-                    Trigger.ClientEvent(player, createCheckpoint", 9, 1, patrollingData.Position - new Vector3(0, 0, 1.12), 4, 0, color.Red, color.Green, color.Blue, Patrollings[(index + 1)].Position);
-                    
-                Trigger.ClientEvent(player, createWaypoint", patrollingData.Position.X, patrollingData.Position.Y);
-                Trigger.ClientEvent(player, createWorkBlip", patrollingData.Position);
-                
-                Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter, $"Вы взяли задание, метка уже стоит на карте.", 7000);
-                return true;
 
+                if (patrollingData.IsAir)
+                    Trigger.ClientEvent(player, "createCheckpoint", 9, 12, patrollingData.Position, 15, 0, color.Red,
+                        color.Green, color.Blue, Patrollings[index + 1].Position);
+                else
+                    Trigger.ClientEvent(player, "createCheckpoint", 9, 1,
+                        patrollingData.Position - new Vector3(0, 0, 1.12), 4, 0, color.Red, color.Green, color.Blue,
+                        Patrollings[index + 1].Position);
+
+                Trigger.ClientEvent(player, "createWaypoint", patrollingData.Position.X, patrollingData.Position.Y);
+                Trigger.ClientEvent(player, "createWorkBlip", patrollingData.Position);
+
+                Notify.Send(player, NotifyType.Info, NotifyPosition.BottomCenter,
+                    "Вы взяли задание, метка уже стоит на карте.", 7000);
+                return true;
             }
             catch (Exception e)
             {
@@ -747,6 +791,5 @@ namespace NeptuneEvo.Table.Tasks.Patrolling
 
             return false;
         }
-
     }
 }

@@ -7,6 +7,8 @@ namespace NeptuneEvo.Players.Phone.Forbes
     {
         [RemoteEvent("server.phone.forbes.load")]
         public void OnLoad(ExtPlayer player)
-            => Repository.OnLoad(player);
+        {
+            Repository.OnLoad(player);
+        }
     }
 }

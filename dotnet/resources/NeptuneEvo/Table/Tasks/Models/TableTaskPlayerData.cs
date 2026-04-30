@@ -2,8 +2,8 @@
 {
     public class TableTaskPlayerData
     {
-        public TableTaskId Id;
         public int Count;
+        public TableTaskId Id;
         public bool Success;
         public int Time;
     }

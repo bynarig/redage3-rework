@@ -1,20 +1,20 @@
-﻿using GTANetworkAPI;
+﻿using System.Collections.Generic;
 using NeptuneEvo.Handles;
-using System.Collections.Generic;
 
 namespace NeptuneEvo.NewCasino
 {
     /// <summary>
-    /// Данные пользователя
+    ///     Данные пользователя
     /// </summary>
     public class BlackjackDealerInfo
     {
         #region Свойства
 
         /// <summary>
-        /// Колличество
+        ///     Колличество
         /// </summary>
         public List<ExtPlayer> Players = new List<ExtPlayer>();
+
         public List<ExtPlayer> GamePlayers = new List<ExtPlayer>();
         public List<string> Hand = new List<string>();
         public List<string> Cards = new List<string>();
@@ -22,6 +22,5 @@ namespace NeptuneEvo.NewCasino
         public bool GameRunning = false;
 
         #endregion
-
     }
 }

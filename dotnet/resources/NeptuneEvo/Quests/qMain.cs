@@ -1,35 +1,37 @@
-﻿using Database;
-using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Chars;
-
-using System.Linq;
-using LinqToDB;
-using NeptuneEvoSDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using NeptuneEvo.Events;
-using NeptuneEvo.Jobs;
-using System.Collections.Concurrent;
-using Localization;
+using Database;
+using GTANetworkAPI;
+using LinqToDB;
+using NeptuneEvo.Localization;
 using NeptuneEvo.Character;
-using NeptuneEvo.Quests.Models;
 using NeptuneEvo.Character.Models;
+using NeptuneEvo.Chars;
+using NeptuneEvo.Core;
 using NeptuneEvo.Fractions;
 using NeptuneEvo.Functions;
+using NeptuneEvo.Handles;
+using NeptuneEvo.Houses;
+using NeptuneEvo.Jobs;
 using NeptuneEvo.Players;
+using NeptuneEvo.Quests.Models;
+using NeptuneEvo.VehicleModel;
+using Newtonsoft.Json;
+using NeptuneEvo.SDK;
+using Manager = NeptuneEvo.Organizations.Manager;
+using Repository = NeptuneEvo.BattlePass.Repository;
 
 namespace NeptuneEvo.Quests
 {
-    class qMain : Script
+    internal class qMain : Script
     {
         private static readonly nLog Log = new nLog("Quests.Main");
 
-        private static string[] DefaultQuests = new string[]
+        private static readonly string[] DefaultQuests =
         {
-            Zdobich.QuestName,
+            Zdobich.QuestName
         };
 
 
@@ -40,47 +42,48 @@ namespace NeptuneEvo.Quests
             {
                 if (!player.IsCharacterData()) return;
                 var questData = player.GetQuest();
-                if (questData == null) 
+                if (questData == null)
                     return;
 
                 if (isClose)
                 {
                     player.ClearQuest();
-                    
-                    BattlePass.Repository.UpdateReward(player, 97);
+
+                    Repository.UpdateReward(player, 97);
                 }
 
-               
-                if (questData.ActorName == npc_airdrop") Events.AirDrop.Repository.Perform(player);
-                else if (questData.ActorName == npc_oressale") Miner.Perform(player);
-                else if (questData.ActorName == npc_fracpolic") Fractions.Police.Perform(player);
-                else if (questData.ActorName == npc_fracsheriff") Fractions.Sheriff.Perform(player);
-                else if (questData.ActorName == npc_premium") 
-                    Core.BusinessManager.OpenClothes(player, null, true, addClothes: new List<string> { ClothesComponent.Bugs.ToString(), ClothesComponent.Masks.ToString() });
-                else if (questData.ActorName == npc_stock") Stock.Perform(player, 0);
-                else if (questData.ActorName == VehicleModel.DonateAutoRoom.NpcName) VehicleModel.DonateAutoRoom.Perform(player);
-                else if (questData.ActorName == VehicleModel.AirAutoRoom.NpcName) VehicleModel.AirAutoRoom.Perform(player);
-                else if (questData.ActorName == VehicleModel.EliteAutoRoom.NpcName) VehicleModel.EliteAutoRoom.Perform(player);
-                else if (questData.ActorName == npc_fracems") Fractions.Ems.Perform(player);
-                else if (questData.ActorName == npc_pet") PedSystem.Pet.Repository.RespawnPet(player);
-                else if (questData.ActorName == npc_petshop") PedSystem.Pet.Repository.OpenPetShop(player);
-                else if (questData.ActorName == npc_huntingshop") Lumberjack.Perform(player, 1);
-                else if (questData.ActorName == npc_treessell") Lumberjack.Perform(player, 2);
-                else if (questData.ActorName == npc_wedding") Wedding.Perform(player);
-                else if (questData.ActorName == npc_rieltor") Houses.Rieltagency.Repository.OnOpen(player);
+
+                if (questData.ActorName == "npc_airdrop") Events.AirDrop.Repository.Perform(player);
+                else if (questData.ActorName == "npc_oressale") Miner.Perform(player);
+                else if (questData.ActorName == "npc_fracpolic") Police.Perform(player);
+                else if (questData.ActorName == "npc_fracsheriff") Sheriff.Perform(player);
+                else if (questData.ActorName == "npc_premium")
+                    BusinessManager.OpenClothes(player, null, true,
+                        addClothes: new List<string>
+                            { ClothesComponent.Bugs.ToString(), ClothesComponent.Masks.ToString() });
+                else if (questData.ActorName == "npc_stock") Stock.Perform(player, 0);
+                else if (questData.ActorName == DonateAutoRoom.NpcName) DonateAutoRoom.Perform(player);
+                else if (questData.ActorName == AirAutoRoom.NpcName) AirAutoRoom.Perform(player);
+                else if (questData.ActorName == EliteAutoRoom.NpcName) EliteAutoRoom.Perform(player);
+                else if (questData.ActorName == "npc_fracems") Ems.Perform(player);
+                else if (questData.ActorName == "npc_pet") PedSystem.Pet.Repository.RespawnPet(player);
+                else if (questData.ActorName == "npc_petshop") PedSystem.Pet.Repository.OpenPetShop(player);
+                else if (questData.ActorName == "npc_huntingshop") Lumberjack.Perform(player, 1);
+                else if (questData.ActorName == "npc_treessell") Lumberjack.Perform(player, 2);
+                else if (questData.ActorName == "npc_wedding") Wedding.Perform(player);
+                else if (questData.ActorName == "npc_rieltor") Houses.Rieltagency.Repository.OnOpen(player);
                 else if (questData.ActorName == Zdobich.QuestName) Zdobich.Perform(player, questData);
-                else if (questData.ActorName == Houses.FurnitureManager.QuestName) Houses.HouseManager.OpenFurniture(player);
-                else if (questData.ActorName == Fractions.Ticket.QuestName) Fractions.Ticket.OpenTickets(player);
-                else if (questData.ActorName == npc_org") Organizations.Manager.Perform(player);
-                else if (questData.ActorName == npc_birthday") Wedding.OpenBonus(player, 0);
-                
-                
+                else if (questData.ActorName == FurnitureManager.QuestName) HouseManager.OpenFurniture(player);
+                else if (questData.ActorName == Ticket.QuestName) Ticket.OpenTickets(player);
+                else if (questData.ActorName == "npc_org") Manager.Perform(player);
+                else if (questData.ActorName == "npc_birthday") Wedding.OpenBonus(player, 0);
             }
             catch (Exception e)
             {
-                Log.Write($"QuestPerform Exception: {e.ToString()}");
+                Log.Write($"QuestPerform Exception: {e}");
             }
         }
+
         [RemoteEvent("server.quest.take")]
         public static void QuestTake(ExtPlayer player, int index)
         {
@@ -90,15 +93,21 @@ namespace NeptuneEvo.Quests
 
                 if (characterData == null) return;
                 var questData = player.GetQuest();
-                if (questData == null) 
+                if (questData == null)
                     return;
-                
-                player.ClearQuest();
-                BattlePass.Repository.UpdateReward(player, 97);
 
-                if (questData.ActorName == npc_stock") Stock.Perform(player, 1);
-                else if (questData.ActorName == npc_org") Organizations.Manager.Take(player);
-                else if (questData.ActorName == npc_petshop")
+                player.ClearQuest();
+                Repository.UpdateReward(player, 97);
+
+                if (questData.ActorName == "npc_stock")
+                {
+                    Stock.Perform(player, 1);
+                }
+                else if (questData.ActorName == "npc_org")
+                {
+                    Manager.Take(player);
+                }
+                else if (questData.ActorName == "npc_petshop")
                 {
                     switch (index)
                     {
@@ -109,36 +118,39 @@ namespace NeptuneEvo.Quests
                             PedSystem.Pet.Repository.Sell(player);
                             break;
                     }
+
                     return;
                 }
-                else if (questData.ActorName == npc_airdrop")
+                else if (questData.ActorName == "npc_airdrop")
                 {
                     Events.AirDrop.Repository.BuyInfo(player);
                     return;
                 }
-                else if (questData.ActorName == npc_fracpolic" || questData.ActorName == npc_fracsheriff")
+                else if (questData.ActorName == "npc_fracpolic" || questData.ActorName == "npc_fracsheriff")
                 {
-                    switch(index)
+                    switch (index)
                     {
                         case 0:
-                            Fractions.Police.PlayerSoloArrest(player);
+                            Police.PlayerSoloArrest(player);
                             break;
                         case 1:
-                            Fractions.Police.TakeIllegalStuff(player);
+                            Police.TakeIllegalStuff(player);
                             break;
                     }
                 }
-                else if (questData.ActorName == Zdobich.QuestName) 
+                else if (questData.ActorName == Zdobich.QuestName)
+                {
                     Zdobich.Take(player, questData.Line);
+                }
 
                 UpdateTake(player, questData.ActorName);
-
             }
             catch (Exception e)
             {
-                Log.Write($"QuestTake Exception: {e.ToString()}");
+                Log.Write($"QuestTake Exception: {e}");
             }
         }
+
         [RemoteEvent("server.quest.action")]
         public static void QuestAction(ExtPlayer player, bool isClose)
         {
@@ -146,19 +158,18 @@ namespace NeptuneEvo.Quests
             {
                 if (!player.IsCharacterData()) return;
                 var questData = player.GetQuest();
-                if (questData == null) 
+                if (questData == null)
                     return;
 
                 if (isClose)
                     player.ClearQuest();
 
-                if (questData.ActorName == npc_granny") Granny.Action(player, questData.Line);
-                else if (questData.ActorName == npc_fd_zak") Zak.Action(player, questData.Line);
-
+                if (questData.ActorName == "npc_granny") Granny.Action(player, questData.Line);
+                else if (questData.ActorName == "npc_fd_zak") Zak.Action(player, questData.Line);
             }
             catch (Exception e)
             {
-                Log.Write($"QuestAction Exception: {e.ToString()}");
+                Log.Write($"QuestAction Exception: {e}");
             }
         }
 
@@ -168,29 +179,31 @@ namespace NeptuneEvo.Quests
             try
             {
                 if (!player.IsCharacterData()) return;
-                BattlePass.Repository.UpdateReward(player, 97);
+                Repository.UpdateReward(player, 97);
                 player.ClearQuest();
             }
             catch (Exception e)
             {
-                Log.Write($"QuestClear Exception: {e.ToString()}");
+                Log.Write($"QuestClear Exception: {e}");
             }
         }
+
         /// <summary>
-        /// Нужно для инициализации квеста
+        ///     Нужно для инициализации квеста
         /// </summary>
-        /// <param name=player"></param>
-        /// <param name=ActorName"></param>
-        /// <param name=isInsert"></param>
-        /// <param name=Status"></param>
+        /// <param name="player"></param>
+        /// <param name="ActorName"></param>
+        /// <param name="isInsert"></param>
+        /// <param name="Status"></param>
         /// <returns></returns>
-        public static bool SetQuests(ExtPlayer player, string ActorName, bool isInsert = false, sbyte Status = 0, bool isReturn = true)
+        public static bool SetQuests(ExtPlayer player, string ActorName, bool isInsert = false, sbyte Status = 0,
+            bool isReturn = true)
         {
             try
             {
                 var characterData = player.GetCharacterData();
 
-                if (characterData == null) 
+                if (characterData == null)
                     return false;
 
                 player.ClearQuest();
@@ -200,24 +213,23 @@ namespace NeptuneEvo.Quests
 
                 if (questData == null)
                 {
-                    DateTime QuestTime = DateTime.Now;
+                    var QuestTime = DateTime.Now;
                     questData = new QuestData
                     {
                         ActorName = ActorName,
                         Line = 0,
                         Status = Status,
                         Time = QuestTime,
-                        Data = 0",
+                        Data = "0",
                         Use = true
                     };
                     characterData.QuestsData.Add(questData);
                     if (isInsert)
-                    {
                         Trigger.SetTask(async () =>
                         {
                             try
                             {
-                                await using var db = new ServerBD(MainDB");//В отдельном потоке
+                                await using var db = new ServerBD("MainDB"); //В отдельном потоке
 
                                 var sqlId = await db.InsertWithInt32IdentityAsync(new Questschars
                                 {
@@ -225,7 +237,7 @@ namespace NeptuneEvo.Quests
                                     QStatus = Status,
                                     QTime = QuestTime,
                                     CharId = characterData.UUID,
-                                    QData = 0",
+                                    QData = "0",
                                     QUse = true
                                 });
 
@@ -241,23 +253,24 @@ namespace NeptuneEvo.Quests
                                 Debugs.Repository.Exception(e);
                             }
                         });
-                    }
                     if (isReturn)
                         player.SelectQuest(new PlayerQuestModel(ActorName, isInsert ? 0 : -1, 0, false, QuestTime));
                     return true;
                 }
-                
+
                 if (isReturn)
-                    player.SelectQuest(new PlayerQuestModel(ActorName, questData.Line, questData.Status, questData.Complete, questData.Time));
-                
+                    player.SelectQuest(new PlayerQuestModel(ActorName, questData.Line, questData.Status,
+                        questData.Complete, questData.Time));
+
                 return true;
             }
             catch (Exception e)
             {
-                Log.Write($"SetQuests Exception: {e.ToString()}");
+                Log.Write($"SetQuests Exception: {e}");
                 return false;
             }
         }
+
         public static async Task<List<QuestData>> Load(ServerBD db, int uuid)
         {
             try
@@ -281,15 +294,17 @@ namespace NeptuneEvo.Quests
                         Data = questData.QData,
                         Use = questData.QUse
                     };
-                    
+
                     returnQuestsData.Add(qData);
                 }
+
                 return returnQuestsData;
             }
             catch (Exception e)
             {
-                Log.Write($"Load Exception: {e.ToString()}");
+                Log.Write($"Load Exception: {e}");
             }
+
             return new List<QuestData>();
         }
 
@@ -298,11 +313,10 @@ namespace NeptuneEvo.Quests
             try
             {
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return;
 
                 foreach (var questData in characterData.QuestsData)
-                {
                     await db.Questschar
                         .Where(q => q.CharId == uuid && q.QActorName == questData.ActorName)
                         .Set(q => q.QLine, questData.Line)
@@ -313,19 +327,19 @@ namespace NeptuneEvo.Quests
                         .Set(q => q.QData, questData.Data)
                         .Set(q => q.QUse, questData.Use)
                         .UpdateAsync();
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"Save Exception: {e.ToString()}");
+                Log.Write($"Save Exception: {e}");
             }
         }
+
         public static void InitQuests(ExtPlayer player, List<QuestData> questsData, bool isSpawn = false)
         {
             try
             {
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return;
 
                 //Инициализация стандартных кейсов
@@ -333,67 +347,64 @@ namespace NeptuneEvo.Quests
                 if (isSpawn)
                 {
                     foreach (var questName in DefaultQuests)
-                    {
                         if (!questsData.Any(q => q.ActorName == questName))
-                        {
-                            SetQuests(player, questName, true, 0, isReturn: false);
-                        }
-                    }
+                            SetQuests(player, questName, true, 0, false);
+
                     foreach (var qData in characterData.QuestsData)
-                    {
-                        if (qData.ActorName == npc_granny" && qData.Line == (short)granny_quests.Bear && int.TryParse(qData.Data, out int count) && count < 5)
-                        {
+                        if (qData.ActorName == "npc_granny" && qData.Line == (short)granny_quests.Bear &&
+                            int.TryParse(qData.Data, out var count) && count < 5)
                             Trigger.ClientEvent(player, "client.start.collecting_items", count);
-                        }
-                        else if (qData.ActorName == npc_fd_dada" && qData.Line == (short)data_quests.Boat)
-                        {
+                        else if (qData.ActorName == "npc_fd_dada" && qData.Line == (short)data_quests.Boat)
                             Trigger.ClientEvent(player, "client.create.npc_dfday_mission", 1);
-                        }
-                        else if (qData.ActorName == npc_fd_edward" && qData.Line == (short)edward_quests.Docs)
-                        {
+                        else if (qData.ActorName == "npc_fd_edward" && qData.Line == (short)edward_quests.Docs)
                             Trigger.ClientEvent(player, "client.create.npc_dfday_mission", 2);
-                        }
-                    }
 
                     var questData = characterData.QuestsData
                         .FirstOrDefault(qd => qd.ActorName == Zdobich.QuestName);
-                    
+
                     if (questData != null &&
-                        new List<zdobich_quests> { zdobich_quests.Stage12, zdobich_quests.Stage13, zdobich_quests.Stage14, zdobich_quests.Stage15, zdobich_quests.Stage16, zdobich_quests.Stage17, zdobich_quests.Stage18, zdobich_quests.Stage19 }.Contains((zdobich_quests) questData.Line))
+                        new List<zdobich_quests>
+                        {
+                            zdobich_quests.Stage12, zdobich_quests.Stage13, zdobich_quests.Stage14,
+                            zdobich_quests.Stage15, zdobich_quests.Stage16, zdobich_quests.Stage17,
+                            zdobich_quests.Stage18, zdobich_quests.Stage19
+                        }.Contains((zdobich_quests)questData.Line))
                     {
                         questData.Line = (int)zdobich_quests.Stage11;
                         questData.Status = 0;
                         questData.Complete = false;
                         questData.Stage = 0;
-                        questData.Data = 0";
+                        questData.Data = "0";
                     }
-                    
+
                     Trigger.ClientEvent(player, "client.quest.selectedQuest", characterData.SelectedQuest);
                 }
 
                 //
 
                 questsData = characterData.QuestsData
-                    .Where(q => q.Use == true)
+                    .Where(q => q.Use)
                     .ToList();
 
-                
+
                 var jsonQuestsData = JsonConvert.SerializeObject(questsData);
 
                 Trigger.ClientEvent(player, "client.questStore.init", jsonQuestsData);
             }
             catch (Exception e)
             {
-                Log.Write($"InitQuests Exception: {e.ToString()}");
+                Log.Write($"InitQuests Exception: {e}");
             }
         }
-        public static bool UpdateQuestsStage(ExtPlayer player, string ActorName, int Line, sbyte Stage, bool isUpdateHud = false)
+
+        public static bool UpdateQuestsStage(ExtPlayer player, string ActorName, int Line, sbyte Stage,
+            bool isUpdateHud = false)
         {
             try
             {
                 var characterData = player.GetCharacterData();
 
-                if (characterData == null) 
+                if (characterData == null)
                     return false;
 
                 var questData = characterData.QuestsData
@@ -403,26 +414,28 @@ namespace NeptuneEvo.Quests
                     return false;
 
                 questData.Stage = Stage;
-                
+
                 if (isUpdateHud)
                     InitQuests(player, characterData.QuestsData);
-                
-                return true;
 
+                return true;
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateQuestsStage Exception: {e.ToString()}");
+                Log.Write($"UpdateQuestsStage Exception: {e}");
             }
+
             return false;
         }
-        public static bool UpdateQuestsStage(ExtPlayer player, string ActorName, int Line, sbyte oldStage, sbyte newStage, bool isUpdateHud = false)
+
+        public static bool UpdateQuestsStage(ExtPlayer player, string ActorName, int Line, sbyte oldStage,
+            sbyte newStage, bool isUpdateHud = false)
         {
             try
             {
                 var characterData = player.GetCharacterData();
 
-                if (characterData == null) 
+                if (characterData == null)
                     return false;
 
                 var questData = characterData.QuestsData
@@ -432,26 +445,27 @@ namespace NeptuneEvo.Quests
                     return false;
 
                 questData.Stage = newStage;
-                
+
                 if (isUpdateHud)
                     InitQuests(player, characterData.QuestsData);
-                
+
                 return true;
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateQuestsStage Exception: {e.ToString()}");
+                Log.Write($"UpdateQuestsStage Exception: {e}");
             }
+
             return false;
         }
+
         public static void UpdateQuestsComplete(ExtPlayer player, string ActorName, int Line, bool Complete)
         {
             try
             {
-
                 var characterData = player.GetCharacterData();
 
-                if (characterData == null) 
+                if (characterData == null)
                     return;
 
                 var questData = characterData.QuestsData
@@ -464,17 +478,18 @@ namespace NeptuneEvo.Quests
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateQuestsComplete Exception: {e.ToString()}");
+                Log.Write($"UpdateQuestsComplete Exception: {e}");
             }
         }
+
         public static void UpdateQuestsLine(ExtPlayer player, string ActorName, int Line, int newLine)
         {
             try
             {
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return;
-                
+
                 var useQuestData = player.GetQuest();
 
                 if (useQuestData != null)
@@ -492,19 +507,20 @@ namespace NeptuneEvo.Quests
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateQuestsLine Exception: {e.ToString()}");
+                Log.Write($"UpdateQuestsLine Exception: {e}");
             }
         }
+
         public static int GetQuestsLine(ExtPlayer player, string ActorName)
         {
             try
             {
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return -9999;
-                
+
                 var questData = characterData.QuestsData
-                    .FirstOrDefault(v => v.ActorName == ActorName && v.Complete == false);
+                    .FirstOrDefault(v => v.ActorName == ActorName && !v.Complete);
 
                 if (questData == null)
                     return -9999;
@@ -513,10 +529,12 @@ namespace NeptuneEvo.Quests
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateQuestsLine Exception: {e.ToString()}");
+                Log.Write($"UpdateQuestsLine Exception: {e}");
             }
+
             return -9999;
         }
+
         public static void UpdateQuestsStatus(ExtPlayer player, string ActorName, int Line, short Status)
         {
             try
@@ -535,24 +553,25 @@ namespace NeptuneEvo.Quests
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateQuestsStatus Exception: {e.ToString()}");
+                Log.Write($"UpdateQuestsStatus Exception: {e}");
             }
         }
+
         /// <summary>
-        /// Обновление информации если в квесте несколько условий (false,false,false)
+        ///     Обновление информации если в квесте несколько условий (false,false,false)
         /// </summary>
-        /// <param name=player"></param>
-        /// <param name=ActorName"></param>
-        /// <param name=Line"></param>
-        /// <param name=IndexData"></param>
-        /// <param name=Toggled"></param>
+        /// <param name="player"></param>
+        /// <param name="ActorName"></param>
+        /// <param name="Line"></param>
+        /// <param name="IndexData"></param>
+        /// <param name="Toggled"></param>
         public static void UpdateQuestsData(ExtPlayer player, string ActorName, int Line, string Data)
         {
             try
             {
                 var characterData = player.GetCharacterData();
 
-                if (characterData == null) 
+                if (characterData == null)
                     return;
 
                 var questData = characterData.QuestsData
@@ -565,16 +584,17 @@ namespace NeptuneEvo.Quests
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateQuestsData Exception: {e.ToString()}");
+                Log.Write($"UpdateQuestsData Exception: {e}");
             }
         }
+
         public static int GetQuestsData(ExtPlayer player, string ActorName)
         {
             try
             {
                 var characterData = player.GetCharacterData();
 
-                if (characterData == null) 
+                if (characterData == null)
                     return 0;
 
                 var questData = characterData.QuestsData
@@ -587,17 +607,19 @@ namespace NeptuneEvo.Quests
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateQuestsData Exception: {e.ToString()}");
+                Log.Write($"UpdateQuestsData Exception: {e}");
             }
+
             return 0;
         }
+
         public static int GetQuestsData(ExtPlayer player, string ActorName, int Line)
         {
             try
             {
                 var characterData = player.GetCharacterData();
 
-                if (characterData == null) 
+                if (characterData == null)
                     return 0;
 
                 var questData = characterData.QuestsData
@@ -610,17 +632,19 @@ namespace NeptuneEvo.Quests
             }
             catch (Exception e)
             {
-                Log.Write($"UpdateQuestsData Exception: {e.ToString()}");
+                Log.Write($"UpdateQuestsData Exception: {e}");
             }
+
             return 0;
         }
+
         public static void UpdatePerform(ExtPlayer player, string ActorName, int Line)
         {
             try
             {
                 var characterData = player.GetCharacterData();
 
-                if (characterData == null) 
+                if (characterData == null)
                     return;
 
                 var questData = characterData.QuestsData
@@ -633,18 +657,19 @@ namespace NeptuneEvo.Quests
                 questData.Status = 0;
                 questData.Complete = false;
                 questData.Stage = 0;
-                questData.Data = 0";
-                
+                questData.Data = "0";
+
                 if (questData.Line == -1)
                     questData.Use = false;
-                
+
                 InitQuests(player, characterData.QuestsData);
             }
             catch (Exception e)
             {
-                Log.Write($"UpdatePerform Exception: {e.ToString()}");
+                Log.Write($"UpdatePerform Exception: {e}");
             }
         }
+
         public static void UpdateDisplayInHood(ExtPlayer player, string ActorName, bool isUse)
         {
             try
@@ -667,9 +692,10 @@ namespace NeptuneEvo.Quests
             }
             catch (Exception e)
             {
-                Log.Write($"UpdatePerform Exception: {e.ToString()}");
+                Log.Write($"UpdatePerform Exception: {e}");
             }
         }
+
         public static void UpdateTake(ExtPlayer player, string ActorName)
         {
             try
@@ -693,18 +719,19 @@ namespace NeptuneEvo.Quests
             }
             catch (Exception e)
             {
-                Log.Write($"UpdatePerform Exception: {e.ToString()}");
+                Log.Write($"UpdatePerform Exception: {e}");
             }
         }
+
         [RemoteEvent("server.quest.selectQuest")]
         public static void SelectQuest(ExtPlayer player, string actorName)
         {
-            
             var characterData = player.GetCharacterData();
             if (characterData == null) return;
-            
+
             characterData.SelectedQuest = actorName;
         }
+
         [Command(AdminCommands.SkipQuest)]
         public static void SkipQuest(ExtPlayer player, int id)
         {
@@ -713,29 +740,31 @@ namespace NeptuneEvo.Quests
                 if (!CommandsAccess.CanUseCmd(player, AdminCommands.SkipQuest)) return;
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
-                ExtPlayer target = Main.GetPlayerByID(id);
+                var target = Main.GetPlayerByID(id);
                 var targetCharacterData = target.GetCharacterData();
                 if (targetCharacterData == null)
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CantFindPlayerWithId), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.CantFindPlayerWithId), 3000);
                     return;
                 }
 
                 var questData = targetCharacterData.QuestsData
                     .FirstOrDefault(q => q.ActorName == targetCharacterData.SelectedQuest);
-                
-                if (questData == null) 
+
+                if (questData == null)
                     return;
-                
+
                 questData.Status = 1;
                 questData.Complete = true;
-                UpdateQuestsStage(player, questData.ActorName, questData.Line, 1, isUpdateHud: true);
+                UpdateQuestsStage(player, questData.ActorName, questData.Line, 1, true);
                 UpdateQuestsComplete(player, questData.ActorName, questData.Line, true);
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, $"Вы пропустили квест {questData.ActorName} игроку {target.Name}", 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    $"Вы пропустили квест {questData.ActorName} игроку {target.Name}", 3000);
             }
             catch (Exception e)
             {
-                Log.Write($"CMD_Clear Exception: {e.ToString()}");
+                Log.Write($"CMD_Clear Exception: {e}");
             }
         }
     }

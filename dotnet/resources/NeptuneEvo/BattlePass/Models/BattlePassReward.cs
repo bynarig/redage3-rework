@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NeptuneEvo.BattlePass.Models
+﻿namespace NeptuneEvo.BattlePass.Models
 {
     public enum BattlePassRewardGender
     {
@@ -8,18 +6,12 @@ namespace NeptuneEvo.BattlePass.Models
         Man,
         Woman
     }
+
     public class BattlePassReward
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Png { get; set; }
-        public BattlePassRewardType Type { get; set; }
-        public int ItemId { get; set; }
-        public int Count { get; set; }
-        public string Data { get; set; }
-        public BattlePassRewardGender Gender { get; set; }
-
-        public BattlePassReward(int id, string name = "", string png = "", BattlePassRewardType type = BattlePassRewardType.None, int itemId = 0, int count = 0, string data = "", BattlePassRewardGender gender = BattlePassRewardGender.None)
+        public BattlePassReward(int id, string name = "", string png = "",
+            BattlePassRewardType type = BattlePassRewardType.None, int itemId = 0, int count = 0, string data = "",
+            BattlePassRewardGender gender = BattlePassRewardGender.None)
         {
             Id = id;
             Name = name;
@@ -30,5 +22,14 @@ namespace NeptuneEvo.BattlePass.Models
             Data = data;
             Gender = gender;
         }
+
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Png { get; set; }
+        public BattlePassRewardType Type { get; set; }
+        public int ItemId { get; set; }
+        public int Count { get; set; }
+        public string Data { get; set; }
+        public BattlePassRewardGender Gender { get; set; }
     }
 }

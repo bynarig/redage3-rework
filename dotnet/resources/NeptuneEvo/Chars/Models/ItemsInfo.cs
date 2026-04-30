@@ -1,56 +1,67 @@
-﻿using NeptuneEvoSDK;
-using GTANetworkAPI;
-using NeptuneEvo.Handles;
+﻿using GTANetworkAPI;
 using Newtonsoft.Json;
 
 namespace NeptuneEvo.Chars.Models
 {
     #region Тип
+
     public enum newItemType
     {
         /// <summary>
-        /// Ошибка
+        ///     Ошибка
         /// </summary>
         None,
+
         /// <summary>
-        /// Проверка на активные предложения
+        ///     Проверка на активные предложения
         /// </summary>
         Clothes,
+
         /// <summary>
-        /// Успешно
+        ///     Успешно
         /// </summary>
         Weapons,
+
         /// <summary>
-        /// Успешно
+        ///     Успешно
         /// </summary>
         MeleeWeapons,
+
         /// <summary>
-        /// Успешно
+        ///     Успешно
         /// </summary>
         Ammo,
+
         /// <summary>
-        /// Успешно
+        ///     Успешно
         /// </summary>
         Alco,
+
         /// <summary>
-        /// Успешно
+        ///     Успешно
         /// </summary>
         Eat,
+
         /// <summary>
-        /// Успешно
+        ///     Успешно
         /// </summary>
         Water,
+
         /// <summary>
-        /// Успешно
+        ///     Успешно
         /// </summary>
         Modification,
+
         /// <summary>
-        /// Успешно
+        ///     Успешно
         /// </summary>
-        Cases,
+        Cases
     }
+
     #endregion
+
     #region Объекты
+
     public enum ItemId
     {
         Mask = -1, // Маска
@@ -70,27 +81,27 @@ namespace NeptuneEvo.Chars.Models
         Bracelets = -15, // Браслеты
 
         Debug = 0,
-        BagWithMoney = 12,// Сумка с деньгами
-        Material = 13,    // Материалы
-        Drugs = 14,       // Наркота
-        BagWithDrill = 15,// Сумка с дрелью
-        HealthKit = 1,    // Аптечка
-        GasCan = 2,       // Канистра
-        Crisps = 3,       // Чипсы
-        Beer = 4,         // Пиво
-        Pizza = 5,        // Пицца
-        Burger = 6,       // Бургер
-        HotDog = 7,       // Хот-Дог
-        Sandwich = 8,     // Сэндвич
-        eCola = 9,        // Кока-Кола
-        Sprunk = 10,      // Спрайт
-        Lockpick = 11,    // Отмычка для замка
-        ArmyLockpick = 16,// Военная отмычка
-        Pocket = 17,      // Мешок
-        Cuffs = 18,       // Стяжки
-        CarKey = 19,      // Ключи от личной машины
-        Present = 40,     // Подарок
-        KeyRing = 41,     // Связка ключей
+        BagWithMoney = 12, // Сумка с деньгами
+        Material = 13, // Материалы
+        Drugs = 14, // Наркота
+        BagWithDrill = 15, // Сумка с дрелью
+        HealthKit = 1, // Аптечка
+        GasCan = 2, // Канистра
+        Crisps = 3, // Чипсы
+        Beer = 4, // Пиво
+        Pizza = 5, // Пицца
+        Burger = 6, // Бургер
+        HotDog = 7, // Хот-Дог
+        Sandwich = 8, // Сэндвич
+        eCola = 9, // Кока-Кола
+        Sprunk = 10, // Спрайт
+        Lockpick = 11, // Отмычка для замка
+        ArmyLockpick = 16, // Военная отмычка
+        Pocket = 17, // Мешок
+        Cuffs = 18, // Стяжки
+        CarKey = 19, // Ключи от личной машины
+        Present = 40, // Подарок
+        KeyRing = 41, // Связка ключей
 
 
         /* Drinks */
@@ -243,7 +254,7 @@ namespace NeptuneEvo.Chars.Models
         CarCoupon = 220,
         MerryChristmasCoin = 221,
 
-        Bear = 222, 
+        Bear = 222,
 
         Note = 223,
         LoveNote = 224,
@@ -314,7 +325,7 @@ namespace NeptuneEvo.Chars.Models
         Rub200 = 276,
         Rub500 = 277,
         Rub1000 = 278,
-        
+
         RadioInterceptor = 279,
         Epinephrine = 280,
         AppleCoin = 288,
@@ -421,72 +432,48 @@ namespace NeptuneEvo.Chars.Models
         GlowStick = 389,
         Giftcoin = 390,
         CombatRifle = 391,
-        Glock = 392,
-
+        Glock = 392
     }
+
     #endregion
+
     /// <summary>
-    /// Данные пользователя
+    ///     Данные пользователя
     /// </summary>
     public class ItemsInfo
     {
-        #region Свойства
-
         /// <summary>
-        /// Колличество
+        ///     Конструктор данных пользователя
         /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// Колличество
-        /// </summary>
-        public string Description { get; set; }
-        /// <summary>
-        /// Колличество
-        /// </summary>
-        public string Icon { get; set; }
-        /// <summary>
-        /// Колличество
-        /// </summary>
-        public string Type { get; set; }
-        /// <summary>
-        /// Дополнительная дата
-        /// </summary>
-        [JsonIgnore]
-        public uint Model { get; set; }
-        /// <summary>
-        /// Дополнительная дата
-        /// </summary>
-        public int Stack { get; set; }
-        /// <summary>
-        /// Дополнительная дата
-        /// </summary>
-        [JsonIgnore]
-        public Vector3 PosOffset { get; set; }
-        /// <summary>
-        /// Дополнительная дата
-        /// </summary>
-        [JsonIgnore]
-        public Vector3 RotOffset { get; set; }
-        /// <summary>
-        /// Дополнительная дата
-        /// </summary>
-        public newItemType functionType { get; set; }
-
-        #endregion
-
-        /// <summary>
-        /// Конструктор данных пользователя
-        /// </summary>
-        /// <param name=Name"><see cref=Name"/></param>
-        /// <param name=Description"><see cref=Description"/></param>
-        /// <param name=Icon"><see cref=Icon"/></param>
-        /// <param name=Type"><see cref=Type"/></param>
-        /// <param name=Model"><see cref=Model"/></param>
-        /// <param name=Stack"><see cref=Stack"/></param>
-        /// <param name=PosOffset"><see cref=PosOffset"/></param>
-        /// <param name=RotOffset"><see cref=RotOffset"/></param>
-        /// <param name=functionType"><see cref=functionType"/></param>
-        public ItemsInfo(string Name, string Description, string Icon, string Type, uint Model, int Stack, Vector3 PosOffset, Vector3 RotOffset, newItemType functionType)
+        /// <param name="Name">
+        ///     <see cref="Name" />
+        /// </param>
+        /// <param name="Description">
+        ///     <see cref="Description" />
+        /// </param>
+        /// <param name="Icon">
+        ///     <see cref="Icon" />
+        /// </param>
+        /// <param name="Type">
+        ///     <see cref="Type" />
+        /// </param>
+        /// <param name="Model">
+        ///     <see cref="Model" />
+        /// </param>
+        /// <param name="Stack">
+        ///     <see cref="Stack" />
+        /// </param>
+        /// <param name="PosOffset">
+        ///     <see cref="PosOffset" />
+        /// </param>
+        /// <param name="RotOffset">
+        ///     <see cref="RotOffset" />
+        /// </param>
+        /// <param name="functionType">
+        ///     <see cref="functionType" />
+        /// </param>
+        public ItemsInfo(string Name, string Description, string Icon, string Type, uint Model, int Stack,
+            Vector3 PosOffset, Vector3 RotOffset, newItemType functionType)
         {
             this.Name = Name;
             this.Description = Description;
@@ -498,5 +485,57 @@ namespace NeptuneEvo.Chars.Models
             this.RotOffset = RotOffset;
             this.functionType = functionType;
         }
+
+        #region Свойства
+
+        /// <summary>
+        ///     Колличество
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        ///     Колличество
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        ///     Колличество
+        /// </summary>
+        public string Icon { get; set; }
+
+        /// <summary>
+        ///     Колличество
+        /// </summary>
+        public string Type { get; set; }
+
+        /// <summary>
+        ///     Дополнительная дата
+        /// </summary>
+        [JsonIgnore]
+        public uint Model { get; set; }
+
+        /// <summary>
+        ///     Дополнительная дата
+        /// </summary>
+        public int Stack { get; set; }
+
+        /// <summary>
+        ///     Дополнительная дата
+        /// </summary>
+        [JsonIgnore]
+        public Vector3 PosOffset { get; set; }
+
+        /// <summary>
+        ///     Дополнительная дата
+        /// </summary>
+        [JsonIgnore]
+        public Vector3 RotOffset { get; set; }
+
+        /// <summary>
+        ///     Дополнительная дата
+        /// </summary>
+        public newItemType functionType { get; set; }
+
+        #endregion
     }
 }

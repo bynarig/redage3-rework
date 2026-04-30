@@ -11,10 +11,10 @@ namespace NeptuneEvo.World.War.Models
 
         public WarZone(int id, string name, Vector3 position, float range)
         {
-            this.Id = id;
-            this.Name = name;
-            this.Position = position;
-            this.Range = range;
+            Id = id;
+            Name = name;
+            Position = position;
+            Range = range;
         }
     }
 }

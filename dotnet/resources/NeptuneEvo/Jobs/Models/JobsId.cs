@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NeptuneEvo.Jobs.Models
+﻿namespace NeptuneEvo.Jobs.Models
 {
-    public enum JobsId : int
+    public enum JobsId
     {
         None = 0,
         Electrician,

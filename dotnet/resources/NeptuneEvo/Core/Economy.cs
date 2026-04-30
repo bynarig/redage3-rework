@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Data;
 using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using Npgsql;
+using MySqlConnector;
 using NeptuneEvo.Fractions;
 using Newtonsoft.Json;
-using NeptuneEvoSDK;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Core
 {
-    class Economy : Script
+    internal class Economy : Script
     {
         private static readonly nLog Log = new nLog("Core.Economy");
+
         public static void ResetToDefault()
         {
             Main.BusinessMinPrice = 0.95f;
@@ -60,16 +59,16 @@ namespace NeptuneEvo.Core
 
         public static void Init()
         {
-            using NpgsqlCommand cmd = new NpgsqlCommand()
+            using var cmd = new MySqlCommand
             {
-                    CommandText = "SELECT * FROM economy""
+                CommandText = "SELECT * FROM `economy`"
             };
-            using DataTable result = MySQL.QueryRead(cmd);
+            using var result = MySQL.QueryRead(cmd);
             if (result != null)
             {
                 try
                 {
-                    DataRow Row = result.Rows[0];
+                    var Row = result.Rows[0];
                     Main.BusinessMinPrice = (float)Row[0];
                     Main.BusinessMaxPrice = (float)Row[1];
                     Main.DrugsPrice = Convert.ToInt32(Row[2]);
@@ -112,8 +111,8 @@ namespace NeptuneEvo.Core
                     Main.BlackMarketMedCard = Convert.ToInt32(Row[40]);
                     Main.BlackRadioInterceptord = Convert.ToInt32(Row[41]);
                     Main.BlackQrFake = Convert.ToInt32(Row[42]);
-                    
-                    
+
+
                     Manager.FractionDataMats[1].Price = $"{Main.BlackMarketDrill}$";
                     Manager.FractionDataMats[2].Price = $"{Main.BlackMarketLockPick}$";
                     Manager.FractionDataMats[3].Price = $"{Main.BlackMarketArmyLockPick}$";
@@ -125,19 +124,19 @@ namespace NeptuneEvo.Core
                     Manager.FractionDataMats[79].Price = $"{Main.BlackMarketMedCard}$";
                     Manager.FractionDataMats[80].Price = $"{Main.BlackQrFake}$";
                     Manager.FractionDataMats[81].Price = $"{Main.BlackRadioInterceptord}$";
-                    
-                    Log.Write($"Economy loaded.", nLog.Type.Success);
+
+                    Log.Write("Economy loaded.", nLog.Type.Success);
                 }
                 catch (Exception e)
                 {
                     ResetToDefault();
-                    Log.Write($"StartWork Exception: {e.ToString()}");
+                    Log.Write($"StartWork Exception: {e}");
                 }
             }
-            else 
+            else
             {
                 ResetToDefault();
-                Log.Write("DB economy" return null result", nLog.Type.Warn);
+                Log.Write("DB `economy` return null result", nLog.Type.Warn);
             }
         }
     }

@@ -1,41 +1,19 @@
-using Database;
-using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using LinqToDB;
-using NeptuneEvo.Chars;
-using NeptuneEvo.Chars.Models;
-using NeptuneEvo.Core;
-
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
-using NeptuneEvo.Character;
-using Newtonsoft.Json;
-using NeptuneEvoSDK;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Localization;
-using Npgsql;
-using NeptuneEvo.Fractions.Models;
-using NeptuneEvo.Fractions.Player;
+using GTANetworkAPI;
 using NeptuneEvo.Table.Models;
-using NeptuneEvo.VehicleData.LocalData;
-using NeptuneEvo.VehicleData.LocalData.Models;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Fractions
 {
-    class fTable : Script
+    internal class fTable : Script
     {
         public static readonly nLog Log = new nLog("Fractions.Table");
         public static Dictionary<int, List<BoardData>> BoardList = new Dictionary<int, List<BoardData>>();
 
         public static void Init()
         {
-            for (int i = (int) Models.Fractions.FAMILY; i <= Configs.FractionCount; i++)
-            {
+            for (var i = (int)Models.Fractions.FAMILY; i <= Configs.FractionCount; i++)
                 BoardList.Add(i, new List<BoardData>());
-            }
         }
 
         /*public static void OpenFraction(ExtPlayer player)
@@ -43,18 +21,18 @@ namespace NeptuneEvo.Fractions
             try
             {
                 if (!player.IsCharacterData()) return;
-		
+
                 var memberFractionData = player.GetFractionMemberData();
                 if (memberFractionData == null)
                     return;
-                
+
                 var fracId = memberFractionData.Id;
 
                 var playersList = new List<TablePlayerData>();
 
                 foreach (var foreachMemberFractionData in Manager.AllMembers[fracId].ToList())
                 {
-                    if (foreachMemberFractionData.PlayerId == -1) 
+                    if (foreachMemberFractionData.PlayerId == -1)
                         playersList.Add(new TablePlayerData(false, foreachMemberFractionData.Name, "", foreachMemberFractionData.Rank, foreachMemberFractionData.UUID));
                     else
                         playersList.Add(new TablePlayerData(true, foreachMemberFractionData.Name, "", foreachMemberFractionData.Rank, foreachMemberFractionData.UUID, foreachMemberFractionData.PlayerId));
@@ -67,9 +45,9 @@ namespace NeptuneEvo.Fractions
                     foreach (KeyValuePair<string, FractionVehicleData> v in Configs.FractionVehicles[fracId])
                     {
                         string model = v.Value.model;
-                        if (fracId == (int) Models.Fractions.MERRYWEATHER && (model.Equals(SUBMERSIBLE") || model.Equals(THRUSTER"))) continue;
+                        if (fracId == (int) Models.Fractions.MERRYWEATHER && (model.Equals("SUBMERSIBLE") || model.Equals("THRUSTER"))) continue;
                         var vehicleLocalData = VehicleData.LocalData.Repository.GetVehicleLocalDataToNumber(VehicleAccess.Fraction, v.Key);
-                        if (vehicleLocalData == null) continue;                        
+                        if (vehicleLocalData == null) continue;
                         vehiclesList.Add(new TableVehicleData(model, v.Key, vehicleLocalData.MinRank));
                     }
                 }
@@ -126,12 +104,12 @@ namespace NeptuneEvo.Fractions
 
                             clothesData[true].Add(fractionSet);
                         }
-                        
+
                         clothesData[false] = new List<FractionSetData>();
 
                         foreach (var fractionSet in FractionClothingSets.FractionSets[(Models.Fractions) fracId][false])
                         {
-                            
+
                             if (clothesData[false].Any(f => f.SetName == fractionSet.SetName))
                                 continue;
 
@@ -154,7 +132,7 @@ namespace NeptuneEvo.Fractions
         }
         public static void ufracad(ExtPlayer player, int index, string text)
         {
- 
+
         }
         public static void dfracad(ExtPlayer player, int index)
         {
@@ -178,7 +156,7 @@ namespace NeptuneEvo.Fractions
         }
         public static void evacuation(ExtPlayer player, string number)
         {
-   
+
         }
         public static void gps(ExtPlayer player, string number)
         {
@@ -192,7 +170,7 @@ namespace NeptuneEvo.Fractions
         public void ClothingSetRank(ExtPlayer player, bool isUp, string name, bool gender)
         {
             try
-            {				
+            {
                 var memberFractionData = player.GetFractionMemberData();
                 if (memberFractionData == null)
                     return;
@@ -207,11 +185,11 @@ namespace NeptuneEvo.Fractions
                     FractionClothingSets.FractionSets[(Models.Fractions) memberFractionData.Id].ContainsKey(gender))
                 {
                     sbyte actionResult = 0;
-                    
+
                     foreach (var fractionSet in FractionClothingSets.FractionSets[(Models.Fractions) memberFractionData.Id][gender]
                         .Where(f => f.SetName.Equals(name)))
                     {
-                        
+
                         if (isUp)
                         {
                             if (fractionSet.Rank + 1 > memberFractionData.Rank)
@@ -247,8 +225,8 @@ namespace NeptuneEvo.Fractions
                         Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CantFindForm), 3000);
                         return;
                     };
-                
-                
+
+
                     Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.SucEditFormRank), 3000);
                 }
             }
@@ -257,7 +235,7 @@ namespace NeptuneEvo.Fractions
                 Log.Write($"ClothingSetRank Exception: {e.ToString()}");
             }
         }
-        
+
         [RemoteEvent("server.table.startEditClothingSet")]
         public void StartEditClothingSet(ExtPlayer player, string oldName, string newName, bool gender)
         {
@@ -265,14 +243,14 @@ namespace NeptuneEvo.Fractions
             {
                 var sessionData = player.GetSessionData();
                 if (sessionData == null) return;
-                
+
                 var characterData = player.GetCharacterData();
                 if (characterData == null) return;
-                				
+
                 var memberFractionData = player.GetFractionMemberData();
                 if (memberFractionData == null)
                     return;
-                
+
                 if (!FractionClothingSets.FractionMainCloakrooms.ContainsKey(memberFractionData.Id) && !FractionClothingSets.FractionSecondCloakrooms.ContainsKey(memberFractionData.Id))
                 {
                     Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.YouCantEditForm), 3000);
@@ -289,7 +267,7 @@ namespace NeptuneEvo.Fractions
                 if (fracid == 0) return;
 
                 newName = Main.BlockSymbols(newName);
-                
+
                 if (FractionClothingSets.FractionMainCloakrooms.ContainsKey(fracid) && player.Position.DistanceTo(FractionClothingSets.FractionMainCloakrooms[fracid]) < 10 || FractionClothingSets.FractionSecondCloakrooms.ContainsKey(fracid) && player.Position.DistanceTo(FractionClothingSets.FractionSecondCloakrooms[fracid]) < 10)
                 {
 
@@ -301,7 +279,7 @@ namespace NeptuneEvo.Fractions
                             var fractionSets =
                                 FractionClothingSets.FractionSets[(Models.Fractions) memberFractionData.Id][
                                     gender];
-                            
+
                             if (fractionSets.Any(f => f.SetName.Equals(newName)))
                             {
                                 Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, gender ? LangFunc.GetText(LangType.Ru, DataName.ThisNameMaleFormUsed) : LangFunc.GetText(LangType.Ru, DataName.ThisNameFemaleFormUsed), 3000);
@@ -313,14 +291,14 @@ namespace NeptuneEvo.Fractions
                             {
                                 fractionSet.SetName = newName;
                             }
-                            
+
                             Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.SucEditFormName), 3000);
 
                         }
-                        
+
                         sessionData.TempClothingData.NewName = newName;
                         sessionData.TempClothingData.Gender = gender;
-                    
+
                         Trigger.Dimension(player, 10);
 
                         if (gender != characterData.Gender)
@@ -328,13 +306,13 @@ namespace NeptuneEvo.Fractions
 
                         FractionClothingSets.SetPlayerFactionClothingSet(player, fracid, newName, gender, isDutySet: false);
                         sessionData.WorkData.OnDuty = false;
-                        sessionData.WorkData.OnDutyName = String.Empty;  
+                        sessionData.WorkData.OnDutyName = String.Empty;
                         //player.ClearAccessories();
 
                         var realClothes = new List<string>();
                         var clothesPriceList = FractionClothingSets.FractionAvailableSets[gender][(Models.Fractions)  fracid].ToList();
                         var dataJson = new Dictionary<string, List<List<object>>>();
-                        
+
                         foreach (var components in clothesPriceList)
                         {
                             var name = components.Key.ToString();
@@ -345,14 +323,14 @@ namespace NeptuneEvo.Fractions
                                 {
                                     componentData.DrawableId,
                                     componentData.Textures
-                                }); 
+                                });
                             }
 
                             dataJson[name] = clothesData;
                             realClothes.Add(name);
                         }
-                        
-                        Trigger.ClientEvent(player, "client.shop.open", clothes", characterData.Gender, JsonConvert.SerializeObject(realClothes), JsonConvert.SerializeObject(dataJson), 2);
+
+                        Trigger.ClientEvent(player, "client.shop.open", "clothes", characterData.Gender, JsonConvert.SerializeObject(realClothes), JsonConvert.SerializeObject(dataJson), 2);
                         return;
                     }
                 }
@@ -363,7 +341,7 @@ namespace NeptuneEvo.Fractions
                 Log.Write($"StartEditClothingSet Exception: {e.ToString()}");
             }
         }
-        
+
         [RemoteEvent("server.table.editClothingSet")]
         public void EditClothingSet(ExtPlayer player, string name, int id, int texture)
         {
@@ -371,11 +349,11 @@ namespace NeptuneEvo.Fractions
             {
                 var sessionData = player.GetSessionData();
                 if (sessionData == null) return;
-                
+
                 var memberFractionData = player.GetFractionMemberData();
                 if (memberFractionData == null)
                     return;
-                
+
                 if (!FractionClothingSets.FractionMainCloakrooms.ContainsKey(memberFractionData.Id) && !FractionClothingSets.FractionSecondCloakrooms.ContainsKey(memberFractionData.Id))
                 {
                     Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.YouCantEditForm), 3000);
@@ -393,10 +371,10 @@ namespace NeptuneEvo.Fractions
                     Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FormEditError), 3000);
                     return;
                 }
-                
+
                 int fraction = memberFractionData.Id;
                 if (fraction == 0) return;
-                
+
                 if (FractionClothingSets.FractionMainCloakrooms.ContainsKey(fraction) && player.Position.DistanceTo(FractionClothingSets.FractionMainCloakrooms[fraction]) < 10 || FractionClothingSets.FractionSecondCloakrooms.ContainsKey(fraction) && player.Position.DistanceTo(FractionClothingSets.FractionSecondCloakrooms[fraction]) < 10)
                 {
                     var dictionary = (ClothesComponent)Enum.Parse(typeof(ClothesComponent), name);
@@ -410,21 +388,21 @@ namespace NeptuneEvo.Fractions
                         var fractionSets =
                             FractionClothingSets.FractionSets[(Models.Fractions) memberFractionData.Id][
                                 gender];
-                        
+
                         if (id == -1 && texture == 0)
                         {
                             var toDeleteClothingList = fractionSets
                                 .Where(f => f.SetName == setName)
                                 .ToList();
-                            
+
                             foreach (var item in toDeleteClothingList)
                             {
                                 var aSet = FractionClothingSetsData.AvailableSets[item.ClothingIndex];
-                            
+
                                 if (aSet.Component == dictionary)
                                 {
-                                    fractionSets.Remove(item);             
-                                    FractionClothingSets.SetPlayerFactionClothingSet(player, memberFractionData.Id, setName, gender, isDutySet: false); 
+                                    fractionSets.Remove(item);
+                                    FractionClothingSets.SetPlayerFactionClothingSet(player, memberFractionData.Id, setName, gender, isDutySet: false);
                                     //player.ClearAccessories();
                                     Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.SucDeleteFormComponent), 3000);
                                     return;
@@ -433,7 +411,7 @@ namespace NeptuneEvo.Fractions
                             Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.FormError), 3000);
                             return;
                         }
-                        
+
                         //
                         var availableSet = FractionClothingSetsData.AvailableSets
                             .Select((value, i) => (value, i))
@@ -444,7 +422,7 @@ namespace NeptuneEvo.Fractions
                         if (availableSet.value != null)
                         {
                             var isUpdate = false;
-                            
+
                             foreach (var item in fractionSets
                                 .Where(f => f.SetName == setName))
                             {
@@ -457,14 +435,14 @@ namespace NeptuneEvo.Fractions
                                     break;
                                 }
                             }
-                            
+
                             if (!isUpdate)
                                 fractionSets.Add(new FractionSetData(rank, setName, availableSet.i));
-                            
-                            Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.SucEditForm), 3000);  
-                            FractionClothingSets.SetPlayerFactionClothingSet(player, memberFractionData.Id, setName, gender, isDutySet: false); 
+
+                            Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.SucEditForm), 3000);
+                            FractionClothingSets.SetPlayerFactionClothingSet(player, memberFractionData.Id, setName, gender, isDutySet: false);
                             //player.ClearAccessories();
-                            
+
                             return;
                         }
                         Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CantEditThisForm), 3000);
@@ -479,14 +457,14 @@ namespace NeptuneEvo.Fractions
                 Log.Write($"EditClothingSet Exception: {e.ToString()}");
             }
         }
-        
+
         public static void accessdelete(ExtPlayer player, int fraclvl, int accessIndex)
         {
 
         }
         public static void accessadd(ExtPlayer player, int fraclvl, int accessIndex)
         {
-            
+
         }
         public static void editrank(ExtPlayer player, int index, string rankName)
         {
@@ -502,7 +480,7 @@ namespace NeptuneEvo.Fractions
 
         public static void getLogs(ExtPlayer player, int uuid, int pageId, int skip)
         {
-            
+
         }
         public static void reprimand(ExtPlayer player, int uuid, string name, string text)
         {

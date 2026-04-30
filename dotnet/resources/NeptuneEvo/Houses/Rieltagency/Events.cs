@@ -4,12 +4,13 @@ using NeptuneEvo.Handles;
 namespace NeptuneEvo.Houses.Rieltagency
 {
     public class Events : Script
-    { 
+    {
         [ServerEvent(Event.ResourceStart)]
         public void OnResourceStart()
         {
             Repository.OnResourceStart();
         }
+
         [RemoteEvent("server.rieltagency.buy")]
         private void OnBuyInfo(ExtPlayer player, int id, int type)
         {

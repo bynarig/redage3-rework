@@ -1,20 +1,16 @@
-﻿using Database;
+﻿using System;
 using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using LinqToDB;
+using NeptuneEvo.Localization;
+using NeptuneEvo.Character;
 using NeptuneEvo.Chars;
 using NeptuneEvo.Chars.Models;
-
 using NeptuneEvo.Functions;
+using NeptuneEvo.Handles;
+using NeptuneEvo.MoneySystem;
 using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
-using NeptuneEvo.Character;
-using NeptuneEvoSDK;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Localization;
 using NeptuneEvo.Quests.Models;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.Chars.Repository;
 
 namespace NeptuneEvo.Quests
 {
@@ -24,9 +20,10 @@ namespace NeptuneEvo.Quests
         NoMission = -1,
         Phone = 0,
         Dialog = 2,
-        End = 11,
-    };
-    class Zak : Script
+        End = 11
+    }
+
+    internal class Zak : Script
     {
         private static readonly nLog Log = new nLog("Quests.Tracy");
 
@@ -35,11 +32,11 @@ namespace NeptuneEvo.Quests
         {
             try
             {
-               // PedSystem.Repository.CreateQuest(ig_car3guy2", new Vector3(-1390.7114, -597.82434, 30.319658), 80.87341f, questName: npc_fd_zak", title: "~y~NPC~w~ Зак Цукерберг\nКвестовый персонаж", colShapeEnums: ColShapeEnums.QuestZak);
+                // PedSystem.Repository.CreateQuest("ig_car3guy2", new Vector3(-1390.7114, -597.82434, 30.319658), 80.87341f, questName: "npc_fd_zak", title: "~y~NPC~w~ Зак Цукерберг\nКвестовый персонаж", colShapeEnums: ColShapeEnums.QuestZak);
             }
             catch (Exception e)
             {
-                Log.Write($"Event_ResourceStart Exception: {e.ToString()}");
+                Log.Write($"Event_ResourceStart Exception: {e}");
             }
         }
 
@@ -49,18 +46,16 @@ namespace NeptuneEvo.Quests
             {
                 if (!player.IsCharacterData()) return;
 
-                zak_quests returnLine = Get(player, PlayerQuestData.Line);
+                var returnLine = Get(player, PlayerQuestData.Line);
 
-                if (returnLine != zak_quests.Error)
-                {
-                    qMain.UpdatePerform(player, npc_fd_zak", (short)returnLine);
-                }
+                if (returnLine != zak_quests.Error) qMain.UpdatePerform(player, "npc_fd_zak", (short)returnLine);
             }
             catch (Exception e)
             {
-                Log.Write($"Task.Run Exception: {e.ToString()}");
+                Log.Write($"Task.Run Exception: {e}");
             }
         }
+
         public static zak_quests Get(ExtPlayer player, int Line, bool Reward = false)
         {
             var characterData = player.GetCharacterData();
@@ -69,23 +64,22 @@ namespace NeptuneEvo.Quests
             switch ((zak_quests)Line)
             {
                 case zak_quests.Phone:
-                    qMain.SetQuests(player, npc_fd_dada", true, 0, isReturn: false);
+                    qMain.SetQuests(player, "npc_fd_dada", true, 0, false);
                     UpdateData.Exp(player, 10);
-                    MoneySystem.Wallet.Change(player, 2500);
-                    Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", ItemId.Mask, 1, 191_0_True"); 
-                    qMain.UpdateDisplayInHood(player, npc_fd_zak", false); 
-                    qMain.UpdateDisplayInHood(player, npc_fd_dada", true);
+                    Wallet.Change(player, 2500);
+                    Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", ItemId.Mask, 1,
+                        "191_0_True");
+                    qMain.UpdateDisplayInHood(player, "npc_fd_zak", false);
+                    qMain.UpdateDisplayInHood(player, "npc_fd_dada", true);
                     return zak_quests.NoMission;
                 case zak_quests.End:
                     //Награды
                     UpdateData.Exp(player, 10);
-                    MoneySystem.Wallet.Change(player, 5000);
-                    Chars.Repository.AddNewItem(player, $"char_{characterData.UUID}", inventory", ItemId.Case0, 1);
+                    Wallet.Change(player, 5000);
+                    Repository.AddNewItem(player, $"char_{characterData.UUID}", "inventory", ItemId.Case0);
                     return zak_quests.NoMission;
-                default:
-                    // Not supposed to end up here. 
-                    break;
-            }        
+            }
+
             return zak_quests.Error;
         }
 
@@ -96,10 +90,7 @@ namespace NeptuneEvo.Quests
             switch ((zak_quests)Line)
             {
                 case zak_quests.Dialog:
-                    Trigger.ClientEvent(player, startScreenEffect", PPFilter", 15 * 1000, false);
-                    break;
-                default:
-                    // Not supposed to end up here. 
+                    Trigger.ClientEvent(player, "startScreenEffect", "PPFilter", 15 * 1000, false);
                     break;
             }
         }
@@ -113,23 +104,28 @@ namespace NeptuneEvo.Quests
             if (!player.IsCharacterData()) return;
             if (sessionData.CuffedData.Cuffed)
             {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.IsCuffed), 3000);
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.IsCuffed), 3000);
                 return;
             }
-            else if (sessionData.DeathData.InDeath)
-            {
-                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.IsDying), 3000);
-                return;
-            }
-            else if (Main.IHaveDemorgan(player, true)) return;
 
-            bool isBool = qMain.SetQuests(player, npc_fd_zak", isInsert: true);
+            if (sessionData.DeathData.InDeath)
+            {
+                Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                    LangFunc.GetText(LangType.Ru, DataName.IsDying), 3000);
+                return;
+            }
+
+            if (Main.IHaveDemorgan(player, true)) return;
+
+            var isBool = qMain.SetQuests(player, "npc_fd_zak", true);
             if (!isBool) return;
             var questData = player.GetQuest();
-            if (questData == null) 
+            if (questData == null)
                 return;
 
-            Trigger.ClientEvent(player, "client.quest.open", index, npc_fd_zak", questData.Line, questData.Status, questData.Complete);
+            Trigger.ClientEvent(player, "client.quest.open", index, "npc_fd_zak", questData.Line, questData.Status,
+                questData.Complete);
         }
     }
 }

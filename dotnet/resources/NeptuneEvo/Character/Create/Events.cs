@@ -1,16 +1,10 @@
 ﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Accounts;
-using NeptuneEvo.Players;
-using NeptuneEvoSDK;
-using System;
-using System.Threading.Tasks;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Character.Create
 {
-    class Events : Script
+    internal class Events : Script
     {
         private static readonly nLog Log = new nLog("Accounts.Create.Events");
-
     }
 }

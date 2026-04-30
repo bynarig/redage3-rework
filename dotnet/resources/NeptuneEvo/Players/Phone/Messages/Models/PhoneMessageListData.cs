@@ -4,11 +4,11 @@ namespace NeptuneEvo.Players.Phone.Messages.Models
 {
     public class PhoneMessageListData
     {
-        public int Phone;
+        public DateTime Date;
         public bool IsMe;
+        public int Phone;
+        public bool Status; //Прочитал или нет
         public string Text;
         public MessageType Type;
-        public DateTime Date;
-        public bool Status;//Прочитал или нет
     }
 }

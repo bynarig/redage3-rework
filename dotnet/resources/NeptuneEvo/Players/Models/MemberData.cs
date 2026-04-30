@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Database;
-using LinqToDB;
 using NeptuneEvo.Character.Models;
 using NeptuneEvo.Table.Models;
 using NeptuneEvo.Table.Tasks.Models;
@@ -12,6 +8,7 @@ namespace NeptuneEvo.Players.Models
 {
     public class MemberData
     {
+        public TableTaskPlayerData[] TasksData = null;
         public int UUID { get; set; } = 0;
         public string Name { get; set; } = "";
         public int Id { get; set; } = 0;
@@ -27,12 +24,10 @@ namespace NeptuneEvo.Players.Models
         public DateTime LastLoginDate { get; set; } = DateTime.MinValue;
         public bool IsSave { get; set; } = false;
         public TimeInfo Time { get; set; } = new TimeInfo();
-        
-        public TableTaskPlayerData[] TasksData = null;
 
         public void SetPlayerId(int id = -1)
         {
-            this.PlayerId = id;
+            PlayerId = id;
         }
     }
 }

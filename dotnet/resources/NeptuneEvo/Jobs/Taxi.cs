@@ -1,30 +1,14 @@
 ﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using System.Collections.Generic;
-using NeptuneEvo.GUI;
-using System;
-using NeptuneEvo.Core;
-using NeptuneEvoSDK;
-using System.Linq;
-using Localization;
-using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
-using NeptuneEvo.Character;
-using NeptuneEvo.Jobs.Models;
-using NeptuneEvo.Quests;
-using NeptuneEvo.VehicleData.LocalData;
-using NeptuneEvo.VehicleData.LocalData.Models;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Jobs
 {
-    class Taxi : Script
-    {        
+    internal class Taxi : Script
+    {
         private static readonly nLog Log = new nLog("Jobs.Taxi");
 
-        
-        /*[Command(sjob")]
+
+        /*[Command("sjob")]
         public static void CMD_sjob(ExtPlayer player)
         {
             try
@@ -64,9 +48,9 @@ namespace NeptuneEvo.Jobs
                     //vehicleLocalData.Access = VehicleAccess.WorkId;
                     vehicleLocalData.WorkId = (int)JobsId.Taxi;
                     vehicleLocalData.SpecialTaxiVeh = true;
-                    
+
                     Players.Phone.Taxi.Orders.Repository.StartWork(player);
-                    
+
                     Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.StartWorkDay), 3000);
                 }
             }

@@ -2,51 +2,48 @@
 using System.Linq;
 using System.Threading;
 using Database;
-using NeptuneEvoSDK;
+using NeptuneEvo.Fractions;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Database.Models
 {
     public class Members
     {
         private static readonly nLog Log = new nLog("Database.Members");
-                
+
         public static void Start()
         {
             var thread = new Thread(Worker);
             thread.IsBackground = true;
-            thread.Name = MembersSave";
+            thread.Name = "MembersSave";
             thread.Start();
         }
+
         private static async void Worker()
         {
             while (true)
             {
                 try
                 {
-                    await using var db = new ServerBD(MainDB");
-                    
-                    foreach (var fractionId in Fractions.Manager.AllMembers.Keys.ToList())
-                    {
-                        foreach (var fractionData in Fractions.Manager.AllMembers[fractionId].ToList())
-                        {
-                            if (!fractionData.IsSave)
-                                continue;
+                    await using var db = new ServerBD("MainDB");
 
-                            await fractionData.Save(db);
-                        }
+                    foreach (var fractionId in Manager.AllMembers.Keys.ToList())
+                    foreach (var fractionData in Manager.AllMembers[fractionId].ToList())
+                    {
+                        if (!fractionData.IsSave)
+                            continue;
+
+                        await fractionData.Save(db);
                     }
 
                     foreach (var orgId in Organizations.Manager.AllMembers.Keys.ToList())
+                    foreach (var organizationData in Organizations.Manager.AllMembers[orgId].ToList())
                     {
-                        foreach (var organizationData in Organizations.Manager.AllMembers[orgId].ToList())
-                        {
-                            if (!organizationData.IsSave)
-                                continue;
+                        if (!organizationData.IsSave)
+                            continue;
 
-                            await organizationData.Save(db);
-                        }
+                        await organizationData.Save(db);
                     }
-
                 }
                 catch (Exception e)
                 {

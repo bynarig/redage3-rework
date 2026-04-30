@@ -1,24 +1,17 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using NeptuneEvoSDK;
-using NeptuneEvo.Chars;
-using NeptuneEvo.Functions;
-using NeptuneEvo.Fractions;
-using System.Threading;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using Localization;
-using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
+using GTANetworkAPI;
 using NeptuneEvo.Character;
+using NeptuneEvo.Fractions;
+using NeptuneEvo.Functions;
+using NeptuneEvo.Handles;
 using NeptuneEvo.Jobs.Models;
+using NeptuneEvo.Players;
 using NeptuneEvo.VehicleData.LocalData;
 using NeptuneEvo.VehicleData.LocalData.Models;
+using Newtonsoft.Json;
+using NeptuneEvo.SDK;
+using Repository = NeptuneEvo.VehicleData.LocalData.Repository;
 
 //Disapproved by god himself
 
@@ -47,6 +40,9 @@ namespace NeptuneEvo.Core
     public class VehicleStreaming : Script
     {
         private static readonly nLog Log = new nLog("Core.VehicleSync");
+
+        public static List<ExtVehicle> VehiclesDelele = new List<ExtVehicle>();
+
         //This is the data object which will be synced to vehicle
         public static void DeleteVehicleData(ExtVehicle vehicle, VehicleAccess vehicleAccess, string numberPlate = null)
         {
@@ -57,29 +53,28 @@ namespace NeptuneEvo.Core
                 if (vehicleLocalData != null)
                 {
                     numberPlate = vehicleLocalData.NumberPlate;
-                    
-                    if (vehicleLocalData.Access == VehicleAccess.Fraction && Configs.FractionDrones.ContainsKey(vehicleLocalData.Fraction) && Configs.FractionDrones[vehicleLocalData.Fraction].ContainsKey(vehicle))
-                    {
+
+                    if (vehicleLocalData.Access == VehicleAccess.Fraction &&
+                        Configs.FractionDrones.ContainsKey(vehicleLocalData.Fraction) &&
+                        Configs.FractionDrones[vehicleLocalData.Fraction].ContainsKey(vehicle))
                         Configs.FractionDrones[vehicleLocalData.Fraction].Remove(vehicle);
-                    }
                 }
-                VehicleData.LocalData.Repository.Delete(vehicleAccess, numberPlate);
+
+                Repository.Delete(vehicleAccess, numberPlate);
             }
             catch (Exception e)
             {
-                Log.Write($"DeleteVehicleData Task Exception: {e.ToString()}");
+                Log.Write($"DeleteVehicleData Task Exception: {e}");
             }
         }
 
-        public static List<ExtVehicle> VehiclesDelele = new List<ExtVehicle>();
-        
         public static void DeleteVehicle(ExtVehicle vehicle, Action action = null)
         {
             try
             {
-                if (vehicle == null) 
+                if (vehicle == null)
                     return;
-                
+
                 if (!VehiclesDelele.Contains(vehicle))
                     VehiclesDelele.Add(vehicle);
 
@@ -87,47 +82,55 @@ namespace NeptuneEvo.Core
                 if (vehicleLocalData != null)
                     DeleteVehicleData(vehicle, vehicleLocalData.Access);
 
-                NAPI.Task.Run(() => 
+                NAPI.Task.Run(() =>
                 {
                     try
                     {
                         if (VehiclesDelele.Contains(vehicle))
                             VehiclesDelele.Remove(vehicle);
-                        
-                        if (vehicle.Exists) 
+
+                        if (vehicle.Exists)
                             vehicle.Delete();
                     }
                     catch (Exception e)
                     {
-                        Timers.Log.Write($"DeleteVehicle Task Exception: {e.ToString()}");
+                        Timers.Log.Write($"DeleteVehicle Task Exception: {e}");
                     }
                 });
             }
             catch (Exception e)
             {
-                Timers.Log.Write($"DeleteVehicle Exception: {e.ToString()}");
+                Timers.Log.Write($"DeleteVehicle Exception: {e}");
             }
         }
-        public static ExtVehicle CreateVehicle(uint model, Vector3 pos, float rot, int color1, int color2, string numberPlate = "", byte alpha = 255, bool locked = false, bool engine = false, uint dimension = 0, int petrol = 0, int workdriv = -1, bool cm = false, bool cd = false, bool cmk = false, string by = NONE", VehicleAccess acc = VehicleAccess.None, int fr = -1, int numb = -1, JobsId work = JobsId.None, float dirt = 0.0f, int minrank = 100)
+
+        public static ExtVehicle CreateVehicle(uint model, Vector3 pos, float rot, int color1, int color2,
+            string numberPlate = "", byte alpha = 255, bool locked = false, bool engine = false, uint dimension = 0,
+            int petrol = 0, int workdriv = -1, bool cm = false, bool cd = false, bool cmk = false, string by = "NONE",
+            VehicleAccess acc = VehicleAccess.None, int fr = -1, int numb = -1, JobsId work = JobsId.None,
+            float dirt = 0.0f, int minrank = 100)
         {
             try
             {
-                var veh = (ExtVehicle) NAPI.Vehicle.CreateVehicle(model, pos, rot, color1, color2, numberPlate, alpha, locked, engine, dimension);
+                var veh = (ExtVehicle)NAPI.Vehicle.CreateVehicle(model, pos, rot, color1, color2, numberPlate, alpha,
+                    locked, engine, dimension);
 
                 if (veh == null || !veh.Exists) return null;
                 DeleteVehicleData(veh, acc, numberPlate);
 
-                VehicleData.LocalData.Repository.VehicleNumberToHandle[acc][numberPlate] = veh;
+                Repository.VehicleNumberToHandle[acc][numberPlate] = veh;
 
                 NAPI.Vehicle.SetVehicleNumberPlate(veh, numberPlate);
                 Trigger.Dimension(veh, dimension);
-                
+
                 if (petrol <= 0)
                     petrol = 0;
-                
+
                 veh.SetVehicleLocalData(new VehicleLocalData
                 {
-                    Petrol = (petrol == 9999 && VehicleManager.VehicleTank.ContainsKey(veh.Class)) ? VehicleManager.VehicleTank[veh.Class] : petrol,
+                    Petrol = petrol == 9999 && VehicleManager.VehicleTank.ContainsKey(veh.Class)
+                        ? VehicleManager.VehicleTank[veh.Class]
+                        : petrol,
                     Class = veh.Class,
                     WorkDriver = workdriv,
                     //Owner = owner,
@@ -141,13 +144,18 @@ namespace NeptuneEvo.Core
                     MinRank = minrank,
                     BagInUse = false,
                     Number = numb,
-                    MaxPetrol = (VehicleManager.VehicleTank.ContainsKey(veh.Class)) ? VehicleManager.VehicleTank[veh.Class] : 110,
+                    MaxPetrol = VehicleManager.VehicleTank.ContainsKey(veh.Class)
+                        ? VehicleManager.VehicleTank[veh.Class]
+                        : 110,
                     WorkId = work,
                     ExitTime = DateTime.Now.AddMinutes(10)
                 });
-                veh.SetSharedData(SIRENSOUND", false);
-                veh.SetSharedData(vehradio", 255);
-                veh.SetSharedData(PETROL", (petrol == 9999 && VehicleManager.VehicleTank.ContainsKey(veh.Class)) ? VehicleManager.VehicleTank[veh.Class] : petrol);
+                veh.SetSharedData("SIRENSOUND", false);
+                veh.SetSharedData("vehradio", 255);
+                veh.SetSharedData("PETROL",
+                    petrol == 9999 && VehicleManager.VehicleTank.ContainsKey(veh.Class)
+                        ? VehicleManager.VehicleTank[veh.Class]
+                        : petrol);
 
                 veh.SetVehicleLocalStateData(new VehicleLocalStateData());
                 SetLockStatus(veh, locked);
@@ -157,13 +165,13 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"CreateVehicle #2 Exception: {e.ToString()}");
+                Log.Write($"CreateVehicle #2 Exception: {e}");
                 return null;
             }
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]
-        public void VehStreamEnter(ExtPlayer player, ExtVehicle vehicle, sbyte seat) 
+        public void VehStreamEnter(ExtPlayer player, ExtVehicle vehicle, sbyte seat)
         {
             try
             {
@@ -172,19 +180,17 @@ namespace NeptuneEvo.Core
 
                 var vehicleStateData = vehicle.GetVehicleLocalStateData();
                 if (vehicleStateData != null)
-                {
-                    if (vehicleStateData.Locked) 
+                    if (vehicleStateData.Locked)
                         VehicleManager.WarpPlayerOutOfVehicle(player);
-                    /*else
+                /*else
                     {
-                        if (sessionData.ActiveWeap.Item != null) 
+                        if (sessionData.ActiveWeap.Item != null)
                             WeaponRepository.RemoveHands(player);
                     }*/
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"VehStreamEnter Exception: {e.ToString()}");
+                Log.Write($"VehStreamEnter Exception: {e}");
             }
         }
 
@@ -199,13 +205,13 @@ namespace NeptuneEvo.Core
 
                     Trigger.ClientEventInRange(vehicle.Position, 250f, "client.vehicle.door", vehicle, door, state);
 
-                    vehicle.SetSharedData(vDoor", JsonConvert.SerializeObject(vehicleStateData.Door));
-                    //veh.SetSharedData(VehicleSyncData", JsonConvert.SerializeObject(data));
+                    vehicle.SetSharedData("vDoor", JsonConvert.SerializeObject(vehicleStateData.Door));
+                    //veh.SetSharedData("VehicleSyncData", JsonConvert.SerializeObject(data));
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"SetDoorState Exception: {e.ToString()}");
+                Log.Write($"SetDoorState Exception: {e}");
             }
         }
 
@@ -214,13 +220,13 @@ namespace NeptuneEvo.Core
             try
             {
                 var vehicleStateData = vehicle.GetVehicleLocalStateData();
-                if (vehicleStateData != null) 
+                if (vehicleStateData != null)
                     return (DoorState)vehicleStateData.Door[(int)door];
                 return DoorState.DoorClosed;
             }
             catch (Exception e)
             {
-                Log.Write($"GetDoorState Exception: {e.ToString()}");
+                Log.Write($"GetDoorState Exception: {e}");
                 return DoorState.DoorClosed;
             }
         }
@@ -239,14 +245,14 @@ namespace NeptuneEvo.Core
                         vehicleStateData.Engine = status;
                         vehicleStateData.RightIL = false;
                         vehicleStateData.LeftIL = false;
-                        vehicle.SetSharedData(vEngine", Convert.ToInt32(status));
-                        vehicle.SetSharedData(vIL", $"0|0");
-                        //veh.SetSharedData(VehicleSyncData", JsonConvert.SerializeObject(data));
+                        vehicle.SetSharedData("vEngine", Convert.ToInt32(status));
+                        vehicle.SetSharedData("vIL", "0|0");
+                        //veh.SetSharedData("VehicleSyncData", JsonConvert.SerializeObject(data));
                     }
                 }
                 catch (Exception e)
                 {
-                    Log.Write($"SetEngineState Task Exception: {e.ToString()}");
+                    Log.Write($"SetEngineState Task Exception: {e}");
                 }
             });
         }
@@ -254,35 +260,36 @@ namespace NeptuneEvo.Core
         public static bool GetEngineState(ExtVehicle veh)
         {
             try
-            {                            
+            {
                 var vehicleStateData = veh.GetVehicleLocalStateData();
-                if (vehicleStateData != null) 
+                if (vehicleStateData != null)
                     return vehicleStateData.Engine;
                 return false;
             }
             catch (Exception e)
             {
-                Log.Write($"GetEngineState Exception: {e.ToString()}");
+                Log.Write($"GetEngineState Exception: {e}");
                 return false;
             }
-            
         }
-        public static bool GetVehicleIndicatorLights(ExtVehicle veh, bool light) 
+
+        public static bool GetVehicleIndicatorLights(ExtVehicle veh, bool light)
         {
             try
             {
                 var vehicleStateData = veh.GetVehicleLocalStateData();
                 if (vehicleStateData != null)
                 {
-                    if (!light) 
+                    if (!light)
                         return vehicleStateData.RightIL;
                     return vehicleStateData.LeftIL;
                 }
+
                 return false;
             }
             catch (Exception e)
             {
-                Log.Write($"GetVehicleIndicatorLights Exception: {e.ToString()}");
+                Log.Write($"GetVehicleIndicatorLights Exception: {e}");
                 return false;
             }
         }
@@ -297,14 +304,14 @@ namespace NeptuneEvo.Core
                     vehicleStateData.Locked = status;
                     veh.Locked = status;
 
-                    veh.SetSharedData(vLock", Convert.ToInt32(status));
-                    //veh.SetSharedData(VehicleSyncData", JsonConvert.SerializeObject(data));
-                    //Trigger.ClientEventInRange(veh.Position, 250, VehStream_SetLockStatus", veh, status);
+                    veh.SetSharedData("vLock", Convert.ToInt32(status));
+                    //veh.SetSharedData("VehicleSyncData", JsonConvert.SerializeObject(data));
+                    //Trigger.ClientEventInRange(veh.Position, 250, "VehStream_SetLockStatus", veh, status);
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"SetLockStatus Exception: {e.ToString()}");
+                Log.Write($"SetLockStatus Exception: {e}");
             }
         }
 
@@ -313,70 +320,70 @@ namespace NeptuneEvo.Core
             try
             {
                 var vehicleStateData = veh.GetVehicleLocalStateData();
-                if (vehicleStateData != null) 
+                if (vehicleStateData != null)
                     return vehicleStateData.Locked;
                 return false;
             }
             catch (Exception e)
             {
-                Log.Write($"GetLockState Exception: {e.ToString()}");
+                Log.Write($"GetLockState Exception: {e}");
                 return false;
             }
         }
-        
+
         [RemoteEvent("server.vehicle.updateMileage")]
         public void UpdateMileage(ExtPlayer player, int vehicleId, int centimeters)
         {
             var characterData = player.GetCharacterData();
-            if (characterData == null) 
+            if (characterData == null)
                 return;
-            
-            var vehicle = (ExtVehicle) player.Vehicle;
-                
+
+            var vehicle = (ExtVehicle)player.Vehicle;
+
             var vehicleLocalData = vehicle.GetVehicleLocalData();
             if (vehicleLocalData == null || vehicle.Value != vehicleId)
                 return;
 
-            vehicleLocalData.Centimeters += (uint) centimeters;
+            vehicleLocalData.Centimeters += (uint)centimeters;
             var mileage = Convert.ToInt32(centimeters / 100000);
 
             if (mileage > 0)
             {
                 if (mileage > 3)
                     mileage = 3;
-                
+
                 vehicleLocalData.Mileage += mileage;
-                
+
 
                 switch (vehicleLocalData.WorkId)
                 {
                     case JobsId.Taxi:
                         if (characterData.UUID != vehicleLocalData.WorkDriver)
                             return;
-                        
+
                         Players.Phone.Taxi.Orders.Repository.TaxiPay(player, mileage);
-                        
+
                         break;
                 }
             }
         }
-        
-        [RemoteEvent(VehStream_RadioChange")]
+
+        [RemoteEvent("VehStream_RadioChange")]
         public void VehStreamRadioChange(ExtPlayer player, short index)
         {
             try
             {
                 if (!player.IsCharacterData()) return;
                 if (!player.IsInVehicle) return;
-                NAPI.Data.SetEntitySharedData(player.Vehicle, vehradio", index);
+                NAPI.Data.SetEntitySharedData(player.Vehicle, "vehradio", index);
             }
             catch (Exception e)
             {
-                Log.Write($"VehStreamRadioChange Exception: {e.ToString()}");
+                Log.Write($"VehStreamRadioChange Exception: {e}");
             }
         }
 
-        [RemoteEvent(VehStream_SetVehicleDirt")]
+        [RemoteEvent("VehStream_SetVehicleDirt")]
         public void SetVehicleDirtLevel(ExtPlayer player, ExtVehicle vehicle, float dirt)
         {
             try
@@ -386,11 +393,11 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"SetVehicleDirtLevel Exception: {e.ToString()}");
+                Log.Write($"SetVehicleDirtLevel Exception: {e}");
             }
         }
 
-        [RemoteEvent(VehStream_SetIndicatorLightsData")]
+        [RemoteEvent("VehStream_SetIndicatorLightsData")]
         public void VehStreamSetIndicatorLightsData(ExtPlayer player, ExtVehicle veh, bool isLeft, bool isRight)
         {
             try
@@ -398,43 +405,41 @@ namespace NeptuneEvo.Core
                 if (!player.IsCharacterData()) return;
                 var vehicleStateData = veh.GetVehicleLocalStateData();
                 if (vehicleStateData != null)
-                {
                     if (vehicleStateData.Engine)
                     {
-                        if(isRight && !isLeft) 
+                        if (isRight && !isLeft)
                         {
                             vehicleStateData.RightIL = !vehicleStateData.RightIL;
                             vehicleStateData.LeftIL = false;
                         }
-                        else if(isLeft && !isRight) 
+                        else if (isLeft && !isRight)
                         {
                             vehicleStateData.LeftIL = !vehicleStateData.LeftIL;
                             vehicleStateData.RightIL = false;
                         }
-                        else if(isLeft && isRight) 
+                        else if (isLeft && isRight)
                         {
-                            if(vehicleStateData.RightIL && vehicleStateData.LeftIL)
+                            if (vehicleStateData.RightIL && vehicleStateData.LeftIL)
                             {
                                 vehicleStateData.RightIL = false;
                                 vehicleStateData.LeftIL = false;
-                            } 
+                            }
                             else
                             {
                                 vehicleStateData.RightIL = true;
                                 vehicleStateData.LeftIL = true;
                             }
                         }
-                        veh.SetSharedData(vIL", $"{Convert.ToInt32(vehicleStateData.RightIL)}|{Convert.ToInt32(vehicleStateData.LeftIL)}");
 
-                        //veh.SetSharedData(VehicleSyncData", JsonConvert.SerializeObject(data));
-
-                        //Trigger.ClientEventInRange(veh.Position, 250, VehStream_SetVehicleIndicatorLights", veh.Handle, leftstate, rightstate);
+                        veh.SetSharedData("vIL",
+                            $"{Convert.ToInt32(vehicleStateData.RightIL)}|{Convert.ToInt32(vehicleStateData.LeftIL)}");
+                        //veh.SetSharedData("VehicleSyncData", JsonConvert.SerializeObject(data));
+                        //Trigger.ClientEventInRange(veh.Position, 250, "VehStream_SetVehicleIndicatorLights", veh.Handle, leftstate, rightstate);
                     }
-                }
             }
             catch (Exception e)
             {
-                Log.Write($"VehStreamSetIndicatorLightsData Exception: {e.ToString()}");
+                Log.Write($"VehStreamSetIndicatorLightsData Exception: {e}");
             }
         }
 
@@ -444,12 +449,12 @@ namespace NeptuneEvo.Core
             try
             {
                 if (!CommandsAccess.CanUseCmd(player, AdminCommands.setvehdirt)) return;
-                if (player.Vehicle != null) 
+                if (player.Vehicle != null)
                     SetVehicleDirt((ExtVehicle)player.Vehicle, dirt);
             }
             catch (Exception e)
             {
-                Log.Write($"setvehdirt Exception: {e.ToString()}");
+                Log.Write($"setvehdirt Exception: {e}");
             }
         }
 
@@ -461,18 +466,18 @@ namespace NeptuneEvo.Core
                 if (vehicleStateData != null)
                 {
                     vehicleStateData.Dirt = dirt;
-                    
+
                     var vehicleData = VehicleManager.GetVehicleToNumber(veh.NumberPlate);
                     if (vehicleData != null)
                         vehicleData.Dirt = dirt;
-                    
-                    veh.SetSharedData(vDirt", dirt);
-                    //trailer.SetSharedData(VehicleSyncData", JsonConvert.SerializeObject(data));
+
+                    veh.SetSharedData("vDirt", dirt);
+                    //trailer.SetSharedData("VehicleSyncData", JsonConvert.SerializeObject(data));
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"SetVehicleDirt Exception: {e.ToString()}");
+                Log.Write($"SetVehicleDirt Exception: {e}");
             }
         }
 
@@ -481,13 +486,13 @@ namespace NeptuneEvo.Core
             try
             {
                 var vehicleStateData = veh.GetVehicleLocalStateData();
-                if (vehicleStateData != null) 
+                if (vehicleStateData != null)
                     return vehicleStateData.Dirt;
                 return 0.0f;
             }
             catch (Exception e)
             {
-                Log.Write($"GetVehicleDirt Exception: {e.ToString()}");
+                Log.Write($"GetVehicleDirt Exception: {e}");
                 return 0.0f;
             }
         }
@@ -503,7 +508,7 @@ namespace NeptuneEvo.Core
         {
             if (!player.IsCharacterData()) return;
             else if (!player.IsInVehicle) return;
-            Trigger.ClientEvent(player, openDialog", RepairMyVeh", LangFunc.GetText(LangType.Ru, DataName.RepairSelf));
+            Trigger.ClientEvent(player, "openDialog", "RepairMyVeh", LangFunc.GetText(LangType.Ru, DataName.RepairSelf));
             return;
         }*/
     }

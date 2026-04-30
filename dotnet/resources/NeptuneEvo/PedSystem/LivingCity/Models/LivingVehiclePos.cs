@@ -1,7 +1,5 @@
-﻿using GTANetworkAPI;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using GTANetworkAPI;
 
 namespace NeptuneEvo.PedSystem.LivingCity.Models
 {
@@ -18,7 +16,10 @@ namespace NeptuneEvo.PedSystem.LivingCity.Models
             Rotation = rotation;
         }
 
-        public bool IsAllowedToSpawn(DateTime now) => Used.AddSeconds(10) < now;
+        public bool IsAllowedToSpawn(DateTime now)
+        {
+            return Used.AddSeconds(10) < now;
+        }
 
         public void SpawnedNow()
         {

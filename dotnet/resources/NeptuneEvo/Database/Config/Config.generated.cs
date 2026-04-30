@@ -108,692 +108,692 @@ namespace Database
 		partial void InitMappingSchema();
 	}
 
-	[Table(barber_female_beard")]
+	[Table("barber_female_beard")]
 	public partial class BarberFemaleBeards
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_female_body")]
+	[Table("barber_female_body")]
 	public partial class BarberFemaleBodies
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_female_eyebrows")]
+	[Table("barber_female_eyebrows")]
 	public partial class BarberFemaleEyebrows
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_female_eyes")]
+	[Table("barber_female_eyes")]
 	public partial class BarberFemaleEyes
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_female_hair")]
+	[Table("barber_female_hair")]
 	public partial class BarberFemaleHair
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_female_lips")]
+	[Table("barber_female_lips")]
 	public partial class BarberFemaleLips
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_female_makeup")]
+	[Table("barber_female_makeup")]
 	public partial class BarberFemaleMakeups
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_female_palette")]
+	[Table("barber_female_palette")]
 	public partial class BarberFemalePalettes
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_male_beard")]
+	[Table("barber_male_beard")]
 	public partial class BarberMaleBeards
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_male_body")]
+	[Table("barber_male_body")]
 	public partial class BarberMaleBodies
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_male_eyebrows")]
+	[Table("barber_male_eyebrows")]
 	public partial class BarberMaleEyebrows
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_male_eyes")]
+	[Table("barber_male_eyes")]
 	public partial class BarberMaleEyes
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_male_hair")]
+	[Table("barber_male_hair")]
 	public partial class BarberMaleHair
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_male_lips")]
+	[Table("barber_male_lips")]
 	public partial class BarberMaleLips
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_male_makeup")]
+	[Table("barber_male_makeup")]
 	public partial class BarberMaleMakeups
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(barber_male_palette")]
+	[Table("barber_male_palette")]
 	public partial class BarberMalePalettes
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
-		[Column(name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("tname"),      NotNull             ] public string Tname      { get; set; } // varchar(50)
+		[Column("name"),       NotNull             ] public string Name       { get; set; } // varchar(50)
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(bpawards")]
+	[Table("bpawards")]
 	public partial class Bpawards
 	{
-		[Column(id"),     Nullable] public int?   Id     { get; set; } // int(11)
-		[Column(type"),   Nullable] public sbyte? Type   { get; set; } // tinyint(2)
-		[Column(itemId"), Nullable] public int?   ItemId { get; set; } // int(11)
-		[Column(count"),  Nullable] public int?   Count  { get; set; } // int(11)
-		[Column(data"),   Nullable] public string Data   { get; set; } // varchar(50)
-		[Column(gender"), Nullable] public sbyte? Gender { get; set; } // tinyint(2)
+		[Column("id"),     Nullable] public int?   Id     { get; set; } // int(11)
+		[Column("type"),   Nullable] public sbyte? Type   { get; set; } // tinyint(2)
+		[Column("itemId"), Nullable] public int?   ItemId { get; set; } // int(11)
+		[Column("count"),  Nullable] public int?   Count  { get; set; } // int(11)
+		[Column("data"),   Nullable] public string Data   { get; set; } // varchar(50)
+		[Column("gender"), Nullable] public sbyte? Gender { get; set; } // tinyint(2)
 	}
 
-	[Table(bpawardsold")]
+	[Table("bpawardsold")]
 	public partial class Bpawardsolds
 	{
-		[Column(id"),     Nullable] public int?   Id     { get; set; } // int(11)
-		[Column(type"),   Nullable] public sbyte? Type   { get; set; } // tinyint(2)
-		[Column(itemId"), Nullable] public int?   ItemId { get; set; } // int(11)
-		[Column(count"),  Nullable] public int?   Count  { get; set; } // int(11)
-		[Column(data"),   Nullable] public string Data   { get; set; } // varchar(50)
-		[Column(gender"), Nullable] public sbyte? Gender { get; set; } // tinyint(2)
+		[Column("id"),     Nullable] public int?   Id     { get; set; } // int(11)
+		[Column("type"),   Nullable] public sbyte? Type   { get; set; } // tinyint(2)
+		[Column("itemId"), Nullable] public int?   ItemId { get; set; } // int(11)
+		[Column("count"),  Nullable] public int?   Count  { get; set; } // int(11)
+		[Column("data"),   Nullable] public string Data   { get; set; } // varchar(50)
+		[Column("gender"), Nullable] public sbyte? Gender { get; set; } // tinyint(2)
 	}
 
-	[Table(bpawardspremiumold")]
+	[Table("bpawardspremiumold")]
 	public partial class Bpawardspremiumolds
 	{
-		[Column(id"),     Nullable] public int?   Id     { get; set; } // int(11)
-		[Column(type"),   Nullable] public sbyte? Type   { get; set; } // tinyint(2)
-		[Column(itemId"), Nullable] public int?   ItemId { get; set; } // int(11)
-		[Column(count"),  Nullable] public int?   Count  { get; set; } // int(11)
-		[Column(data"),   Nullable] public string Data   { get; set; } // varchar(50)
-		[Column(gender"), Nullable] public sbyte? Gender { get; set; } // tinyint(2)
+		[Column("id"),     Nullable] public int?   Id     { get; set; } // int(11)
+		[Column("type"),   Nullable] public sbyte? Type   { get; set; } // tinyint(2)
+		[Column("itemId"), Nullable] public int?   ItemId { get; set; } // int(11)
+		[Column("count"),  Nullable] public int?   Count  { get; set; } // int(11)
+		[Column("data"),   Nullable] public string Data   { get; set; } // varchar(50)
+		[Column("gender"), Nullable] public sbyte? Gender { get; set; } // tinyint(2)
 	}
 
-	[Table(bpawardspremium")]
+	[Table("bpawardspremium")]
 	public partial class Bpawardspremiums
 	{
-		[Column(id"),     Nullable] public int?   Id     { get; set; } // int(11)
-		[Column(type"),   Nullable] public sbyte? Type   { get; set; } // tinyint(2)
-		[Column(itemId"), Nullable] public int?   ItemId { get; set; } // int(11)
-		[Column(count"),  Nullable] public int?   Count  { get; set; } // int(11)
-		[Column(data"),   Nullable] public string Data   { get; set; } // varchar(50)
-		[Column(gender"), Nullable] public sbyte? Gender { get; set; } // tinyint(2)
+		[Column("id"),     Nullable] public int?   Id     { get; set; } // int(11)
+		[Column("type"),   Nullable] public sbyte? Type   { get; set; } // tinyint(2)
+		[Column("itemId"), Nullable] public int?   ItemId { get; set; } // int(11)
+		[Column("count"),  Nullable] public int?   Count  { get; set; } // int(11)
+		[Column("data"),   Nullable] public string Data   { get; set; } // varchar(50)
+		[Column("gender"), Nullable] public sbyte? Gender { get; set; } // tinyint(2)
 	}
 
-	[Table(bptask")]
+	[Table("bptask")]
 	public partial class Bptasks
 	{
-		[Column(id"),    Nullable] public int? Id    { get; set; } // int(11)
-		[Column(money"), Nullable] public int? Money { get; set; } // int(11)
+		[Column("id"),    Nullable] public int? Id    { get; set; } // int(11)
+		[Column("money"), Nullable] public int? Money { get; set; } // int(11)
 	}
 
-	[Table(bus_products")]
+	[Table("bus_products")]
 	public partial class BusProducts
 	{
-		[Column(name"),       PrimaryKey, NotNull] public string Name       { get; set; } // varchar(86)
-		[Column(price"),                  NotNull] public int    Price      { get; set; } // int(11)
-		[Column(otherPrice"),             NotNull] public int    OtherPrice { get; set; } // int(11)
-		[Column(percent"),                NotNull] public sbyte  Percent    { get; set; } // tinyint(4)
-		[Column(maxCount"),               NotNull] public int    MaxCount   { get; set; } // int(11)
-		[Column(type"),                   NotNull] public sbyte  Type       { get; set; } // tinyint(2)
-		[Column(itemId"),                 NotNull] public int    ItemId     { get; set; } // int(11)
-		[Column(toggled"),                NotNull] public bool   Toggled    { get; set; } // tinyint(1)
+		[Column("name"),       PrimaryKey, NotNull] public string Name       { get; set; } // varchar(86)
+		[Column("price"),                  NotNull] public int    Price      { get; set; } // int(11)
+		[Column("otherPrice"),             NotNull] public int    OtherPrice { get; set; } // int(11)
+		[Column("percent"),                NotNull] public sbyte  Percent    { get; set; } // tinyint(4)
+		[Column("maxCount"),               NotNull] public int    MaxCount   { get; set; } // int(11)
+		[Column("type"),                   NotNull] public sbyte  Type       { get; set; } // tinyint(2)
+		[Column("itemId"),                 NotNull] public int    ItemId     { get; set; } // int(11)
+		[Column("toggled"),                NotNull] public bool   Toggled    { get; set; } // tinyint(1)
 	}
 
-	[Table(clothes_bugs")]
+	[Table("clothes_bugs")]
 	public partial class ClothesBugs
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
-		[Column(maxSlots"),   NotNull] public int    MaxSlots   { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("maxSlots"),   NotNull] public int    MaxSlots   { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_accessories")]
+	[Table("clothes_female_accessories")]
 	public partial class ClothesFemaleAccessories
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_bodyarmors")]
+	[Table("clothes_female_bodyarmors")]
 	public partial class ClothesFemaleBodyarmors
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_bracelets")]
+	[Table("clothes_female_bracelets")]
 	public partial class ClothesFemaleBracelets
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_decals")]
+	[Table("clothes_female_decals")]
 	public partial class ClothesFemaleDecals
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_ears")]
+	[Table("clothes_female_ears")]
 	public partial class ClothesFemaleEars
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_glasses")]
+	[Table("clothes_female_glasses")]
 	public partial class ClothesFemaleGlasses
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_hats")]
+	[Table("clothes_female_hats")]
 	public partial class ClothesFemaleHats
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(clean_hair"), NotNull] public bool   CleanHair  { get; set; } // tinyint(1)
-		[Column(similar"),    NotNull] public int    Similar    { get; set; } // int(11)
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("clean_hair"), NotNull] public bool   CleanHair  { get; set; } // tinyint(1)
+		[Column("similar"),    NotNull] public int    Similar    { get; set; } // int(11)
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_legs")]
+	[Table("clothes_female_legs")]
 	public partial class ClothesFemaleLegs
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(underwear"),  NotNull] public bool   Underwear  { get; set; } // tinyint(1)
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("underwear"),  NotNull] public bool   Underwear  { get; set; } // tinyint(1)
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_masks")]
+	[Table("clothes_female_masks")]
 	public partial class ClothesFemaleMasks
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(isHair"),     NotNull] public bool   IsHair     { get; set; } // tinyint(1)
-		[Column(isHat"),      NotNull] public bool   IsHat      { get; set; } // tinyint(1)
-		[Column(isGlasses"),  NotNull] public bool   IsGlasses  { get; set; } // tinyint(1)
-		[Column(category"),   NotNull] public string Category   { get; set; } // mediumtext
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
-		[Column(gender"),     NotNull] public sbyte  Gender     { get; set; } // tinyint(2)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("isHair"),     NotNull] public bool   IsHair     { get; set; } // tinyint(1)
+		[Column("isHat"),      NotNull] public bool   IsHat      { get; set; } // tinyint(1)
+		[Column("isGlasses"),  NotNull] public bool   IsGlasses  { get; set; } // tinyint(1)
+		[Column("category"),   NotNull] public string Category   { get; set; } // mediumtext
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("gender"),     NotNull] public sbyte  Gender     { get; set; } // tinyint(2)
 	}
 
-	[Table(clothes_female_shoes")]
+	[Table("clothes_female_shoes")]
 	public partial class ClothesFemaleShoes
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_tops")]
+	[Table("clothes_female_tops")]
 	public partial class ClothesFemaleTops
 	{
-		[Column(id"),                        NotNull] public int    Id                      { get; set; } // int(11)
-		[Column(variation"),                 NotNull] public int    Variation               { get; set; } // int(11)
-		[Column(cvariation"),                NotNull] public int    Cvariation              { get; set; } // int(11)
-		[Column(torso"),                     NotNull] public int    Torso                   { get; set; } // int(11)
-		[Column(textures"),                  NotNull] public string Textures                { get; set; } // mediumtext
-		[Column(similar"),                   NotNull] public int    Similar                 { get; set; } // int(11)
+		[Column("id"),                        NotNull] public int    Id                      { get; set; } // int(11)
+		[Column("variation"),                 NotNull] public int    Variation               { get; set; } // int(11)
+		[Column("cvariation"),                NotNull] public int    Cvariation              { get; set; } // int(11)
+		[Column("torso"),                     NotNull] public int    Torso                   { get; set; } // int(11)
+		[Column("textures"),                  NotNull] public string Textures                { get; set; } // mediumtext
+		[Column("similar"),                   NotNull] public int    Similar                 { get; set; } // int(11)
 		/// <summary>
 		/// -1 - Не может быть вверхом, 0 - полностью закрыта, 1 - Полностью растегнута, 2 - растегнута на половину
 		/// </summary>
-		[Column(type"),                      NotNull] public short  Type                    { get; set; } // smallint(6)
-		[Column(undershirt"),                NotNull] public int    Undershirt              { get; set; } // int(11)
-		[Column(undershirt_buttoned"),       NotNull] public int    UndershirtButtoned      { get; set; } // int(11)
-		[Column(undershirt_torso"),          NotNull] public int    UndershirtTorso         { get; set; } // int(11)
-		[Column(undershirt_buttoned_torso"), NotNull] public int    UndershirtButtonedTorso { get; set; } // int(11)
-		[Column(isClearLegs"),               NotNull] public bool   IsClearLegs             { get; set; } // tinyint(1)
-		[Column(category"),                  NotNull] public string Category                { get; set; } // mediumtext
-		[Column(price"),                     NotNull] public int    Price                   { get; set; } // int(11)
-		[Column(donate"),                    NotNull] public int    Donate                  { get; set; } // int(11)
+		[Column("type"),                      NotNull] public short  Type                    { get; set; } // smallint(6)
+		[Column("undershirt"),                NotNull] public int    Undershirt              { get; set; } // int(11)
+		[Column("undershirt_buttoned"),       NotNull] public int    UndershirtButtoned      { get; set; } // int(11)
+		[Column("undershirt_torso"),          NotNull] public int    UndershirtTorso         { get; set; } // int(11)
+		[Column("undershirt_buttoned_torso"), NotNull] public int    UndershirtButtonedTorso { get; set; } // int(11)
+		[Column("isClearLegs"),               NotNull] public bool   IsClearLegs             { get; set; } // tinyint(1)
+		[Column("category"),                  NotNull] public string Category                { get; set; } // mediumtext
+		[Column("price"),                     NotNull] public int    Price                   { get; set; } // int(11)
+		[Column("donate"),                    NotNull] public int    Donate                  { get; set; } // int(11)
 	}
 
-	[Table(clothes_female_torsos")]
+	[Table("clothes_female_torsos")]
 	public partial class ClothesFemaleTorsos
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull             ] public string Textures   { get; set; } // text
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
-		[Column(torso"),      NotNull             ] public string Torso      { get; set; } // text
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull             ] public string Textures   { get; set; } // text
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("torso"),      NotNull             ] public string Torso      { get; set; } // text
 	}
 
-	[Table(clothes_female_watches")]
+	[Table("clothes_female_watches")]
 	public partial class ClothesFemaleWatches
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_accessories")]
+	[Table("clothes_male_accessories")]
 	public partial class ClothesMaleAccessories
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_bodyarmors")]
+	[Table("clothes_male_bodyarmors")]
 	public partial class ClothesMaleBodyarmors
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_bracelets")]
+	[Table("clothes_male_bracelets")]
 	public partial class ClothesMaleBracelets
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_decals")]
+	[Table("clothes_male_decals")]
 	public partial class ClothesMaleDecals
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_ears")]
+	[Table("clothes_male_ears")]
 	public partial class ClothesMaleEars
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_glasses")]
+	[Table("clothes_male_glasses")]
 	public partial class ClothesMaleGlasses
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_hats")]
+	[Table("clothes_male_hats")]
 	public partial class ClothesMaleHats
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(clean_hair"), NotNull] public bool   CleanHair  { get; set; } // tinyint(1)
-		[Column(similar"),    NotNull] public int    Similar    { get; set; } // int(11)
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("clean_hair"), NotNull] public bool   CleanHair  { get; set; } // tinyint(1)
+		[Column("similar"),    NotNull] public int    Similar    { get; set; } // int(11)
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_legs")]
+	[Table("clothes_male_legs")]
 	public partial class ClothesMaleLegs
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(underwear"),  NotNull] public bool   Underwear  { get; set; } // tinyint(1)
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("underwear"),  NotNull] public bool   Underwear  { get; set; } // tinyint(1)
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_masks")]
+	[Table("clothes_male_masks")]
 	public partial class ClothesMaleMasks
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(isHair"),     NotNull] public bool   IsHair     { get; set; } // tinyint(1)
-		[Column(isHat"),      NotNull] public bool   IsHat      { get; set; } // tinyint(1)
-		[Column(isGlasses"),  NotNull] public bool   IsGlasses  { get; set; } // tinyint(1)
-		[Column(category"),   NotNull] public string Category   { get; set; } // mediumtext
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
-		[Column(gender"),     NotNull] public sbyte  Gender     { get; set; } // tinyint(2)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("isHair"),     NotNull] public bool   IsHair     { get; set; } // tinyint(1)
+		[Column("isHat"),      NotNull] public bool   IsHat      { get; set; } // tinyint(1)
+		[Column("isGlasses"),  NotNull] public bool   IsGlasses  { get; set; } // tinyint(1)
+		[Column("category"),   NotNull] public string Category   { get; set; } // mediumtext
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("gender"),     NotNull] public sbyte  Gender     { get; set; } // tinyint(2)
 	}
 
-	[Table(clothes_male_shoes")]
+	[Table("clothes_male_shoes")]
 	public partial class ClothesMaleShoes
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_tops")]
+	[Table("clothes_male_tops")]
 	public partial class ClothesMaleTops
 	{
-		[Column(id"),                        NotNull] public int    Id                      { get; set; } // int(11)
-		[Column(variation"),                 NotNull] public int    Variation               { get; set; } // int(11)
-		[Column(cvariation"),                NotNull] public int    Cvariation              { get; set; } // int(11)
-		[Column(torso"),                     NotNull] public int    Torso                   { get; set; } // int(11)
-		[Column(textures"),                  NotNull] public string Textures                { get; set; } // mediumtext
-		[Column(similar"),                   NotNull] public int    Similar                 { get; set; } // int(11)
+		[Column("id"),                        NotNull] public int    Id                      { get; set; } // int(11)
+		[Column("variation"),                 NotNull] public int    Variation               { get; set; } // int(11)
+		[Column("cvariation"),                NotNull] public int    Cvariation              { get; set; } // int(11)
+		[Column("torso"),                     NotNull] public int    Torso                   { get; set; } // int(11)
+		[Column("textures"),                  NotNull] public string Textures                { get; set; } // mediumtext
+		[Column("similar"),                   NotNull] public int    Similar                 { get; set; } // int(11)
 		/// <summary>
 		/// -1 - Не может быть вверхом, 0 - полностью закрыта, 1 - Полностью растегнута, 2 - растегнута на половину
 		/// </summary>
-		[Column(type"),                      NotNull] public short  Type                    { get; set; } // smallint(3)
-		[Column(undershirt"),                NotNull] public int    Undershirt              { get; set; } // int(11)
-		[Column(undershirt_buttoned"),       NotNull] public int    UndershirtButtoned      { get; set; } // int(11)
-		[Column(undershirt_torso"),          NotNull] public int    UndershirtTorso         { get; set; } // int(11)
-		[Column(undershirt_buttoned_torso"), NotNull] public int    UndershirtButtonedTorso { get; set; } // int(11)
-		[Column(isClearLegs"),               NotNull] public bool   IsClearLegs             { get; set; } // tinyint(1)
-		[Column(category"),                  NotNull] public string Category                { get; set; } // mediumtext
-		[Column(price"),                     NotNull] public int    Price                   { get; set; } // int(11)
-		[Column(donate"),                    NotNull] public int    Donate                  { get; set; } // int(11)
+		[Column("type"),                      NotNull] public short  Type                    { get; set; } // smallint(3)
+		[Column("undershirt"),                NotNull] public int    Undershirt              { get; set; } // int(11)
+		[Column("undershirt_buttoned"),       NotNull] public int    UndershirtButtoned      { get; set; } // int(11)
+		[Column("undershirt_torso"),          NotNull] public int    UndershirtTorso         { get; set; } // int(11)
+		[Column("undershirt_buttoned_torso"), NotNull] public int    UndershirtButtonedTorso { get; set; } // int(11)
+		[Column("isClearLegs"),               NotNull] public bool   IsClearLegs             { get; set; } // tinyint(1)
+		[Column("category"),                  NotNull] public string Category                { get; set; } // mediumtext
+		[Column("price"),                     NotNull] public int    Price                   { get; set; } // int(11)
+		[Column("donate"),                    NotNull] public int    Donate                  { get; set; } // int(11)
 	}
 
-	[Table(clothes_male_torsos")]
+	[Table("clothes_male_torsos")]
 	public partial class ClothesMaleTorsos
 	{
-		[Column(id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull             ] public string Textures   { get; set; } // text
-		[Column(price"),      NotNull             ] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
-		[Column(torso"),      NotNull             ] public string Torso      { get; set; } // text
+		[Column("id"),         PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull             ] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull             ] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull             ] public string Textures   { get; set; } // text
+		[Column("price"),      NotNull             ] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull             ] public int    Donate     { get; set; } // int(11)
+		[Column("torso"),      NotNull             ] public string Torso      { get; set; } // text
 	}
 
-	[Table(clothes_male_watches")]
+	[Table("clothes_male_watches")]
 	public partial class ClothesMaleWatches
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(category"),   NotNull] public string Category   { get; set; } // text
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("category"),   NotNull] public string Category   { get; set; } // text
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(clothes_masks")]
+	[Table("clothes_masks")]
 	public partial class ClothesMasks
 	{
-		[Column(id"),         NotNull] public int    Id         { get; set; } // int(11)
-		[Column(variation"),  NotNull] public int    Variation  { get; set; } // int(11)
-		[Column(cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
-		[Column(textures"),   NotNull] public string Textures   { get; set; } // text
-		[Column(isHair"),     NotNull] public bool   IsHair     { get; set; } // tinyint(1)
-		[Column(isHat"),      NotNull] public bool   IsHat      { get; set; } // tinyint(1)
-		[Column(isGlasses"),  NotNull] public bool   IsGlasses  { get; set; } // tinyint(1)
-		[Column(category"),   NotNull] public string Category   { get; set; } // mediumtext
-		[Column(can_buy"),    NotNull] public bool   CanBuy     { get; set; } // tinyint(1)
-		[Column(price"),      NotNull] public int    Price      { get; set; } // int(11)
-		[Column(donate"),     NotNull] public int    Donate     { get; set; } // int(11)
-		[Column(gender"),     NotNull] public sbyte  Gender     { get; set; } // tinyint(2)
+		[Column("id"),         NotNull] public int    Id         { get; set; } // int(11)
+		[Column("variation"),  NotNull] public int    Variation  { get; set; } // int(11)
+		[Column("cvariation"), NotNull] public int    Cvariation { get; set; } // int(11)
+		[Column("textures"),   NotNull] public string Textures   { get; set; } // text
+		[Column("isHair"),     NotNull] public bool   IsHair     { get; set; } // tinyint(1)
+		[Column("isHat"),      NotNull] public bool   IsHat      { get; set; } // tinyint(1)
+		[Column("isGlasses"),  NotNull] public bool   IsGlasses  { get; set; } // tinyint(1)
+		[Column("category"),   NotNull] public string Category   { get; set; } // mediumtext
+		[Column("can_buy"),    NotNull] public bool   CanBuy     { get; set; } // tinyint(1)
+		[Column("price"),      NotNull] public int    Price      { get; set; } // int(11)
+		[Column("donate"),     NotNull] public int    Donate     { get; set; } // int(11)
+		[Column("gender"),     NotNull] public sbyte  Gender     { get; set; } // tinyint(2)
 	}
 
-	[Table(everydayaward")]
+	[Table("everydayaward")]
 	public partial class Everydayawards
 	{
-		[Column(autoId"), PrimaryKey, Identity] public int    AutoId { get; set; } // int(11)
-		[Column(day"),    NotNull             ] public int    Day    { get; set; } // int(11)
-		[Column(type"),   NotNull             ] public int    Type   { get; set; } // int(11)
-		[Column(desc"),   NotNull             ] public string Desc   { get; set; } // varchar(26)
-		[Column(count"),  NotNull             ] public int    Count  { get; set; } // int(11)
-		[Column(itemId"), NotNull             ] public int    ItemId { get; set; } // int(11)
-		[Column(data"),   NotNull             ] public string Data   { get; set; } // varchar(50)
-		[Column(pngUrl"), NotNull             ] public string PngUrl { get; set; } // varchar(86)
-		[Column(active"), NotNull             ] public bool   Active { get; set; } // tinyint(1)
+		[Column("autoId"), PrimaryKey, Identity] public int    AutoId { get; set; } // int(11)
+		[Column("day"),    NotNull             ] public int    Day    { get; set; } // int(11)
+		[Column("type"),   NotNull             ] public int    Type   { get; set; } // int(11)
+		[Column("desc"),   NotNull             ] public string Desc   { get; set; } // varchar(26)
+		[Column("count"),  NotNull             ] public int    Count  { get; set; } // int(11)
+		[Column("itemId"), NotNull             ] public int    ItemId { get; set; } // int(11)
+		[Column("data"),   NotNull             ] public string Data   { get; set; } // varchar(50)
+		[Column("pngUrl"), NotNull             ] public string PngUrl { get; set; } // varchar(86)
+		[Column("active"), NotNull             ] public bool   Active { get; set; } // tinyint(1)
 	}
 
-	[Table(ores")]
+	[Table("ores")]
 	public partial class Ores
 	{
-		[Column(index"),  PrimaryKey, NotNull] public int Index  { get; set; } // int(11)
-		[Column(price"),              NotNull] public int Price  { get; set; } // int(11)
-		[Column(itemId"),             NotNull] public int ItemId { get; set; } // int(11)
+		[Column("index"),  PrimaryKey, NotNull] public int Index  { get; set; } // int(11)
+		[Column("price"),              NotNull] public int Price  { get; set; } // int(11)
+		[Column("itemId"),             NotNull] public int ItemId { get; set; } // int(11)
 	}
 
-	[Table(roulette")]
+	[Table("roulette")]
 	public partial class Roulettes
 	{
-		[Column(autoId"),        PrimaryKey,  Identity] public int    AutoId        { get; set; } // int(11)
-		[Column(caseId"),           Nullable          ] public int?   CaseId        { get; set; } // int(11)
-		[Column(id"),               Nullable          ] public int?   Id            { get; set; } // int(11)
-		[Column(name"),             Nullable          ] public string Name          { get; set; } // varchar(50)
-		[Column(desc"),             Nullable          ] public string Desc          { get; set; } // varchar(150)
-		[Column(image"),            Nullable          ] public string Image         { get; set; } // varchar(150)
-		[Column(valueMin"),         Nullable          ] public int?   ValueMin      { get; set; } // int(11)
-		[Column(valueMax"),         Nullable          ] public int?   ValueMax      { get; set; } // int(11)
-		[Column(returnRB"),         Nullable          ] public int?   ReturnRB      { get; set; } // int(11)
-		[Column(percent"),          Nullable          ] public int?   Percent       { get; set; } // int(11)
-		[Column(color"),            Nullable          ] public int?   Color         { get; set; } // int(11)
-		[Column(isChatMessage"), NotNull              ] public bool   IsChatMessage { get; set; } // tinyint(1)
-		[Column(isHudMessage"),  NotNull              ] public bool   IsHudMessage  { get; set; } // tinyint(1)
-		[Column(itemId"),        NotNull              ] public short  ItemId        { get; set; } // smallint(6)
-		[Column(itemData"),      NotNull              ] public string ItemData      { get; set; } // varchar(50)
+		[Column("autoId"),        PrimaryKey,  Identity] public int    AutoId        { get; set; } // int(11)
+		[Column("caseId"),           Nullable          ] public int?   CaseId        { get; set; } // int(11)
+		[Column("id"),               Nullable          ] public int?   Id            { get; set; } // int(11)
+		[Column("name"),             Nullable          ] public string Name          { get; set; } // varchar(50)
+		[Column("desc"),             Nullable          ] public string Desc          { get; set; } // varchar(150)
+		[Column("image"),            Nullable          ] public string Image         { get; set; } // varchar(150)
+		[Column("valueMin"),         Nullable          ] public int?   ValueMin      { get; set; } // int(11)
+		[Column("valueMax"),         Nullable          ] public int?   ValueMax      { get; set; } // int(11)
+		[Column("returnRB"),         Nullable          ] public int?   ReturnRB      { get; set; } // int(11)
+		[Column("percent"),          Nullable          ] public int?   Percent       { get; set; } // int(11)
+		[Column("color"),            Nullable          ] public int?   Color         { get; set; } // int(11)
+		[Column("isChatMessage"), NotNull              ] public bool   IsChatMessage { get; set; } // tinyint(1)
+		[Column("isHudMessage"),  NotNull              ] public bool   IsHudMessage  { get; set; } // tinyint(1)
+		[Column("itemId"),        NotNull              ] public short  ItemId        { get; set; } // smallint(6)
+		[Column("itemData"),      NotNull              ] public string ItemData      { get; set; } // varchar(50)
 	}
 
-	[Table(systemstate")]
+	[Table("systemstate")]
 	public partial class Systemstates
 	{
-		[Column(name"),   PrimaryKey, NotNull] public string Name   { get; set; } // varchar(50)
-		[Column(toggle"),             NotNull] public bool   Toggle { get; set; } // tinyint(1)
+		[Column("name"),   PrimaryKey, NotNull] public string Name   { get; set; } // varchar(50)
+		[Column("toggle"),             NotNull] public bool   Toggle { get; set; } // tinyint(1)
 	}
 
-	[Table(tattoo_head")]
+	[Table("tattoo_head")]
 	public partial class TattooHeads
 	{
-		[Column(id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
 		[Column(),     NotNull             ] public string Name       { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string Dictionary { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string MaleHash   { get; set; } // varchar(50)
@@ -806,10 +806,10 @@ namespace Database
 		[Column(),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(tattoo_leftarm")]
+	[Table("tattoo_leftarm")]
 	public partial class TattooLeftarms
 	{
-		[Column(id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
 		[Column(),     NotNull             ] public string Name       { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string Dictionary { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string MaleHash   { get; set; } // varchar(50)
@@ -822,10 +822,10 @@ namespace Database
 		[Column(),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(tattoo_leftleg")]
+	[Table("tattoo_leftleg")]
 	public partial class TattooLeftlegs
 	{
-		[Column(id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
 		[Column(),     NotNull             ] public string Name       { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string Dictionary { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string MaleHash   { get; set; } // varchar(50)
@@ -838,10 +838,10 @@ namespace Database
 		[Column(),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(tattoo_rightarm")]
+	[Table("tattoo_rightarm")]
 	public partial class TattooRightarms
 	{
-		[Column(id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
 		[Column(),     NotNull             ] public string Name       { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string Dictionary { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string MaleHash   { get; set; } // varchar(50)
@@ -854,10 +854,10 @@ namespace Database
 		[Column(),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(tattoo_rightleg")]
+	[Table("tattoo_rightleg")]
 	public partial class TattooRightlegs
 	{
-		[Column(id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
 		[Column(),     NotNull             ] public string Name       { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string Dictionary { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string MaleHash   { get; set; } // varchar(50)
@@ -870,10 +870,10 @@ namespace Database
 		[Column(),     NotNull             ] public int    Donate     { get; set; } // int(11)
 	}
 
-	[Table(tattoo_torso")]
+	[Table("tattoo_torso")]
 	public partial class TattooTorsoes
 	{
-		[Column(id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
+		[Column("id"), PrimaryKey, Identity] public int    Id         { get; set; } // int(11)
 		[Column(),     NotNull             ] public string Name       { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string Dictionary { get; set; } // varchar(50)
 		[Column(),     NotNull             ] public string MaleHash   { get; set; } // varchar(50)

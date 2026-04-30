@@ -2,10 +2,9 @@
 {
     public class PedBlipData
     {
-        
-        public int BlipId { set; get; } = 0;
-        public string BlipName { set; get; } = null;
-        
-        public int BlipColor { set; get; } = 0;
+        public int BlipId { get; set; } = 0;
+        public string BlipName { get; set; } = null;
+
+        public int BlipColor { get; set; } = 0;
     }
 }

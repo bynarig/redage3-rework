@@ -5,14 +5,13 @@ namespace NeptuneEvo.NewCasino
 {
     public class SpinPlayerData
     {
-        public int SelectSpin = -1;
-
         public int Cash = 0;
-
-        public DateTime Time = DateTime.Now;
+        public int SelectSpin = -1;
 
 
         public List<int> Spins = new List<int>();
+
+        public DateTime Time = DateTime.Now;
 
 
         public SpinPlayerData(int SelectSpin)

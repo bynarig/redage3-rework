@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Database;
 using LinqToDB;
+using NeptuneEvo.Debugs;
 using NeptuneEvo.Players.Models;
 using Newtonsoft.Json;
 
@@ -15,26 +16,25 @@ namespace NeptuneEvo.Organizations.Models
             try
             {
                 IsSave = false;
-                
+
                 await db.Orgranks
-                    .Where(f => f.Uuid == this.UUID)
-                    .Set(f => f.Name, this.Name)
-                    .Set(f => f.Rank, this.Rank)
-                    .Set(f => f.Avatar, this.Avatar)
-                    .Set(f => f.DepartmentId, this.DepartmentId)
-                    .Set(f => f.DepartmentRank, this.DepartmentRank)
-                    .Set(f => f.Access, JsonConvert.SerializeObject(this.Access))
-                    .Set(f => f.@lock, JsonConvert.SerializeObject(this.Lock))
-                    .Set(f => f.Score, this.Score)
+                    .Where(f => f.Uuid == UUID)
+                    .Set(f => f.Name, Name)
+                    .Set(f => f.Rank, Rank)
+                    .Set(f => f.Avatar, Avatar)
+                    .Set(f => f.DepartmentId, DepartmentId)
+                    .Set(f => f.DepartmentRank, DepartmentRank)
+                    .Set(f => f.Access, JsonConvert.SerializeObject(Access))
+                    .Set(f => f.@lock, JsonConvert.SerializeObject(Lock))
+                    .Set(f => f.Score, Score)
                     .Set(f => f.LastLoginDate, DateTime.Now)
-                    .Set(f => f.Time, JsonConvert.SerializeObject(this.Time))
-                    .Set(f => f.Tasks, JsonConvert.SerializeObject(this.TasksData))
+                    .Set(f => f.Time, JsonConvert.SerializeObject(Time))
+                    .Set(f => f.Tasks, JsonConvert.SerializeObject(TasksData))
                     .UpdateAsync();
-                
             }
             catch (Exception e)
             {
-                Debugs.Repository.Exception(e);
+                Repository.Exception(e);
             }
         }
     }

@@ -1,17 +1,15 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Chars;
-using NeptuneEvo.Core;
-using NeptuneEvo.Functions;
-using NeptuneEvoSDK;
-using System;
+﻿using System;
+using GTANetworkAPI;
 using NeptuneEvo.Character;
+using NeptuneEvo.Handles;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Events
 {
-    class Parachute : Script
+    internal class Parachute : Script
     {
         private static readonly nLog Log = new nLog("Events.Parachute");
+
         [RemoteEvent("server.parachute.state")]
         public static void ParachuteState(ExtPlayer player, int state)
         {
@@ -22,7 +20,7 @@ namespace NeptuneEvo.Events
             }
             catch (Exception e)
             {
-                Log.Write($"ParachuteState Exception: {e.ToString()}");
+                Log.Write($"ParachuteState Exception: {e}");
             }
         }
     }

@@ -63,6 +63,6 @@
         OpenGunStock,
         FamilyZone,
         IsWar,
-        StartLiveStream,
+        StartLiveStream
     }
 }

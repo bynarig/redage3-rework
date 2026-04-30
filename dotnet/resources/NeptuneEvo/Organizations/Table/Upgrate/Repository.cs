@@ -18,35 +18,35 @@ namespace NeptuneEvo.Organizations.Table.Upgrate
             if (player.IsOrganizationAccess(RankToAccess.OrgUpgrate, false))
             {
                 int upgraded = organizationData.OfficeUpgrade;
-                if (upgraded == 0) 
-                    updateInfo.Add(new OrganizationUpdateData(upgrade", "Улучшение офиса", "organisationsicon-office", false, Main.PricesSettings.FirstOrgPrice));
-                else if (upgraded == 1) 
-                    updateInfo.Add(new OrganizationUpdateData(upgrade", "Улучшение офиса", "organisationsicon-office", true, Main.PricesSettings.SecondOrgPrice));
-                    
+                if (upgraded == 0)
+                    updateInfo.Add(new OrganizationUpdateData("upgrade", "Улучшение офиса", "organisationsicon-office",
+                        false, Main.PricesSettings.FirstOrgPrice));
+                else if (upgraded == 1)
+                    updateInfo.Add(new OrganizationUpdateData("upgrade", "Улучшение офиса", "organisationsicon-office",
+                        true, Main.PricesSettings.SecondOrgPrice));
+
                 if (!organizationData.Stock)
-                    updateInfo.Add(new OrganizationUpdateData(upgrades", "Построить склад", "inv-safe", false, Main.PricesSettings.StockPrice));
+                    updateInfo.Add(new OrganizationUpdateData("upgrades", "Построить склад", "inv-safe", false,
+                        Main.PricesSettings.StockPrice));
 
                 if (organizationData.CrimeOptions)
-                {
                     foreach (var p in organizationData.Schemes)
-                    {
                         if (Manager.WeaponsOrgPrice.ContainsKey(p.Key) && !p.Value)
                         {
-                            var wType = p.Key == Armor"
+                            var wType = p.Key == "Armor"
                                 ? ItemId.BodyArmor
-                                : (ItemId) Enum.Parse(typeof(ItemId), p.Key);
-                            
-                            updateInfo.Add(new OrganizationUpdateData(p.Key, $"Чертёж {p.Key}", Chars.Repository.ItemsInfo[wType].Icon, false, Manager.WeaponsOrgPrice[p.Key]));
+                                : (ItemId)Enum.Parse(typeof(ItemId), p.Key);
+
+                            updateInfo.Add(new OrganizationUpdateData(p.Key, $"Чертёж {p.Key}",
+                                Chars.Repository.ItemsInfo[wType].Icon, false, Manager.WeaponsOrgPrice[p.Key]));
                         }
-                    }
-                }
 
                 if (organizationData.IsLeader(player.GetUUID()))
                 {
-                    updateInfo.Add(new OrganizationUpdateData(updtype", "Сменить тип организации",
+                    updateInfo.Add(new OrganizationUpdateData("updtype", "Сменить тип организации",
                         "fractionsicon-fractions", true, Main.PricesSettings.UpdateTypeOrganization));
-                    
-                    updateInfo.Add(new OrganizationUpdateData(newleader", "Сменить лидера",
+
+                    updateInfo.Add(new OrganizationUpdateData("newleader", "Сменить лидера",
                         "fractionsicon-members", true, Main.PricesSettings.UpdateOrganizationLeader));
                 }
             }
@@ -59,11 +59,11 @@ namespace NeptuneEvo.Organizations.Table.Upgrate
             try
             {
                 var organizationData = player.GetOrganizationData();
-                if (organizationData == null) 
+                if (organizationData == null)
                     return;
-                
+
                 var upgrate = Get(player, organizationData);
-                
+
                 Trigger.ClientEvent(player, "client.org.main.setUpgrate", JsonConvert.SerializeObject(upgrate));
             }
             catch (Exception e)
@@ -71,7 +71,7 @@ namespace NeptuneEvo.Organizations.Table.Upgrate
                 Debugs.Repository.Exception(e);
             }
         }
-        
+
         public static void OnBuy(ExtPlayer player, string type)
         {
             try
@@ -81,28 +81,29 @@ namespace NeptuneEvo.Organizations.Table.Upgrate
 
                 switch (type)
                 {
-                    case upgrade":
+                    case "upgrade":
                         if (Manager.UpgradeOrganization(player))
                             GetData(player);
                         break;
-                    case upgrades":
+                    case "upgrades":
                         if (Manager.StockBuy(player))
                             GetData(player);
                         break;
-                    case updtype":
+                    case "updtype":
                         if (Manager.UpdateCrimeOptions(player))
                             GetData(player);
                         break;
                     default:
-                        foreach (var p in Organizations.Manager.WeaponsOrgPrice)
+                        foreach (var p in Manager.WeaponsOrgPrice)
                         {
                             if (p.Key != type)
                                 continue;
-                            
+
                             if (Manager.SchemeBuy(player, p.Key, p.Value))
                                 GetData(player);
                             break;
                         }
+
                         break;
                 }
             }

@@ -114,29 +114,29 @@ namespace Database
 		partial void InitMappingSchema();
 	}
 
-	[Table(accounts")]
+	[Table("accounts")]
 	public partial class Accounts
 	{
-		[Column(login"),       PrimaryKey, NotNull] public string   Login               { get; set; } // varchar(50)
-		[Column(email"),                   NotNull] public string   Email               { get; set; } // varchar(100)
-		[Column(password"),                NotNull] public string   Password            { get; set; } // varchar(256)
-		[Column(hwid"),                    NotNull] public string   Hwid                { get; set; } // varchar(256)
-		[Column(ip"),                      NotNull] public string   Ip                  { get; set; } // varchar(256)
-		[Column(socialclub"),              NotNull] public string   Socialclub          { get; set; } // varchar(50)
-		[Column(redbucks"),                NotNull] public int      Redbucks            { get; set; } // int(11)
-		[Column(viplvl"),                  NotNull] public int      Viplvl              { get; set; } // int(11)
-		[Column(vipdate"),                 NotNull] public DateTime Vipdate             { get; set; } // datetime
-		[Column(promocodes"),              NotNull] public string   Promocodes          { get; set; } // varchar(256)
-		[Column(bonuscodes"),              NotNull] public string   Bonuscodes          { get; set; } // mediumtext
-		[Column(character1"),              NotNull] public int      Character1          { get; set; } // int(11)
-		[Column(character2"),              NotNull] public int      Character2          { get; set; } // int(11)
-		[Column(character3"),              NotNull] public int      Character3          { get; set; } // int(11)
-		[Column(characters"),              NotNull] public string   Characters          { get; set; } // varchar(100)
-		[Column(present"),                 NotNull] public sbyte    Present             { get; set; } // tinyint(4)
-		[Column(refpresent"),              NotNull] public sbyte    Refpresent          { get; set; } // tinyint(4)
-		[Column(case"),                    NotNull] public string   @case               { get; set; } // varchar(100)
+		[Column("login"),       PrimaryKey, NotNull] public string   Login               { get; set; } // varchar(50)
+		[Column("email"),                   NotNull] public string   Email               { get; set; } // varchar(100)
+		[Column("password"),                NotNull] public string   Password            { get; set; } // varchar(256)
+		[Column("hwid"),                    NotNull] public string   Hwid                { get; set; } // varchar(256)
+		[Column("ip"),                      NotNull] public string   Ip                  { get; set; } // varchar(256)
+		[Column("socialclub"),              NotNull] public string   Socialclub          { get; set; } // varchar(50)
+		[Column("redbucks"),                NotNull] public int      Redbucks            { get; set; } // int(11)
+		[Column("viplvl"),                  NotNull] public int      Viplvl              { get; set; } // int(11)
+		[Column("vipdate"),                 NotNull] public DateTime Vipdate             { get; set; } // datetime
+		[Column("promocodes"),              NotNull] public string   Promocodes          { get; set; } // varchar(256)
+		[Column("bonuscodes"),              NotNull] public string   Bonuscodes          { get; set; } // mediumtext
+		[Column("character1"),              NotNull] public int      Character1          { get; set; } // int(11)
+		[Column("character2"),              NotNull] public int      Character2          { get; set; } // int(11)
+		[Column("character3"),              NotNull] public int      Character3          { get; set; } // int(11)
+		[Column("characters"),              NotNull] public string   Characters          { get; set; } // varchar(100)
+		[Column("present"),                 NotNull] public sbyte    Present             { get; set; } // tinyint(4)
+		[Column("refpresent"),              NotNull] public sbyte    Refpresent          { get; set; } // tinyint(4)
+		[Column("case"),                    NotNull] public string   @case               { get; set; } // varchar(100)
 		[Column(),                          NotNull] public int      RefferalId          { get; set; } // int(11)
-		[Column(isSubscribe"),             NotNull] public bool     IsSubscribe         { get; set; } // tinyint(1)
+		[Column("isSubscribe"),             NotNull] public bool     IsSubscribe         { get; set; } // tinyint(1)
 		[Column(),                          NotNull] public DateTime SubscribeEndTime    { get; set; } // datetime
 		[Column(),                          NotNull] public DateTime SubscribeTime       { get; set; } // datetime
 		[Column(),                          NotNull] public string   CollectionGifts     { get; set; } // varchar(500)
@@ -146,42 +146,42 @@ namespace Database
 		[Column(),                          NotNull] public string   Unique              { get; set; } // varchar(16)
 		[Column(),                          NotNull] public int      LastSelectCharUUID  { get; set; } // int(11)
 		[Column(),                          NotNull] public DateTime ExitDate            { get; set; } // datetime
-		[Column(ga"),                      NotNull] public string   Ga                  { get; set; } // varchar(25)
+		[Column("ga"),                      NotNull] public string   Ga                  { get; set; } // varchar(25)
 	}
 
-	[Table(adminaccess")]
+	[Table("adminaccess")]
 	public partial class Adminaccesses
 	{
-		[Column(command"), Nullable] public string Command { get; set; } // varchar(50)
-		[Column(isadmin"), Nullable] public bool?  Isadmin { get; set; } // tinyint(1)
-		[Column(minrank"), Nullable] public sbyte? Minrank { get; set; } // tinyint(2)
+		[Column("command"), Nullable] public string Command { get; set; } // varchar(50)
+		[Column("isadmin"), Nullable] public bool?  Isadmin { get; set; } // tinyint(1)
+		[Column("minrank"), Nullable] public sbyte? Minrank { get; set; } // tinyint(2)
 	}
 
-	[Table(adminaccessold")]
+	[Table("adminaccessold")]
 	public partial class Adminaccessolds
 	{
-		[Column(command"), NotNull] public string Command { get; set; } // varchar(50)
-		[Column(isadmin"), NotNull] public bool   Isadmin { get; set; } // tinyint(1)
-		[Column(minrank"), NotNull] public sbyte  Minrank { get; set; } // tinyint(2)
+		[Column("command"), NotNull] public string Command { get; set; } // varchar(50)
+		[Column("isadmin"), NotNull] public bool   Isadmin { get; set; } // tinyint(1)
+		[Column("minrank"), NotNull] public sbyte  Minrank { get; set; } // tinyint(2)
 	}
 
-	[Table(admins")]
+	[Table("admins")]
 	public partial class Admins
 	{
-		[Column(uuid"),     PrimaryKey, NotNull] public int   Uuid     { get; set; } // int(11)
-		[Column(alog"),                 NotNull] public sbyte Alog     { get; set; } // tinyint(3)
-		[Column(elog"),                 NotNull] public sbyte Elog     { get; set; } // tinyint(3)
-		[Column(winlog"),               NotNull] public sbyte Winlog   { get; set; } // tinyint(3)
-		[Column(agm"),                  NotNull] public sbyte Agm      { get; set; } // tinyint(3)
-		[Column(kl"),                   NotNull] public sbyte Kl       { get; set; } // tinyint(3)
-		[Column(hidenick"),             NotNull] public sbyte Hidenick { get; set; } // tinyint(3)
-		[Column(hideme"),               NotNull] public sbyte Hideme   { get; set; } // tinyint(3)
-		[Column(redname"),              NotNull] public sbyte Redname  { get; set; } // tinyint(3)
-		[Column(esp"),                  NotNull] public sbyte Esp      { get; set; } // tinyint(3)
-		[Column(invise"),               NotNull] public sbyte Invise   { get; set; } // tinyint(3)
+		[Column("uuid"),     PrimaryKey, NotNull] public int   Uuid     { get; set; } // int(11)
+		[Column("alog"),                 NotNull] public sbyte Alog     { get; set; } // tinyint(3)
+		[Column("elog"),                 NotNull] public sbyte Elog     { get; set; } // tinyint(3)
+		[Column("winlog"),               NotNull] public sbyte Winlog   { get; set; } // tinyint(3)
+		[Column("agm"),                  NotNull] public sbyte Agm      { get; set; } // tinyint(3)
+		[Column("kl"),                   NotNull] public sbyte Kl       { get; set; } // tinyint(3)
+		[Column("hidenick"),             NotNull] public sbyte Hidenick { get; set; } // tinyint(3)
+		[Column("hideme"),               NotNull] public sbyte Hideme   { get; set; } // tinyint(3)
+		[Column("redname"),              NotNull] public sbyte Redname  { get; set; } // tinyint(3)
+		[Column("esp"),                  NotNull] public sbyte Esp      { get; set; } // tinyint(3)
+		[Column("invise"),               NotNull] public sbyte Invise   { get; set; } // tinyint(3)
 	}
 
-	[Table(advertised")]
+	[Table("advertised")]
 	public partial class Advertiseds
 	{
 		[PrimaryKey, Identity   ] public int      ID        { get; set; } // int(11)
@@ -198,171 +198,171 @@ namespace Database
 		[Column,     NotNull    ] public bool     IsPremium { get; set; } // tinyint(1)
 	}
 
-	[Table(alcoclubs")]
+	[Table("alcoclubs")]
 	public partial class Alcoclubs
 	{
-		[Column(id"),       PrimaryKey,  NotNull] public uint Id       { get; set; } // int(3) unsigned
-		[Column(alco1"),       Nullable         ] public int? Alco1    { get; set; } // int(11)
-		[Column(alco2"),       Nullable         ] public int? Alco2    { get; set; } // int(11)
-		[Column(alco3"),       Nullable         ] public int? Alco3    { get; set; } // int(11)
-		[Column(pricemod"),    Nullable         ] public int? Pricemod { get; set; } // int(4)
-		[Column(mats"),        Nullable         ] public int? Mats     { get; set; } // int(5)
+		[Column("id"),       PrimaryKey,  NotNull] public uint Id       { get; set; } // int(3) unsigned
+		[Column("alco1"),       Nullable         ] public int? Alco1    { get; set; } // int(11)
+		[Column("alco2"),       Nullable         ] public int? Alco2    { get; set; } // int(11)
+		[Column("alco3"),       Nullable         ] public int? Alco3    { get; set; } // int(11)
+		[Column("pricemod"),    Nullable         ] public int? Pricemod { get; set; } // int(4)
+		[Column("mats"),        Nullable         ] public int? Mats     { get; set; } // int(5)
 	}
 
-	[Table(auctions")]
+	[Table("auctions")]
 	public partial class Auctions
 	{
-		[Column(autoId"),      PrimaryKey, Identity] public int      AutoId      { get; set; } // int(11)
-		[Column(type"),        NotNull             ] public int      Type        { get; set; } // int(11)
-		[Column(elementId"),   NotNull             ] public int      ElementId   { get; set; } // int(11)
-		[Column(time"),        NotNull             ] public DateTime Time        { get; set; } // datetime
-		[Column(createUUID"),  NotNull             ] public int      CreateUUID  { get; set; } // int(11)
-		[Column(betCount"),    NotNull             ] public int      BetCount    { get; set; } // int(11)
-		[Column(lastBetUUID"), NotNull             ] public int      LastBetUUID { get; set; } // int(11)
-		[Column(title"),       NotNull             ] public string   Title       { get; set; } // varchar(64)
-		[Column(text"),        NotNull             ] public string   Text        { get; set; } // varchar(264)
-		[Column(image"),       NotNull             ] public string   Image       { get; set; } // varchar(154)
-		[Column(createPrice"), NotNull             ] public int      CreatePrice { get; set; } // int(11)
-		[Column(lastPrice"),   NotNull             ] public int      LastPrice   { get; set; } // int(11)
-		[Column(betsData"),    NotNull             ] public string   BetsData    { get; set; } // text
-		[Column(isEnd"),       NotNull             ] public bool     IsEnd       { get; set; } // tinyint(1)
+		[Column("autoId"),      PrimaryKey, Identity] public int      AutoId      { get; set; } // int(11)
+		[Column("type"),        NotNull             ] public int      Type        { get; set; } // int(11)
+		[Column("elementId"),   NotNull             ] public int      ElementId   { get; set; } // int(11)
+		[Column("time"),        NotNull             ] public DateTime Time        { get; set; } // datetime
+		[Column("createUUID"),  NotNull             ] public int      CreateUUID  { get; set; } // int(11)
+		[Column("betCount"),    NotNull             ] public int      BetCount    { get; set; } // int(11)
+		[Column("lastBetUUID"), NotNull             ] public int      LastBetUUID { get; set; } // int(11)
+		[Column("title"),       NotNull             ] public string   Title       { get; set; } // varchar(64)
+		[Column("text"),        NotNull             ] public string   Text        { get; set; } // varchar(264)
+		[Column("image"),       NotNull             ] public string   Image       { get; set; } // varchar(154)
+		[Column("createPrice"), NotNull             ] public int      CreatePrice { get; set; } // int(11)
+		[Column("lastPrice"),   NotNull             ] public int      LastPrice   { get; set; } // int(11)
+		[Column("betsData"),    NotNull             ] public string   BetsData    { get; set; } // text
+		[Column("isEnd"),       NotNull             ] public bool     IsEnd       { get; set; } // tinyint(1)
 	}
 
-	[Table(banned")]
+	[Table("banned")]
 	public partial class Banneds
 	{
-		[Column(uuid"),          NotNull    ] public int      Uuid          { get; set; } // int(11)
-		[Column(name"),          NotNull    ] public string   Name          { get; set; } // varchar(50)
-		[Column(account"),       NotNull    ] public string   Account       { get; set; } // varchar(50)
-		[Column(time"),          NotNull    ] public DateTime Time          { get; set; } // datetime
-		[Column(until"),         NotNull    ] public DateTime Until         { get; set; } // datetime
-		[Column(ishard"),        NotNull    ] public sbyte    Ishard        { get; set; } // tinyint(4)
-		[Column(ip"),               Nullable] public string   Ip            { get; set; } // varchar(255)
-		[Column(socialclub"),       Nullable] public string   Socialclub    { get; set; } // varchar(255)
-		[Column(hwid"),             Nullable] public string   Hwid          { get; set; } // varchar(256)
-		[Column(reason"),           Nullable] public string   Reason        { get; set; } // varchar(300)
-		[Column(byadmin"),          Nullable] public string   Byadmin       { get; set; } // varchar(50)
-		[Column(rgscemailhash"),    Nullable] public string   Rgscemailhash { get; set; } // varchar(128)
+		[Column("uuid"),          NotNull    ] public int      Uuid          { get; set; } // int(11)
+		[Column("name"),          NotNull    ] public string   Name          { get; set; } // varchar(50)
+		[Column("account"),       NotNull    ] public string   Account       { get; set; } // varchar(50)
+		[Column("time"),          NotNull    ] public DateTime Time          { get; set; } // datetime
+		[Column("until"),         NotNull    ] public DateTime Until         { get; set; } // datetime
+		[Column("ishard"),        NotNull    ] public sbyte    Ishard        { get; set; } // tinyint(4)
+		[Column("ip"),               Nullable] public string   Ip            { get; set; } // varchar(255)
+		[Column("socialclub"),       Nullable] public string   Socialclub    { get; set; } // varchar(255)
+		[Column("hwid"),             Nullable] public string   Hwid          { get; set; } // varchar(256)
+		[Column("reason"),           Nullable] public string   Reason        { get; set; } // varchar(300)
+		[Column("byadmin"),          Nullable] public string   Byadmin       { get; set; } // varchar(50)
+		[Column("rgscemailhash"),    Nullable] public string   Rgscemailhash { get; set; } // varchar(128)
 	}
 
-	[Table(battlepass")]
+	[Table("battlepass")]
 	public partial class Battlepasses
 	{
-		[Column(autoId"),            PrimaryKey, Identity] public int    AutoId            { get; set; } // int(11)
-		[Column(userId"),            NotNull             ] public int    UserId            { get; set; } // int(11)
-		[Column(seasonId"),          NotNull             ] public sbyte  SeasonId          { get; set; } // tinyint(4)
-		[Column(tasksDay"),          NotNull             ] public string TasksDay          { get; set; } // text
-		[Column(tasksWeek"),         NotNull             ] public string TasksWeek         { get; set; } // text
-		[Column(lvl"),               NotNull             ] public int    Lvl               { get; set; } // int(11)
-		[Column(exp"),               NotNull             ] public int    Exp               { get; set; } // int(11)
-		[Column(isPremium"),         NotNull             ] public bool   IsPremium         { get; set; } // tinyint(1)
-		[Column(tookReward"),        NotNull             ] public string TookReward        { get; set; } // text
-		[Column(tookRewardPremium"), NotNull             ] public string TookRewardPremium { get; set; } // text
-		[Column(time"),              NotNull             ] public int    Time              { get; set; } // int(11)
+		[Column("autoId"),            PrimaryKey, Identity] public int    AutoId            { get; set; } // int(11)
+		[Column("userId"),            NotNull             ] public int    UserId            { get; set; } // int(11)
+		[Column("seasonId"),          NotNull             ] public sbyte  SeasonId          { get; set; } // tinyint(4)
+		[Column("tasksDay"),          NotNull             ] public string TasksDay          { get; set; } // text
+		[Column("tasksWeek"),         NotNull             ] public string TasksWeek         { get; set; } // text
+		[Column("lvl"),               NotNull             ] public int    Lvl               { get; set; } // int(11)
+		[Column("exp"),               NotNull             ] public int    Exp               { get; set; } // int(11)
+		[Column("isPremium"),         NotNull             ] public bool   IsPremium         { get; set; } // tinyint(1)
+		[Column("tookReward"),        NotNull             ] public string TookReward        { get; set; } // text
+		[Column("tookRewardPremium"), NotNull             ] public string TookRewardPremium { get; set; } // text
+		[Column("time"),              NotNull             ] public int    Time              { get; set; } // int(11)
 	}
 
-	[Table(bindcfg")]
+	[Table("bindcfg")]
 	public partial class Bindcfgs
 	{
-		[Column(uuid"),          NotNull] public int    Uuid          { get; set; } // int(12)
-		[Column(bindSetting"),   NotNull] public string BindSetting   { get; set; } // varchar(800)
-		[Column(chatSetting"),   NotNull] public string ChatSetting   { get; set; } // varchar(150)
-		[Column(animFavorites"), NotNull] public string AnimFavorites { get; set; } // text
-		[Column(animBind"),      NotNull] public string AnimBind      { get; set; } // varchar(86)
-		[Column(adminOption"),   NotNull] public string AdminOption   { get; set; } // varchar(150)
+		[Column("uuid"),          NotNull] public int    Uuid          { get; set; } // int(12)
+		[Column("bindSetting"),   NotNull] public string BindSetting   { get; set; } // varchar(800)
+		[Column("chatSetting"),   NotNull] public string ChatSetting   { get; set; } // varchar(150)
+		[Column("animFavorites"), NotNull] public string AnimFavorites { get; set; } // text
+		[Column("animBind"),      NotNull] public string AnimBind      { get; set; } // varchar(86)
+		[Column("adminOption"),   NotNull] public string AdminOption   { get; set; } // varchar(150)
 	}
 
-	[Table(bonuscodes")]
+	[Table("bonuscodes")]
 	public partial class Bonuscodes
 	{
-		[Column(code"),      Nullable] public string  Code     { get; set; } // varchar(50)
-		[Column(used"),      Nullable] public ulong?  Used     { get; set; } // bigint(20) unsigned
-		[Column(limit"),     Nullable] public ulong?  Limit    { get; set; } // bigint(20) unsigned
-		[Column(msg_r"),     Nullable] public string  MsgR     { get; set; } // varchar(400)
-		[Column(exp_r"),     Nullable] public byte?   ExpR     { get; set; } // tinyint(3) unsigned
-		[Column(money_r"),   Nullable] public uint?   MoneyR   { get; set; } // int(11) unsigned
-		[Column(vip_r"),     Nullable] public byte?   VipR     { get; set; } // tinyint(2) unsigned
-		[Column(vipdays_r"), Nullable] public ushort? VipdaysR { get; set; } // smallint(5) unsigned
-		[Column(itemsm_r"),  Nullable] public string  ItemsmR  { get; set; } // varchar(4096)
-		[Column(itemsf_r"),  Nullable] public string  ItemsfR  { get; set; } // varchar(4096)
+		[Column("code"),      Nullable] public string  Code     { get; set; } // varchar(50)
+		[Column("used"),      Nullable] public ulong?  Used     { get; set; } // bigint(20) unsigned
+		[Column("limit"),     Nullable] public ulong?  Limit    { get; set; } // bigint(20) unsigned
+		[Column("msg_r"),     Nullable] public string  MsgR     { get; set; } // varchar(400)
+		[Column("exp_r"),     Nullable] public byte?   ExpR     { get; set; } // tinyint(3) unsigned
+		[Column("money_r"),   Nullable] public uint?   MoneyR   { get; set; } // int(11) unsigned
+		[Column("vip_r"),     Nullable] public byte?   VipR     { get; set; } // tinyint(2) unsigned
+		[Column("vipdays_r"), Nullable] public ushort? VipdaysR { get; set; } // smallint(5) unsigned
+		[Column("itemsm_r"),  Nullable] public string  ItemsmR  { get; set; } // varchar(4096)
+		[Column("itemsf_r"),  Nullable] public string  ItemsfR  { get; set; } // varchar(4096)
 	}
 
-	[Table(businesses")]
+	[Table("businesses")]
 	public partial class Businesses
 	{
-		[Column(id"),          PrimaryKey,  NotNull] public int     Id          { get; set; } // int(11)
-		[Column(owner"),                    NotNull] public string  Owner       { get; set; } // varchar(256)
-		[Column(sellprice"),                NotNull] public int     Sellprice   { get; set; } // int(11)
-		[Column(type"),                     NotNull] public int     Type        { get; set; } // int(11)
-		[Column(products"),                 NotNull] public string  Products    { get; set; } // text
-		[Column(enterpoint"),               NotNull] public string  Enterpoint  { get; set; } // varchar(256)
-		[Column(unloadpoint"),              NotNull] public string  Unloadpoint { get; set; } // varchar(256)
-		[Column(money"),                    NotNull] public int     Money       { get; set; } // int(11)
-		[Column(mafia"),                    NotNull] public int     Mafia       { get; set; } // int(11)
-		[Column(orders"),                   NotNull] public string  Orders      { get; set; } // text
-		[Column(tax"),            Nullable         ] public double? Tax         { get; set; } // double
+		[Column("id"),          PrimaryKey,  NotNull] public int     Id          { get; set; } // int(11)
+		[Column("owner"),                    NotNull] public string  Owner       { get; set; } // varchar(256)
+		[Column("sellprice"),                NotNull] public int     Sellprice   { get; set; } // int(11)
+		[Column("type"),                     NotNull] public int     Type        { get; set; } // int(11)
+		[Column("products"),                 NotNull] public string  Products    { get; set; } // text
+		[Column("enterpoint"),               NotNull] public string  Enterpoint  { get; set; } // varchar(256)
+		[Column("unloadpoint"),              NotNull] public string  Unloadpoint { get; set; } // varchar(256)
+		[Column("money"),                    NotNull] public int     Money       { get; set; } // int(11)
+		[Column("mafia"),                    NotNull] public int     Mafia       { get; set; } // int(11)
+		[Column("orders"),                   NotNull] public string  Orders      { get; set; } // text
+		[Column("tax"),            Nullable         ] public double? Tax         { get; set; } // double
 	}
 
-	[Table(businesshistory")]
+	[Table("businesshistory")]
 	public partial class Businesshistories
 	{
-		[Column(autoid"), PrimaryKey, Identity] public int      Autoid { get; set; } // int(11)
-		[Column(bizid"),  NotNull             ] public int      Bizid  { get; set; } // int(11)
-		[Column(date"),   NotNull             ] public DateTime Date   { get; set; } // datetime
-		[Column(uuid"),   NotNull             ] public int      Uuid   { get; set; } // int(11)
-		[Column(item"),   NotNull             ] public string   Item   { get; set; } // varchar(50)
-		[Column(price"),  NotNull             ] public int      Price  { get; set; } // int(11)
+		[Column("autoid"), PrimaryKey, Identity] public int      Autoid { get; set; } // int(11)
+		[Column("bizid"),  NotNull             ] public int      Bizid  { get; set; } // int(11)
+		[Column("date"),   NotNull             ] public DateTime Date   { get; set; } // datetime
+		[Column("uuid"),   NotNull             ] public int      Uuid   { get; set; } // int(11)
+		[Column("item"),   NotNull             ] public string   Item   { get; set; } // varchar(50)
+		[Column("price"),  NotNull             ] public int      Price  { get; set; } // int(11)
 	}
 
-	[Table(characters")]
+	[Table("characters")]
 	public partial class Characters
 	{
-		[Column(uuid"),         PrimaryKey,  Identity] public int       Uuid              { get; set; } // int(11)
+		[Column("uuid"),         PrimaryKey,  Identity] public int       Uuid              { get; set; } // int(11)
 		[Column(),               NotNull              ] public bool      IsDelete          { get; set; } // tinyint(1)
 		[Column(),                  Nullable          ] public DateTime? DeleteData        { get; set; } // datetime
-		[Column(firstname"),       Nullable          ] public string    Firstname         { get; set; } // varchar(50)
-		[Column(lastname"),        Nullable          ] public string    Lastname          { get; set; } // varchar(50)
-		[Column(gender"),          Nullable          ] public sbyte?    Gender            { get; set; } // tinyint(4)
-		[Column(health"),          Nullable          ] public int?      Health            { get; set; } // int(11)
-		[Column(armor"),           Nullable          ] public int?      Armor             { get; set; } // int(11)
-		[Column(lvl"),             Nullable          ] public int?      Lvl               { get; set; } // int(11)
-		[Column(exp"),             Nullable          ] public int?      Exp               { get; set; } // int(11)
-		[Column(money"),           Nullable          ] public int?      Money             { get; set; } // int(11)
-		[Column(bank"),            Nullable          ] public int?      Bank              { get; set; } // int(11)
-		[Column(work"),            Nullable          ] public int?      Work              { get; set; } // int(11)
-		[Column(fraction"),        Nullable          ] public int?      Fraction          { get; set; } // int(11)
-		[Column(fractionlvl"),     Nullable          ] public int?      Fractionlvl       { get; set; } // int(11)
-		[Column(drugaddi"),        Nullable          ] public ushort?   Drugaddi          { get; set; } // smallint(6) unsigned
-		[Column(arrest"),          Nullable          ] public int?      Arrest            { get; set; } // int(11)
-		[Column(demorgan"),        Nullable          ] public int?      Demorgan          { get; set; } // int(11)
-		[Column(wanted"),          Nullable          ] public string    Wanted            { get; set; } // varchar(512)
-		[Column(biz"),             Nullable          ] public string    Biz               { get; set; } // varchar(50)
-		[Column(adminlvl"),        Nullable          ] public int?      Adminlvl          { get; set; } // int(11)
-		[Column(licenses"),        Nullable          ] public string    Licenses          { get; set; } // varchar(256)
-		[Column(unwarn"),          Nullable          ] public DateTime? Unwarn            { get; set; } // datetime
-		[Column(unmute"),          Nullable          ] public int?      Unmute            { get; set; } // int(11)
-		[Column(warns"),           Nullable          ] public int?      Warns             { get; set; } // int(11)
-		[Column(onduty"),          Nullable          ] public string    Onduty            { get; set; } // varchar(50)
-		[Column(lasthour"),        Nullable          ] public int?      Lasthour          { get; set; } // int(11)
-		[Column(hotel"),           Nullable          ] public int?      Hotel             { get; set; } // int(11)
-		[Column(hotelleft"),       Nullable          ] public int?      Hotelleft         { get; set; } // int(11)
-		[Column(contacts"),        Nullable          ] public string    Contacts          { get; set; } // varchar(2500)
-		[Column(achiev"),          Nullable          ] public string    Achiev            { get; set; } // varchar(2450)
-		[Column(sim"),             Nullable          ] public int?      Sim               { get; set; } // int(11)
+		[Column("firstname"),       Nullable          ] public string    Firstname         { get; set; } // varchar(50)
+		[Column("lastname"),        Nullable          ] public string    Lastname          { get; set; } // varchar(50)
+		[Column("gender"),          Nullable          ] public sbyte?    Gender            { get; set; } // tinyint(4)
+		[Column("health"),          Nullable          ] public int?      Health            { get; set; } // int(11)
+		[Column("armor"),           Nullable          ] public int?      Armor             { get; set; } // int(11)
+		[Column("lvl"),             Nullable          ] public int?      Lvl               { get; set; } // int(11)
+		[Column("exp"),             Nullable          ] public int?      Exp               { get; set; } // int(11)
+		[Column("money"),           Nullable          ] public int?      Money             { get; set; } // int(11)
+		[Column("bank"),            Nullable          ] public int?      Bank              { get; set; } // int(11)
+		[Column("work"),            Nullable          ] public int?      Work              { get; set; } // int(11)
+		[Column("fraction"),        Nullable          ] public int?      Fraction          { get; set; } // int(11)
+		[Column("fractionlvl"),     Nullable          ] public int?      Fractionlvl       { get; set; } // int(11)
+		[Column("drugaddi"),        Nullable          ] public ushort?   Drugaddi          { get; set; } // smallint(6) unsigned
+		[Column("arrest"),          Nullable          ] public int?      Arrest            { get; set; } // int(11)
+		[Column("demorgan"),        Nullable          ] public int?      Demorgan          { get; set; } // int(11)
+		[Column("wanted"),          Nullable          ] public string    Wanted            { get; set; } // varchar(512)
+		[Column("biz"),             Nullable          ] public string    Biz               { get; set; } // varchar(50)
+		[Column("adminlvl"),        Nullable          ] public int?      Adminlvl          { get; set; } // int(11)
+		[Column("licenses"),        Nullable          ] public string    Licenses          { get; set; } // varchar(256)
+		[Column("unwarn"),          Nullable          ] public DateTime? Unwarn            { get; set; } // datetime
+		[Column("unmute"),          Nullable          ] public int?      Unmute            { get; set; } // int(11)
+		[Column("warns"),           Nullable          ] public int?      Warns             { get; set; } // int(11)
+		[Column("onduty"),          Nullable          ] public string    Onduty            { get; set; } // varchar(50)
+		[Column("lasthour"),        Nullable          ] public int?      Lasthour          { get; set; } // int(11)
+		[Column("hotel"),           Nullable          ] public int?      Hotel             { get; set; } // int(11)
+		[Column("hotelleft"),       Nullable          ] public int?      Hotelleft         { get; set; } // int(11)
+		[Column("contacts"),        Nullable          ] public string    Contacts          { get; set; } // varchar(2500)
+		[Column("achiev"),          Nullable          ] public string    Achiev            { get; set; } // varchar(2450)
+		[Column("sim"),             Nullable          ] public int?      Sim               { get; set; } // int(11)
 		[Column(),               NotNull              ] public string    PetName           { get; set; } // varchar(30)
-		[Column(pos"),             Nullable          ] public string    Pos               { get; set; } // varchar(256)
-		[Column(createdate"),      Nullable          ] public DateTime? Createdate        { get; set; } // datetime
-		[Column(demorganinfo"),    Nullable          ] public string    Demorganinfo      { get; set; } // varchar(350)
-		[Column(warninfo"),        Nullable          ] public string    Warninfo          { get; set; } // varchar(1000)
-		[Column(time"),            Nullable          ] public string    Time              { get; set; } // varchar(250)
-		[Column(deaths"),          Nullable          ] public ulong?    Deaths            { get; set; } // bigint(22) unsigned
-		[Column(kills"),           Nullable          ] public ulong?    Kills             { get; set; } // bigint(22) unsigned
-		[Column(earnedmoney"),     Nullable          ] public ulong?    Earnedmoney       { get; set; } // bigint(22) unsigned
-		[Column(eattimes"),        Nullable          ] public ulong?    Eattimes          { get; set; } // bigint(22) unsigned
-		[Column(revived"),         Nullable          ] public ulong?    Revived           { get; set; } // bigint(22) unsigned
-		[Column(handshaked"),      Nullable          ] public ulong?    Handshaked        { get; set; } // bigint(22) unsigned
-		[Column(jobskills"),       Nullable          ] public string    Jobskills         { get; set; } // varchar(2048)
-		[Column(refcode"),         Nullable          ] public string    Refcode           { get; set; } // varchar(64)
+		[Column("pos"),             Nullable          ] public string    Pos               { get; set; } // varchar(256)
+		[Column("createdate"),      Nullable          ] public DateTime? Createdate        { get; set; } // datetime
+		[Column("demorganinfo"),    Nullable          ] public string    Demorganinfo      { get; set; } // varchar(350)
+		[Column("warninfo"),        Nullable          ] public string    Warninfo          { get; set; } // varchar(1000)
+		[Column("time"),            Nullable          ] public string    Time              { get; set; } // varchar(250)
+		[Column("deaths"),          Nullable          ] public ulong?    Deaths            { get; set; } // bigint(22) unsigned
+		[Column("kills"),           Nullable          ] public ulong?    Kills             { get; set; } // bigint(22) unsigned
+		[Column("earnedmoney"),     Nullable          ] public ulong?    Earnedmoney       { get; set; } // bigint(22) unsigned
+		[Column("eattimes"),        Nullable          ] public ulong?    Eattimes          { get; set; } // bigint(22) unsigned
+		[Column("revived"),         Nullable          ] public ulong?    Revived           { get; set; } // bigint(22) unsigned
+		[Column("handshaked"),      Nullable          ] public ulong?    Handshaked        { get; set; } // bigint(22) unsigned
+		[Column("jobskills"),       Nullable          ] public string    Jobskills         { get; set; } // varchar(2048)
+		[Column("refcode"),         Nullable          ] public string    Refcode           { get; set; } // varchar(64)
 		[Column(),               NotNull              ] public int       WeddingUUID       { get; set; } // int(11)
 		[Column(),               NotNull              ] public string    WeddingName       { get; set; } // varchar(50)
 		[Column(),               NotNull              ] public string    MissionTask       { get; set; } // text
@@ -371,23 +371,23 @@ namespace Database
 		[Column(),               NotNull              ] public bool      IsBannedCrime     { get; set; } // tinyint(1)
 		[Column(),               NotNull              ] public string    BanCrimeReason    { get; set; } // varchar(64)
 		[Column(),               NotNull              ] public string    SelectedQuest     { get; set; } // varchar(42)
-		[Column(isForbesShow"), NotNull              ] public bool      IsForbesShow      { get; set; } // tinyint(1)
+		[Column("isForbesShow"), NotNull              ] public bool      IsForbesShow      { get; set; } // tinyint(1)
 		[Column(),               NotNull              ] public string    FractionTasksData { get; set; } // varchar(350)
-		[Column(isLucky"),      NotNull              ] public bool      IsLucky           { get; set; } // tinyint(1)
+		[Column("isLucky"),      NotNull              ] public bool      IsLucky           { get; set; } // tinyint(1)
 	}
 
-	[Table(chatcfg")]
+	[Table("chatcfg")]
 	public partial class Chatcfgs
 	{
-		[Column(uuid"),    Nullable] public int?   Uuid    { get; set; } // int(11)
-		[Column(setting"), Nullable] public string Setting { get; set; } // varchar(1200)
+		[Column("uuid"),    Nullable] public int?   Uuid    { get; set; } // int(11)
+		[Column("setting"), Nullable] public string Setting { get; set; } // varchar(1200)
 	}
 
-	[Table(compensation")]
+	[Table("compensation")]
 	public partial class Compensations
 	{
-		[Column(auto_Id"), PrimaryKey,  Identity] public int    AutoId  { get; set; } // int(11)
-		[Column(login"),      Nullable          ] public string Login   { get; set; } // varchar(50)
+		[Column("auto_Id"), PrimaryKey,  Identity] public int    AutoId  { get; set; } // int(11)
+		[Column("login"),      Nullable          ] public string Login   { get; set; } // varchar(50)
 		[Column(),          NotNull              ] public int    UUID    { get; set; } // int(11)
 		[Column(),          NotNull              ] public string Title   { get; set; } // varchar(86)
 		[Column(),          NotNull              ] public string Text    { get; set; } // varchar(450)
@@ -398,28 +398,28 @@ namespace Database
 		[Column(),          NotNull              ] public bool   Toggled { get; set; } // tinyint(1)
 	}
 
-	[Table(customization")]
+	[Table("customization")]
 	public partial class Customizations
 	{
-		[Column(uuid"),       PrimaryKey,  NotNull] public int    Uuid       { get; set; } // int(11)
-		[Column(gender"),        Nullable         ] public sbyte? Gender     { get; set; } // tinyint(4)
-		[Column(parents"),       Nullable         ] public string Parents    { get; set; } // varchar(100)
-		[Column(features"),      Nullable         ] public string Features   { get; set; } // varchar(300)
-		[Column(appearance"),    Nullable         ] public string Appearance { get; set; } // varchar(1000)
-		[Column(hair"),          Nullable         ] public string Hair       { get; set; } // varchar(500)
-		[Column(tattoos"),       Nullable         ] public string Tattoos    { get; set; } // text
-		[Column(eyec"),          Nullable         ] public int?   Eyec       { get; set; } // int(11)
-		[Column(iscreated"),               NotNull] public sbyte  Iscreated  { get; set; } // tinyint(4)
+		[Column("uuid"),       PrimaryKey,  NotNull] public int    Uuid       { get; set; } // int(11)
+		[Column("gender"),        Nullable         ] public sbyte? Gender     { get; set; } // tinyint(4)
+		[Column("parents"),       Nullable         ] public string Parents    { get; set; } // varchar(100)
+		[Column("features"),      Nullable         ] public string Features   { get; set; } // varchar(300)
+		[Column("appearance"),    Nullable         ] public string Appearance { get; set; } // varchar(1000)
+		[Column("hair"),          Nullable         ] public string Hair       { get; set; } // varchar(500)
+		[Column("tattoos"),       Nullable         ] public string Tattoos    { get; set; } // text
+		[Column("eyec"),          Nullable         ] public int?   Eyec       { get; set; } // int(11)
+		[Column("iscreated"),               NotNull] public sbyte  Iscreated  { get; set; } // tinyint(4)
 	}
 
-	[Table(doorscontrol")]
+	[Table("doorscontrol")]
 	public partial class Doorscontrols
 	{
-		[Column(id"),      PrimaryKey, NotNull] public string Id      { get; set; } // varchar(16)
-		[Column(toggled"),             NotNull] public bool   Toggled { get; set; } // tinyint(1)
+		[Column("id"),      PrimaryKey, NotNull] public string Id      { get; set; } // varchar(16)
+		[Column("toggled"),             NotNull] public bool   Toggled { get; set; } // tinyint(1)
 	}
 
-	[Table(e_candidates")]
+	[Table("e_candidates")]
 	public partial class ECandidates
 	{
 		[PrimaryKey, Identity] public int    ID       { get; set; } // int(11)
@@ -428,46 +428,46 @@ namespace Database
 		[Column,     NotNull ] public ushort Votes    { get; set; } // smallint(6) unsigned
 	}
 
-	[Table(economy")]
+	[Table("economy")]
 	public partial class Economies
 	{
-		[Column(bizMin"),             Nullable         ] public float? BizMin                 { get; set; } // float
-		[Column(bizMax"),             Nullable         ] public float? BizMax                 { get; set; } // float
-		[Column(drugsPrice"),         Nullable         ] public uint?  DrugsPrice             { get; set; } // int(4) unsigned
-		[Column(busPrices"),          Nullable         ] public string BusPrices              { get; set; } // varchar(50)
-		[Column(colPay"),             Nullable         ] public uint?  ColPay                 { get; set; } // int(11) unsigned
-		[Column(elecPay"),            Nullable         ] public uint?  ElecPay                { get; set; } // int(11) unsigned
-		[Column(postPay"),            Nullable         ] public uint?  PostPay                { get; set; } // int(11) unsigned
-		[Column(lawnPay"),            Nullable         ] public uint?  LawnPay                { get; set; } // int(11) unsigned
-		[Column(gangCarDelivery"),    Nullable         ] public uint?  GangCarDelivery        { get; set; } // int(11) unsigned
-		[Column(mafCarDelivery"),     Nullable         ] public uint?  MafCarDelivery         { get; set; } // int(11) unsigned
-		[Column(policeAward"),        Nullable         ] public uint?  PoliceAward            { get; set; } // int(11) unsigned
-		[Column(minGunLic"),          Nullable         ] public uint?  MinGunLic              { get; set; } // int(11) unsigned
-		[Column(maxGunLic"),          Nullable         ] public uint?  MaxGunLic              { get; set; } // int(11) unsigned
-		[Column(minPMLic"),           Nullable         ] public uint?  MinPMLic               { get; set; } // int(11) unsigned
-		[Column(maxPMLic"),           Nullable         ] public uint?  MaxPMLic               { get; set; } // int(11) unsigned
-		[Column(maxTicket"),          Nullable         ] public uint?  MaxTicket              { get; set; } // int(11) unsigned
-		[Column(minHeal"),            Nullable         ] public uint?  MinHeal                { get; set; } // int(11) unsigned
-		[Column(maxHeal"),            Nullable         ] public uint?  MaxHeal                { get; set; } // int(11) unsigned
-		[Column(captureWin"),         Nullable         ] public uint?  CaptureWin             { get; set; } // int(11) unsigned
-		[Column(bizwarWin"),          Nullable         ] public uint?  BizwarWin              { get; set; } // int(11) unsigned
-		[Column(mafiaBizAward"),      Nullable         ] public uint?  MafiaBizAward          { get; set; } // int(11) unsigned
-		[Column(gangPointAward"),     Nullable         ] public uint?  GangPointAward         { get; set; } // int(11) unsigned
-		[Column(licPrices"),          Nullable         ] public string LicPrices              { get; set; } // varchar(70)
-		[Column(hotelRent"),          Nullable         ] public uint?  HotelRent              { get; set; } // int(11) unsigned
-		[Column(smsCost"),            Nullable         ] public uint?  SmsCost                { get; set; } // int(11) unsigned
-		[Column(adCost"),             Nullable         ] public uint?  AdCost                 { get; set; } // int(11) unsigned
-		[Column(evacCar"),            Nullable         ] public uint?  EvacCar                { get; set; } // int(11) unsigned
-		[Column(adEditCost"),         Nullable         ] public float? AdEditCost             { get; set; } // float
-		[Column(minDice"),            Nullable         ] public uint?  MinDice                { get; set; } // int(11) unsigned
-		[Column(maxDice"),            Nullable         ] public uint?  MaxDice                { get; set; } // int(11) unsigned
+		[Column("bizMin"),             Nullable         ] public float? BizMin                 { get; set; } // float
+		[Column("bizMax"),             Nullable         ] public float? BizMax                 { get; set; } // float
+		[Column("drugsPrice"),         Nullable         ] public uint?  DrugsPrice             { get; set; } // int(4) unsigned
+		[Column("busPrices"),          Nullable         ] public string BusPrices              { get; set; } // varchar(50)
+		[Column("colPay"),             Nullable         ] public uint?  ColPay                 { get; set; } // int(11) unsigned
+		[Column("elecPay"),            Nullable         ] public uint?  ElecPay                { get; set; } // int(11) unsigned
+		[Column("postPay"),            Nullable         ] public uint?  PostPay                { get; set; } // int(11) unsigned
+		[Column("lawnPay"),            Nullable         ] public uint?  LawnPay                { get; set; } // int(11) unsigned
+		[Column("gangCarDelivery"),    Nullable         ] public uint?  GangCarDelivery        { get; set; } // int(11) unsigned
+		[Column("mafCarDelivery"),     Nullable         ] public uint?  MafCarDelivery         { get; set; } // int(11) unsigned
+		[Column("policeAward"),        Nullable         ] public uint?  PoliceAward            { get; set; } // int(11) unsigned
+		[Column("minGunLic"),          Nullable         ] public uint?  MinGunLic              { get; set; } // int(11) unsigned
+		[Column("maxGunLic"),          Nullable         ] public uint?  MaxGunLic              { get; set; } // int(11) unsigned
+		[Column("minPMLic"),           Nullable         ] public uint?  MinPMLic               { get; set; } // int(11) unsigned
+		[Column("maxPMLic"),           Nullable         ] public uint?  MaxPMLic               { get; set; } // int(11) unsigned
+		[Column("maxTicket"),          Nullable         ] public uint?  MaxTicket              { get; set; } // int(11) unsigned
+		[Column("minHeal"),            Nullable         ] public uint?  MinHeal                { get; set; } // int(11) unsigned
+		[Column("maxHeal"),            Nullable         ] public uint?  MaxHeal                { get; set; } // int(11) unsigned
+		[Column("captureWin"),         Nullable         ] public uint?  CaptureWin             { get; set; } // int(11) unsigned
+		[Column("bizwarWin"),          Nullable         ] public uint?  BizwarWin              { get; set; } // int(11) unsigned
+		[Column("mafiaBizAward"),      Nullable         ] public uint?  MafiaBizAward          { get; set; } // int(11) unsigned
+		[Column("gangPointAward"),     Nullable         ] public uint?  GangPointAward         { get; set; } // int(11) unsigned
+		[Column("licPrices"),          Nullable         ] public string LicPrices              { get; set; } // varchar(70)
+		[Column("hotelRent"),          Nullable         ] public uint?  HotelRent              { get; set; } // int(11) unsigned
+		[Column("smsCost"),            Nullable         ] public uint?  SmsCost                { get; set; } // int(11) unsigned
+		[Column("adCost"),             Nullable         ] public uint?  AdCost                 { get; set; } // int(11) unsigned
+		[Column("evacCar"),            Nullable         ] public uint?  EvacCar                { get; set; } // int(11) unsigned
+		[Column("adEditCost"),         Nullable         ] public float? AdEditCost             { get; set; } // float
+		[Column("minDice"),            Nullable         ] public uint?  MinDice                { get; set; } // int(11) unsigned
+		[Column("maxDice"),            Nullable         ] public uint?  MaxDice                { get; set; } // int(11) unsigned
 		[Column(),                     Nullable         ] public uint?  BMdrill                { get; set; } // int(11) unsigned
 		[Column(),                     Nullable         ] public uint?  BMlockpick             { get; set; } // int(11) unsigned
 		[Column(),                     Nullable         ] public uint?  BMalockpick            { get; set; } // int(11) unsigned
 		[Column(),                     Nullable         ] public uint?  BMcuffs                { get; set; } // int(11) unsigned
 		[Column(),                     Nullable         ] public uint?  BMpocket               { get; set; } // int(11) unsigned
 		[Column(),                     Nullable         ] public uint?  BMwanted               { get; set; } // int(11) unsigned
-		[Column(busPay"),             Nullable         ] public uint?  BusPay                 { get; set; } // int(11) unsigned
+		[Column("busPay"),             Nullable         ] public uint?  BusPay                 { get; set; } // int(11) unsigned
 		[Column(),                     Nullable         ] public uint?  BMuncuff               { get; set; } // int(11) unsigned
 		[Column(),                  PrimaryKey,  NotNull] public sbyte  DONOTUSE               { get; set; } // tinyint(2)
 		[Column(),                     Nullable         ] public int?   BlackMarketGunLic      { get; set; } // int(11)
@@ -476,7 +476,7 @@ namespace Database
 		[Column(),                     Nullable         ] public int?   BlackQrFake            { get; set; } // int(11)
 	}
 
-	[Table(e_points")]
+	[Table("e_points")]
 	public partial class EPoints
 	{
 		[PrimaryKey, Identity] public int   ID        { get; set; } // int(11)
@@ -488,7 +488,7 @@ namespace Database
 		[Column,     NotNull ] public sbyte Opened    { get; set; } // tinyint(4)
 	}
 
-	[Table(e_voters")]
+	[Table("e_voters")]
 	public partial class EVoters
 	{
 		[PrimaryKey, Identity] public int       ID        { get; set; } // int(11)
@@ -498,205 +498,205 @@ namespace Database
 		[Column,     Nullable] public string    VotedFor  { get; set; } // varchar(100)
 	}
 
-	[Table(familyzones")]
+	[Table("familyzones")]
 	public partial class Familyzones
 	{
-		[Column(id"),    PrimaryKey, Identity] public int   Id    { get; set; } // int(11)
-		[Column(orgid"), NotNull             ] public short Orgid { get; set; } // smallint(6)
+		[Column("id"),    PrimaryKey, Identity] public int   Id    { get; set; } // int(11)
+		[Column("orgid"), NotNull             ] public short Orgid { get; set; } // smallint(6)
 	}
 
-	[Table(fracranks")]
+	[Table("fracranks")]
 	public partial class Fracranks
 	{
-		[Column(uuid"),           NotNull] public int      Uuid           { get; set; } // int(11)
-		[Column(name"),           NotNull] public string   Name           { get; set; } // varchar(50)
-		[Column(id"),             NotNull] public int      Id             { get; set; } // int(11)
-		[Column(rank"),           NotNull] public int      Rank           { get; set; } // int(11)
-		[Column(date"),           NotNull] public DateTime Date           { get; set; } // datetime
-		[Column(avatar"),         NotNull] public string   Avatar         { get; set; } // varchar(255)
-		[Column(departmentId"),   NotNull] public int      DepartmentId   { get; set; } // int(11)
-		[Column(departmentRank"), NotNull] public int      DepartmentRank { get; set; } // int(11)
-		[Column(access"),         NotNull] public string   Access         { get; set; } // varchar(1500)
-		[Column(lock"),           NotNull] public string   @lock          { get; set; } // varchar(1500)
-		[Column(score"),          NotNull] public int      Score          { get; set; } // int(11)
-		[Column(lastLoginDate"),  NotNull] public DateTime LastLoginDate  { get; set; } // datetime
-		[Column(time"),           NotNull] public string   Time           { get; set; } // varchar(350)
-		[Column(tasks"),          NotNull] public string   Tasks          { get; set; } // varchar(350)
+		[Column("uuid"),           NotNull] public int      Uuid           { get; set; } // int(11)
+		[Column("name"),           NotNull] public string   Name           { get; set; } // varchar(50)
+		[Column("id"),             NotNull] public int      Id             { get; set; } // int(11)
+		[Column("rank"),           NotNull] public int      Rank           { get; set; } // int(11)
+		[Column("date"),           NotNull] public DateTime Date           { get; set; } // datetime
+		[Column("avatar"),         NotNull] public string   Avatar         { get; set; } // varchar(255)
+		[Column("departmentId"),   NotNull] public int      DepartmentId   { get; set; } // int(11)
+		[Column("departmentRank"), NotNull] public int      DepartmentRank { get; set; } // int(11)
+		[Column("access"),         NotNull] public string   Access         { get; set; } // varchar(1500)
+		[Column("lock"),           NotNull] public string   @lock          { get; set; } // varchar(1500)
+		[Column("score"),          NotNull] public int      Score          { get; set; } // int(11)
+		[Column("lastLoginDate"),  NotNull] public DateTime LastLoginDate  { get; set; } // datetime
+		[Column("time"),           NotNull] public string   Time           { get; set; } // varchar(350)
+		[Column("tasks"),          NotNull] public string   Tasks          { get; set; } // varchar(350)
 	}
 
-	[Table(fractionaccess")]
+	[Table("fractionaccess")]
 	public partial class Fractionaccesses
 	{
-		[Column(fraction"),    Nullable] public int?   Fraction { get; set; } // int(11)
-		[Column(commands"), NotNull    ] public string Commands { get; set; } // varchar(1024)
-		[Column(weapons"),  NotNull    ] public string Weapons  { get; set; } // varchar(1024)
+		[Column("fraction"),    Nullable] public int?   Fraction { get; set; } // int(11)
+		[Column("commands"), NotNull    ] public string Commands { get; set; } // varchar(1024)
+		[Column("weapons"),  NotNull    ] public string Weapons  { get; set; } // varchar(1024)
 	}
 
-	[Table(fraction_clothing_sets")]
+	[Table("fraction_clothing_sets")]
 	public partial class FractionClothingSets
 	{
-		[Column(id"),             PrimaryKey, Identity] public int    Id            { get; set; } // int(11)
-		[Column(fraction"),       Nullable            ] public int?   Fraction      { get; set; } // int(11)
-		[Column(rank"),           Nullable            ] public int?   Rank          { get; set; } // int(11)
-		[Column(gender"),         Nullable            ] public sbyte? Gender        { get; set; } // tinyint(4)
-		[Column(name"),           Nullable            ] public string Name          { get; set; } // tinytext
-		[Column(clothing_index"), Nullable            ] public int?   ClothingIndex { get; set; } // int(11)
+		[Column("id"),             PrimaryKey, Identity] public int    Id            { get; set; } // int(11)
+		[Column("fraction"),       Nullable            ] public int?   Fraction      { get; set; } // int(11)
+		[Column("rank"),           Nullable            ] public int?   Rank          { get; set; } // int(11)
+		[Column("gender"),         Nullable            ] public sbyte? Gender        { get; set; } // tinyint(4)
+		[Column("name"),           Nullable            ] public string Name          { get; set; } // tinytext
+		[Column("clothing_index"), Nullable            ] public int?   ClothingIndex { get; set; } // int(11)
 	}
 
-	[Table(fractionlogs")]
+	[Table("fractionlogs")]
 	public partial class Fractionlogs
 	{
-		[Column(auto_id"),  PrimaryKey, Identity] public int      AutoId   { get; set; } // int(11)
-		[Column(fraction"), NotNull             ] public sbyte    Fraction { get; set; } // tinyint(2)
-		[Column(name"),     NotNull             ] public string   Name     { get; set; } // varchar(100)
-		[Column(uuid"),     NotNull             ] public int      Uuid     { get; set; } // int(11)
-		[Column(rank"),     NotNull             ] public sbyte    Rank     { get; set; } // tinyint(4)
-		[Column(text"),     NotNull             ] public string   Text     { get; set; } // text
-		[Column(type"),     NotNull             ] public sbyte    Type     { get; set; } // tinyint(2)
-		[Column(time"),     NotNull             ] public DateTime Time     { get; set; } // datetime
+		[Column("auto_id"),  PrimaryKey, Identity] public int      AutoId   { get; set; } // int(11)
+		[Column("fraction"), NotNull             ] public sbyte    Fraction { get; set; } // tinyint(2)
+		[Column("name"),     NotNull             ] public string   Name     { get; set; } // varchar(100)
+		[Column("uuid"),     NotNull             ] public int      Uuid     { get; set; } // int(11)
+		[Column("rank"),     NotNull             ] public sbyte    Rank     { get; set; } // tinyint(4)
+		[Column("text"),     NotNull             ] public string   Text     { get; set; } // text
+		[Column("type"),     NotNull             ] public sbyte    Type     { get; set; } // tinyint(2)
+		[Column("time"),     NotNull             ] public DateTime Time     { get; set; } // datetime
 	}
 
-	[Table(fractionranks")]
+	[Table("fractionranks")]
 	public partial class Fractionranks
 	{
-		[Column(fraction"),    Nullable] public int?   Fraction { get; set; } // int(11)
-		[Column(rank"),        Nullable] public int?   Rank     { get; set; } // int(11)
-		[Column(payday"),   NotNull    ] public int    Payday   { get; set; } // int(11)
-		[Column(name"),     NotNull    ] public string Name     { get; set; } // varchar(50)
-		[Column(access"),   NotNull    ] public string Access   { get; set; } // text
+		[Column("fraction"),    Nullable] public int?   Fraction { get; set; } // int(11)
+		[Column("rank"),        Nullable] public int?   Rank     { get; set; } // int(11)
+		[Column("payday"),   NotNull    ] public int    Payday   { get; set; } // int(11)
+		[Column("name"),     NotNull    ] public string Name     { get; set; } // varchar(50)
+		[Column("access"),   NotNull    ] public string Access   { get; set; } // text
 	}
 
-	[Table(fractionrankscrazy")]
+	[Table("fractionrankscrazy")]
 	public partial class Fractionrankscrazies
 	{
-		[Column(fraction"),    Nullable] public int?   Fraction { get; set; } // int(11)
-		[Column(rank"),        Nullable] public int?   Rank     { get; set; } // int(11)
-		[Column(payday"),   NotNull    ] public int    Payday   { get; set; } // int(11)
-		[Column(name"),     NotNull    ] public string Name     { get; set; } // varchar(50)
-		[Column(access"),   NotNull    ] public string Access   { get; set; } // text
+		[Column("fraction"),    Nullable] public int?   Fraction { get; set; } // int(11)
+		[Column("rank"),        Nullable] public int?   Rank     { get; set; } // int(11)
+		[Column("payday"),   NotNull    ] public int    Payday   { get; set; } // int(11)
+		[Column("name"),     NotNull    ] public string Name     { get; set; } // varchar(50)
+		[Column("access"),   NotNull    ] public string Access   { get; set; } // text
 	}
 
-	[Table(fractions")]
+	[Table("fractions")]
 	public partial class Fractions
 	{
-		[Column(id"),             PrimaryKey,  NotNull] public int    Id             { get; set; } // int(11)
-		[Column(drugs"),                       NotNull] public int    Drugs          { get; set; } // int(11)
-		[Column(mats"),                        NotNull] public int    Mats           { get; set; } // int(11)
-		[Column(medkits"),                     NotNull] public int    Medkits        { get; set; } // int(11)
-		[Column(coalore"),                     NotNull] public int    Coalore        { get; set; } // int(11)
-		[Column(ironore"),                     NotNull] public int    Ironore        { get; set; } // int(11)
-		[Column(sulfurore"),                   NotNull] public int    Sulfurore      { get; set; } // int(11)
-		[Column(preciousore"),                 NotNull] public int    Preciousore    { get; set; } // int(11)
-		[Column(money"),                       NotNull] public int    Money          { get; set; } // int(11)
-		[Column(lastserial"),                  NotNull] public int    Lastserial     { get; set; } // int(11)
-		[Column(weapons"),           Nullable         ] public string Weapons        { get; set; } // text
-		[Column(isopen"),                      NotNull] public sbyte  Isopen         { get; set; } // tinyint(4)
-		[Column(isopengunstock"),              NotNull] public sbyte  Isopengunstock { get; set; } // tinyint(4)
-		[Column(fuellimit"),                   NotNull] public int    Fuellimit      { get; set; } // int(11)
-		[Column(fuelleft"),                    NotNull] public int    Fuelleft       { get; set; } // int(11)
-		[Column(clothingsets"),                NotNull] public string Clothingsets   { get; set; } // text
-		[Column(discord"),           Nullable         ] public string Discord        { get; set; } // varchar(24)
-		[Column(departments"),       Nullable         ] public string Departments    { get; set; } // text
-		[Column(tasksData"),         Nullable         ] public string TasksData      { get; set; } // varchar(350)
+		[Column("id"),             PrimaryKey,  NotNull] public int    Id             { get; set; } // int(11)
+		[Column("drugs"),                       NotNull] public int    Drugs          { get; set; } // int(11)
+		[Column("mats"),                        NotNull] public int    Mats           { get; set; } // int(11)
+		[Column("medkits"),                     NotNull] public int    Medkits        { get; set; } // int(11)
+		[Column("coalore"),                     NotNull] public int    Coalore        { get; set; } // int(11)
+		[Column("ironore"),                     NotNull] public int    Ironore        { get; set; } // int(11)
+		[Column("sulfurore"),                   NotNull] public int    Sulfurore      { get; set; } // int(11)
+		[Column("preciousore"),                 NotNull] public int    Preciousore    { get; set; } // int(11)
+		[Column("money"),                       NotNull] public int    Money          { get; set; } // int(11)
+		[Column("lastserial"),                  NotNull] public int    Lastserial     { get; set; } // int(11)
+		[Column("weapons"),           Nullable         ] public string Weapons        { get; set; } // text
+		[Column("isopen"),                      NotNull] public sbyte  Isopen         { get; set; } // tinyint(4)
+		[Column("isopengunstock"),              NotNull] public sbyte  Isopengunstock { get; set; } // tinyint(4)
+		[Column("fuellimit"),                   NotNull] public int    Fuellimit      { get; set; } // int(11)
+		[Column("fuelleft"),                    NotNull] public int    Fuelleft       { get; set; } // int(11)
+		[Column("clothingsets"),                NotNull] public string Clothingsets   { get; set; } // text
+		[Column("discord"),           Nullable         ] public string Discord        { get; set; } // varchar(24)
+		[Column("departments"),       Nullable         ] public string Departments    { get; set; } // text
+		[Column("tasksData"),         Nullable         ] public string TasksData      { get; set; } // varchar(350)
 	}
 
-	[Table(fractionvehicles")]
+	[Table("fractionvehicles")]
 	public partial class Fractionvehicles
 	{
-		[Column(id"),          PrimaryKey, Identity] public int    Id          { get; set; } // int(11)
-		[Column(fraction"),    NotNull             ] public int    Fraction    { get; set; } // int(11)
-		[Column(number"),      NotNull             ] public string Number      { get; set; } // tinytext
-		[Column(model"),       NotNull             ] public string Model       { get; set; } // tinytext
-		[Column(position"),    NotNull             ] public string Position    { get; set; } // varchar(100)
-		[Column(rotation"),    NotNull             ] public string Rotation    { get; set; } // varchar(100)
-		[Column(rank"),        NotNull             ] public int    Rank        { get; set; } // int(11)
-		[Column(defaultrank"), NotNull             ] public int    Defaultrank { get; set; } // int(11)
-		[Column(colorprim"),   NotNull             ] public int    Colorprim   { get; set; } // int(11)
-		[Column(colorsec"),    NotNull             ] public int    Colorsec    { get; set; } // int(11)
-		[Column(components"),  NotNull             ] public string Components  { get; set; } // varchar(2048)
-		[Column(isDimension"), NotNull             ] public sbyte  IsDimension { get; set; } // tinyint(4)
+		[Column("id"),          PrimaryKey, Identity] public int    Id          { get; set; } // int(11)
+		[Column("fraction"),    NotNull             ] public int    Fraction    { get; set; } // int(11)
+		[Column("number"),      NotNull             ] public string Number      { get; set; } // tinytext
+		[Column("model"),       NotNull             ] public string Model       { get; set; } // tinytext
+		[Column("position"),    NotNull             ] public string Position    { get; set; } // varchar(100)
+		[Column("rotation"),    NotNull             ] public string Rotation    { get; set; } // varchar(100)
+		[Column("rank"),        NotNull             ] public int    Rank        { get; set; } // int(11)
+		[Column("defaultrank"), NotNull             ] public int    Defaultrank { get; set; } // int(11)
+		[Column("colorprim"),   NotNull             ] public int    Colorprim   { get; set; } // int(11)
+		[Column("colorsec"),    NotNull             ] public int    Colorsec    { get; set; } // int(11)
+		[Column("components"),  NotNull             ] public string Components  { get; set; } // varchar(2048)
+		[Column("isDimension"), NotNull             ] public sbyte  IsDimension { get; set; } // tinyint(4)
 	}
 
-	[Table(fractionvehiclesbackup")]
+	[Table("fractionvehiclesbackup")]
 	public partial class Fractionvehiclesbackups
 	{
-		[Column(fraction"),    NotNull] public int    Fraction    { get; set; } // int(11)
-		[Column(number"),      NotNull] public string Number      { get; set; } // tinytext
-		[Column(model"),       NotNull] public string Model       { get; set; } // tinytext
-		[Column(position"),    NotNull] public string Position    { get; set; } // varchar(100)
-		[Column(rotation"),    NotNull] public string Rotation    { get; set; } // varchar(100)
-		[Column(rank"),        NotNull] public int    Rank        { get; set; } // int(11)
-		[Column(defaultrank"), NotNull] public int    Defaultrank { get; set; } // int(11)
-		[Column(colorprim"),   NotNull] public int    Colorprim   { get; set; } // int(11)
-		[Column(colorsec"),    NotNull] public int    Colorsec    { get; set; } // int(11)
-		[Column(components"),  NotNull] public string Components  { get; set; } // varchar(2048)
-		[Column(isDimension"), NotNull] public sbyte  IsDimension { get; set; } // tinyint(4)
+		[Column("fraction"),    NotNull] public int    Fraction    { get; set; } // int(11)
+		[Column("number"),      NotNull] public string Number      { get; set; } // tinytext
+		[Column("model"),       NotNull] public string Model       { get; set; } // tinytext
+		[Column("position"),    NotNull] public string Position    { get; set; } // varchar(100)
+		[Column("rotation"),    NotNull] public string Rotation    { get; set; } // varchar(100)
+		[Column("rank"),        NotNull] public int    Rank        { get; set; } // int(11)
+		[Column("defaultrank"), NotNull] public int    Defaultrank { get; set; } // int(11)
+		[Column("colorprim"),   NotNull] public int    Colorprim   { get; set; } // int(11)
+		[Column("colorsec"),    NotNull] public int    Colorsec    { get; set; } // int(11)
+		[Column("components"),  NotNull] public string Components  { get; set; } // varchar(2048)
+		[Column("isDimension"), NotNull] public sbyte  IsDimension { get; set; } // tinyint(4)
 	}
 
-	[Table(friends")]
+	[Table("friends")]
 	public partial class Friends
 	{
-		[Column(first"),    NotNull] public string First    { get; set; } // varchar(50)
-		[Column(second"),   NotNull] public string Second   { get; set; } // varchar(50)
-		[Column(fullname"), NotNull] public bool   Fullname { get; set; } // tinyint(1)
+		[Column("first"),    NotNull] public string First    { get; set; } // varchar(50)
+		[Column("second"),   NotNull] public string Second   { get; set; } // varchar(50)
+		[Column("fullname"), NotNull] public bool   Fullname { get; set; } // tinyint(1)
 	}
 
-	[Table(furniture")]
+	[Table("furniture")]
 	public partial class Furnitures
 	{
-		[Column(uuid"),      NotNull    ] public int    Uuid      { get; set; } // int(12)
-		[Column(furniture"),    Nullable] public string Furniture { get; set; } // text
-		[Column(data"),         Nullable] public string Data      { get; set; } // text
-		[Column(access"),       Nullable] public string Access    { get; set; } // varchar(400)
+		[Column("uuid"),      NotNull    ] public int    Uuid      { get; set; } // int(12)
+		[Column("furniture"),    Nullable] public string Furniture { get; set; } // text
+		[Column("data"),         Nullable] public string Data      { get; set; } // text
+		[Column("access"),       Nullable] public string Access    { get; set; } // varchar(400)
 	}
 
-	[Table(gangspoints")]
+	[Table("gangspoints")]
 	public partial class Gangspoints
 	{
-		[Column(id"),     PrimaryKey, Identity] public int   Id     { get; set; } // int(11)
-		[Column(gangid"), NotNull             ] public sbyte Gangid { get; set; } // tinyint(4)
+		[Column("id"),     PrimaryKey, Identity] public int   Id     { get; set; } // int(11)
+		[Column("gangid"), NotNull             ] public sbyte Gangid { get; set; } // tinyint(4)
 	}
 
-	[Table(garages")]
+	[Table("garages")]
 	public partial class Garages
 	{
-		[Column(id"),       PrimaryKey, NotNull] public int    Id       { get; set; } // int(11)
-		[Column(type"),                 NotNull] public int    Type     { get; set; } // int(2)
-		[Column(position"),             NotNull] public string Position { get; set; } // varchar(80)
-		[Column(rotation"),             NotNull] public string Rotation { get; set; } // varchar(80)
-		[Column(upgraded"),             NotNull] public int    Upgraded { get; set; } // int(2)
-		[Column(carSlots"),             NotNull] public string CarSlots { get; set; } // varchar(1000)
+		[Column("id"),       PrimaryKey, NotNull] public int    Id       { get; set; } // int(11)
+		[Column("type"),                 NotNull] public int    Type     { get; set; } // int(2)
+		[Column("position"),             NotNull] public string Position { get; set; } // varchar(80)
+		[Column("rotation"),             NotNull] public string Rotation { get; set; } // varchar(80)
+		[Column("upgraded"),             NotNull] public int    Upgraded { get; set; } // int(2)
+		[Column("carSlots"),             NotNull] public string CarSlots { get; set; } // varchar(1000)
 	}
 
-	[Table(houses")]
+	[Table("houses")]
 	public partial class Houses
 	{
-		[Column(id"),        PrimaryKey,  NotNull] public string Id        { get; set; } // varchar(64)
-		[Column(owner"),                  NotNull] public string Owner     { get; set; } // varchar(50)
-		[Column(type"),                   NotNull] public int    Type      { get; set; } // int(4)
-		[Column(position"),               NotNull] public string Position  { get; set; } // varchar(80)
-		[Column(price"),                  NotNull] public int    Price     { get; set; } // int(20)
-		[Column(locked"),                 NotNull] public sbyte  Locked    { get; set; } // tinyint(4)
-		[Column(garage"),                 NotNull] public int    Garage    { get; set; } // int(8)
-		[Column(bank"),                   NotNull] public int    Bank      { get; set; } // int(15)
-		[Column(healkit"),      Nullable         ] public sbyte? Healkit   { get; set; } // tinyint(2)
-		[Column(roommates"),              NotNull] public string Roommates { get; set; } // varchar(2024)
-		[Column(alarm"),                  NotNull] public sbyte  Alarm     { get; set; } // tinyint(2)
+		[Column("id"),        PrimaryKey,  NotNull] public string Id        { get; set; } // varchar(64)
+		[Column("owner"),                  NotNull] public string Owner     { get; set; } // varchar(50)
+		[Column("type"),                   NotNull] public int    Type      { get; set; } // int(4)
+		[Column("position"),               NotNull] public string Position  { get; set; } // varchar(80)
+		[Column("price"),                  NotNull] public int    Price     { get; set; } // int(20)
+		[Column("locked"),                 NotNull] public sbyte  Locked    { get; set; } // tinyint(4)
+		[Column("garage"),                 NotNull] public int    Garage    { get; set; } // int(8)
+		[Column("bank"),                   NotNull] public int    Bank      { get; set; } // int(15)
+		[Column("healkit"),      Nullable         ] public sbyte? Healkit   { get; set; } // tinyint(2)
+		[Column("roommates"),              NotNull] public string Roommates { get; set; } // varchar(2024)
+		[Column("alarm"),                  NotNull] public sbyte  Alarm     { get; set; } // tinyint(2)
 	}
 
-	[Table(items_data")]
+	[Table("items_data")]
 	public partial class ItemsData
 	{
-		[Column(auto_id"),    PrimaryKey, Identity] public int    AutoId    { get; set; } // int(11)
-		[Column(data_id"),    Nullable            ] public string DataId    { get; set; } // varchar(32)
-		[Column(item_id"),    Nullable            ] public short? ItemId    { get; set; } // smallint(6)
-		[Column(item_count"), Nullable            ] public int?   ItemCount { get; set; } // int(11)
-		[Column(item_data"),  Nullable            ] public string ItemData  { get; set; } // varchar(46)
-		[Column(location"),   Nullable            ] public string Location  { get; set; } // varchar(24)
-		[Column(slotId"),     Nullable            ] public short? SlotId    { get; set; } // smallint(6)
+		[Column("auto_id"),    PrimaryKey, Identity] public int    AutoId    { get; set; } // int(11)
+		[Column("data_id"),    Nullable            ] public string DataId    { get; set; } // varchar(32)
+		[Column("item_id"),    Nullable            ] public short? ItemId    { get; set; } // smallint(6)
+		[Column("item_count"), Nullable            ] public int?   ItemCount { get; set; } // int(11)
+		[Column("item_data"),  Nullable            ] public string ItemData  { get; set; } // varchar(46)
+		[Column("location"),   Nullable            ] public string Location  { get; set; } // varchar(24)
+		[Column("slotId"),     Nullable            ] public short? SlotId    { get; set; } // smallint(6)
 	}
 
-	[Table(livingcity")]
+	[Table("livingcity")]
 	public partial class Livingcities
 	{
 		[Column, NotNull] public float VehicleX { get; set; } // float
@@ -705,60 +705,60 @@ namespace Database
 		[Column, NotNull] public float VehicleR { get; set; } // float
 	}
 
-	[Table(lottery")]
+	[Table("lottery")]
 	public partial class Lotteries
 	{
-		[Column(number"), NotNull] public uint Number { get; set; } // int(11) unsigned
+		[Column("number"), NotNull] public uint Number { get; set; } // int(11) unsigned
 	}
 
-	[Table(lottery_players")]
+	[Table("lottery_players")]
 	public partial class LotteryPlayers
 	{
-		[Column(number"), NotNull] public uint Number { get; set; } // int(11) unsigned
-		[Column(ticket"), NotNull] public uint Ticket { get; set; } // int(11) unsigned
-		[Column(player"), NotNull] public int  Player { get; set; } // int(11)
+		[Column("number"), NotNull] public uint Number { get; set; } // int(11) unsigned
+		[Column("ticket"), NotNull] public uint Ticket { get; set; } // int(11) unsigned
+		[Column("player"), NotNull] public int  Player { get; set; } // int(11)
 	}
 
-	[Table(mine_stocks")]
+	[Table("mine_stocks")]
 	public partial class MineStocks
 	{
-		[Column(id"),      PrimaryKey, Identity] public int Id      { get; set; } // int(11)
-		[Column(coal"),    NotNull             ] public int Coal    { get; set; } // int(11)
-		[Column(iron"),    NotNull             ] public int Iron    { get; set; } // int(11)
-		[Column(gold"),    NotNull             ] public int Gold    { get; set; } // int(11)
-		[Column(sulfur"),  NotNull             ] public int Sulfur  { get; set; } // int(11)
-		[Column(emerald"), NotNull             ] public int Emerald { get; set; } // int(11)
-		[Column(ruby"),    NotNull             ] public int Ruby    { get; set; } // int(11)
+		[Column("id"),      PrimaryKey, Identity] public int Id      { get; set; } // int(11)
+		[Column("coal"),    NotNull             ] public int Coal    { get; set; } // int(11)
+		[Column("iron"),    NotNull             ] public int Iron    { get; set; } // int(11)
+		[Column("gold"),    NotNull             ] public int Gold    { get; set; } // int(11)
+		[Column("sulfur"),  NotNull             ] public int Sulfur  { get; set; } // int(11)
+		[Column("emerald"), NotNull             ] public int Emerald { get; set; } // int(11)
+		[Column("ruby"),    NotNull             ] public int Ruby    { get; set; } // int(11)
 	}
 
-	[Table(money")]
+	[Table("money")]
 	public partial class Moneys
 	{
-		[Column(id"),      PrimaryKey, Identity] public int    Id      { get; set; } // int(11)
-		[Column(type"),    NotNull             ] public sbyte  Type    { get; set; } // tinyint(4)
-		[Column(holder"),  NotNull             ] public string Holder  { get; set; } // varchar(256)
-		[Column(balance"), NotNull             ] public int    Balance { get; set; } // int(11)
+		[Column("id"),      PrimaryKey, Identity] public int    Id      { get; set; } // int(11)
+		[Column("type"),    NotNull             ] public sbyte  Type    { get; set; } // tinyint(4)
+		[Column("holder"),  NotNull             ] public string Holder  { get; set; } // varchar(256)
+		[Column("balance"), NotNull             ] public int    Balance { get; set; } // int(11)
 	}
 
-	[Table(notes")]
+	[Table("notes")]
 	public partial class Notes
 	{
-		[Column(Item_Id"), NotNull] public int    ItemId { get; set; } // int(11)
+		[Column("Item_Id"), NotNull] public int    ItemId { get; set; } // int(11)
 		[Column(),          NotNull] public string Name   { get; set; } // varchar(46)
 		[Column(),          NotNull] public string Text   { get; set; } // text
 		[Column(),          NotNull] public bool   Type   { get; set; } // tinyint(1)
 	}
 
-	[Table(orders")]
+	[Table("orders")]
 	public partial class Orders
 	{
-		[Column(id"),       PrimaryKey, Identity] public int    Id       { get; set; } // int(11)
-		[Column(bizid"),    NotNull             ] public int    Bizid    { get; set; } // int(11)
-		[Column(prodname"), NotNull             ] public string Prodname { get; set; } // varchar(256)
-		[Column(amount"),   NotNull             ] public int    Amount   { get; set; } // int(11)
+		[Column("id"),       PrimaryKey, Identity] public int    Id       { get; set; } // int(11)
+		[Column("bizid"),    NotNull             ] public int    Bizid    { get; set; } // int(11)
+		[Column("prodname"), NotNull             ] public string Prodname { get; set; } // varchar(256)
+		[Column("amount"),   NotNull             ] public int    Amount   { get; set; } // int(11)
 	}
 
-	[Table(organizations")]
+	[Table("organizations")]
 	public partial class Organizations
 	{
 		[Column(),                  PrimaryKey,  Identity] public int       Organization              { get; set; } // int(12)
@@ -794,75 +794,75 @@ namespace Database
 		[Column(),                     Nullable          ] public byte?     BlipColor                 { get; set; } // tinyint(4) unsigned
 		[Column(),                     Nullable          ] public string    BlipXYZ                   { get; set; } // varchar(150)
 		[Column(),                     Nullable          ] public string    Ranks                     { get; set; } // text
-		[Column(departments"),        Nullable          ] public string    Departments               { get; set; } // text
-		[Column(discord"),            Nullable          ] public string    Discord                   { get; set; } // varchar(24)
-		[Column(salary"),             Nullable          ] public sbyte?    Salary                    { get; set; } // tinyint(4)
-		[Column(color"),              Nullable          ] public string    Color                     { get; set; } // varchar(56)
-		[Column(date"),               Nullable          ] public DateTime? Date                      { get; set; } // datetime
-		[Column(slogan"),             Nullable          ] public string    Slogan                    { get; set; } // varchar(85)
-		[Column(attackingCount"),     Nullable          ] public string    AttackingCount            { get; set; } // varchar(150)
-		[Column(protectingCount"),    Nullable          ] public string    ProtectingCount           { get; set; } // varchar(150)
+		[Column("departments"),        Nullable          ] public string    Departments               { get; set; } // text
+		[Column("discord"),            Nullable          ] public string    Discord                   { get; set; } // varchar(24)
+		[Column("salary"),             Nullable          ] public sbyte?    Salary                    { get; set; } // tinyint(4)
+		[Column("color"),              Nullable          ] public string    Color                     { get; set; } // varchar(56)
+		[Column("date"),               Nullable          ] public DateTime? Date                      { get; set; } // datetime
+		[Column("slogan"),             Nullable          ] public string    Slogan                    { get; set; } // varchar(85)
+		[Column("attackingCount"),     Nullable          ] public string    AttackingCount            { get; set; } // varchar(150)
+		[Column("protectingCount"),    Nullable          ] public string    ProtectingCount           { get; set; } // varchar(150)
 	}
 
-	[Table(orglogs")]
+	[Table("orglogs")]
 	public partial class Orglogs
 	{
-		[Column(auto_id"),      PrimaryKey, Identity] public int      AutoId       { get; set; } // int(11)
-		[Column(organization"), NotNull             ] public short    Organization { get; set; } // smallint(6)
-		[Column(name"),         NotNull             ] public string   Name         { get; set; } // varchar(100)
-		[Column(uuid"),         NotNull             ] public int      Uuid         { get; set; } // int(11)
-		[Column(rank"),         NotNull             ] public sbyte    Rank         { get; set; } // tinyint(4)
-		[Column(text"),         NotNull             ] public string   Text         { get; set; } // text
-		[Column(type"),         NotNull             ] public sbyte    Type         { get; set; } // tinyint(2)
-		[Column(time"),         NotNull             ] public DateTime Time         { get; set; } // datetime
+		[Column("auto_id"),      PrimaryKey, Identity] public int      AutoId       { get; set; } // int(11)
+		[Column("organization"), NotNull             ] public short    Organization { get; set; } // smallint(6)
+		[Column("name"),         NotNull             ] public string   Name         { get; set; } // varchar(100)
+		[Column("uuid"),         NotNull             ] public int      Uuid         { get; set; } // int(11)
+		[Column("rank"),         NotNull             ] public sbyte    Rank         { get; set; } // tinyint(4)
+		[Column("text"),         NotNull             ] public string   Text         { get; set; } // text
+		[Column("type"),         NotNull             ] public sbyte    Type         { get; set; } // tinyint(2)
+		[Column("time"),         NotNull             ] public DateTime Time         { get; set; } // datetime
 	}
 
-	[Table(orgranks")]
+	[Table("orgranks")]
 	public partial class Orgranks
 	{
-		[Column(uuid"),           NotNull    ] public int       Uuid           { get; set; } // int(11)
-		[Column(name"),           NotNull    ] public string    Name           { get; set; } // varchar(50)
-		[Column(id"),                Nullable] public int?      Id             { get; set; } // int(11)
-		[Column(rank"),              Nullable] public int?      Rank           { get; set; } // int(11)
-		[Column(date"),              Nullable] public DateTime? Date           { get; set; } // datetime
-		[Column(avatar"),            Nullable] public string    Avatar         { get; set; } // varchar(255)
-		[Column(departmentId"),      Nullable] public int?      DepartmentId   { get; set; } // int(11)
-		[Column(departmentRank"),    Nullable] public int?      DepartmentRank { get; set; } // int(11)
-		[Column(access"),            Nullable] public string    Access         { get; set; } // varchar(1500)
-		[Column(lock"),              Nullable] public string    @lock          { get; set; } // varchar(1500)
-		[Column(score"),             Nullable] public int?      Score          { get; set; } // int(11)
-		[Column(lastLoginDate"),     Nullable] public DateTime? LastLoginDate  { get; set; } // datetime
-		[Column(time"),              Nullable] public string    Time           { get; set; } // varchar(350)
-		[Column(tasks"),             Nullable] public string    Tasks          { get; set; } // varchar(350)
+		[Column("uuid"),           NotNull    ] public int       Uuid           { get; set; } // int(11)
+		[Column("name"),           NotNull    ] public string    Name           { get; set; } // varchar(50)
+		[Column("id"),                Nullable] public int?      Id             { get; set; } // int(11)
+		[Column("rank"),              Nullable] public int?      Rank           { get; set; } // int(11)
+		[Column("date"),              Nullable] public DateTime? Date           { get; set; } // datetime
+		[Column("avatar"),            Nullable] public string    Avatar         { get; set; } // varchar(255)
+		[Column("departmentId"),      Nullable] public int?      DepartmentId   { get; set; } // int(11)
+		[Column("departmentRank"),    Nullable] public int?      DepartmentRank { get; set; } // int(11)
+		[Column("access"),            Nullable] public string    Access         { get; set; } // varchar(1500)
+		[Column("lock"),              Nullable] public string    @lock          { get; set; } // varchar(1500)
+		[Column("score"),             Nullable] public int?      Score          { get; set; } // int(11)
+		[Column("lastLoginDate"),     Nullable] public DateTime? LastLoginDate  { get; set; } // datetime
+		[Column("time"),              Nullable] public string    Time           { get; set; } // varchar(350)
+		[Column("tasks"),             Nullable] public string    Tasks          { get; set; } // varchar(350)
 	}
 
-	[Table(orgvehicles")]
+	[Table("orgvehicles")]
 	public partial class Orgvehicles
 	{
-		[Column(organization"), NotNull    ] public int    Organization { get; set; } // int(11)
-		[Column(number"),       NotNull    ] public string Number       { get; set; } // varchar(25)
-		[Column(model"),        NotNull    ] public string Model        { get; set; } // varchar(50)
-		[Column(position"),     NotNull    ] public sbyte  Position     { get; set; } // tinyint(4)
-		[Column(rank"),         NotNull    ] public int    Rank         { get; set; } // int(11)
-		[Column(components"),   NotNull    ] public string Components   { get; set; } // varchar(2048)
-		[Column(dirt"),            Nullable] public float? Dirt         { get; set; } // float
-		[Column(petrol"),       NotNull    ] public int    Petrol       { get; set; } // int(4)
+		[Column("organization"), NotNull    ] public int    Organization { get; set; } // int(11)
+		[Column("number"),       NotNull    ] public string Number       { get; set; } // varchar(25)
+		[Column("model"),        NotNull    ] public string Model        { get; set; } // varchar(50)
+		[Column("position"),     NotNull    ] public sbyte  Position     { get; set; } // tinyint(4)
+		[Column("rank"),         NotNull    ] public int    Rank         { get; set; } // int(11)
+		[Column("components"),   NotNull    ] public string Components   { get; set; } // varchar(2048)
+		[Column("dirt"),            Nullable] public float? Dirt         { get; set; } // float
+		[Column("petrol"),       NotNull    ] public int    Petrol       { get; set; } // int(4)
 	}
 
-	[Table(othervehicles")]
+	[Table("othervehicles")]
 	public partial class Othervehicles
 	{
-		[Column(type"),     Nullable] public int?   Type     { get; set; } // int(11)
-		[Column(number"),   Nullable] public string Number   { get; set; } // varchar(50)
-		[Column(model"),    Nullable] public string Model    { get; set; } // varchar(50)
-		[Column(position"), Nullable] public string Position { get; set; } // varchar(100)
-		[Column(rotation"), Nullable] public string Rotation { get; set; } // varchar(100)
-		[Column(color1"),   Nullable] public int?   Color1   { get; set; } // int(11)
-		[Column(color2"),   Nullable] public int?   Color2   { get; set; } // int(11)
-		[Column(price"),    Nullable] public int?   Price    { get; set; } // int(11)
+		[Column("type"),     Nullable] public int?   Type     { get; set; } // int(11)
+		[Column("number"),   Nullable] public string Number   { get; set; } // varchar(50)
+		[Column("model"),    Nullable] public string Model    { get; set; } // varchar(50)
+		[Column("position"), Nullable] public string Position { get; set; } // varchar(100)
+		[Column("rotation"), Nullable] public string Rotation { get; set; } // varchar(100)
+		[Column("color1"),   Nullable] public int?   Color1   { get; set; } // int(11)
+		[Column("color2"),   Nullable] public int?   Color2   { get; set; } // int(11)
+		[Column("price"),    Nullable] public int?   Price    { get; set; } // int(11)
 	}
 
-	[Table(pet")]
+	[Table("pet")]
 	public partial class Pets
 	{
 		[PrimaryKey, Identity] public int      AutoId    { get; set; } // int(11)
@@ -878,74 +878,74 @@ namespace Database
 		[Column,     NotNull ] public int      Dimension { get; set; } // int(12)
 	}
 
-	[Table(phoneinfo")]
+	[Table("phoneinfo")]
 	public partial class Phoneinfoes
 	{
-		[Column(uuid"),      PrimaryKey, NotNull] public int    Uuid      { get; set; } // int(11)
-		[Column(contacts"),              NotNull] public string Contacts  { get; set; } // text
-		[Column(blackList"),             NotNull] public string BlackList { get; set; } // text
-		[Column(settings"),              NotNull] public string Settings  { get; set; } // varchar(500)
-		[Column(gallery"),               NotNull] public string Gallery   { get; set; } // text
-		[Column(recents"),               NotNull] public string Recents   { get; set; } // text
+		[Column("uuid"),      PrimaryKey, NotNull] public int    Uuid      { get; set; } // int(11)
+		[Column("contacts"),              NotNull] public string Contacts  { get; set; } // text
+		[Column("blackList"),             NotNull] public string BlackList { get; set; } // text
+		[Column("settings"),              NotNull] public string Settings  { get; set; } // varchar(500)
+		[Column("gallery"),               NotNull] public string Gallery   { get; set; } // text
+		[Column("recents"),               NotNull] public string Recents   { get; set; } // text
 	}
 
-	[Table(phonemessage")]
+	[Table("phonemessage")]
 	public partial class Phonemessages
 	{
-		[Column(autoId"),     PrimaryKey, Identity] public int      AutoId     { get; set; } // int(11)
-		[Column(fromUuid"),   NotNull             ] public int      FromUuid   { get; set; } // int(11)
-		[Column(fromPhone"),  NotNull             ] public int      FromPhone  { get; set; } // int(11)
-		[Column(toUuid"),     NotNull             ] public int      ToUuid     { get; set; } // int(11)
-		[Column(toPhone"),    NotNull             ] public int      ToPhone    { get; set; } // int(11)
-		[Column(date"),       NotNull             ] public DateTime Date       { get; set; } // datetime
-		[Column(type"),       NotNull             ] public sbyte    Type       { get; set; } // tinyint(2)
-		[Column(text"),       NotNull             ] public string   Text       { get; set; } // text
-		[Column(fromStatus"), NotNull             ] public bool     FromStatus { get; set; } // tinyint(1)
-		[Column(toStatus"),   NotNull             ] public bool     ToStatus   { get; set; } // tinyint(1)
+		[Column("autoId"),     PrimaryKey, Identity] public int      AutoId     { get; set; } // int(11)
+		[Column("fromUuid"),   NotNull             ] public int      FromUuid   { get; set; } // int(11)
+		[Column("fromPhone"),  NotNull             ] public int      FromPhone  { get; set; } // int(11)
+		[Column("toUuid"),     NotNull             ] public int      ToUuid     { get; set; } // int(11)
+		[Column("toPhone"),    NotNull             ] public int      ToPhone    { get; set; } // int(11)
+		[Column("date"),       NotNull             ] public DateTime Date       { get; set; } // datetime
+		[Column("type"),       NotNull             ] public sbyte    Type       { get; set; } // tinyint(2)
+		[Column("text"),       NotNull             ] public string   Text       { get; set; } // text
+		[Column("fromStatus"), NotNull             ] public bool     FromStatus { get; set; } // tinyint(1)
+		[Column("toStatus"),   NotNull             ] public bool     ToStatus   { get; set; } // tinyint(1)
 	}
 
-	[Table(phonetinder")]
+	[Table("phonetinder")]
 	public partial class Phonetinders
 	{
-		[Column(uuid"),      Nullable] public int?   Uuid      { get; set; } // int(11)
-		[Column(avatar"),    Nullable] public string Avatar    { get; set; } // varchar(250)
-		[Column(text"),      Nullable] public string Text      { get; set; } // varchar(200)
-		[Column(type"),      Nullable] public sbyte? Type      { get; set; } // tinyint(2)
-		[Column(isVisible"), Nullable] public bool?  IsVisible { get; set; } // tinyint(1)
-		[Column(likes"),     Nullable] public string Likes     { get; set; } // text
-		[Column(noLikes"),   Nullable] public string NoLikes   { get; set; } // text
+		[Column("uuid"),      Nullable] public int?   Uuid      { get; set; } // int(11)
+		[Column("avatar"),    Nullable] public string Avatar    { get; set; } // varchar(250)
+		[Column("text"),      Nullable] public string Text      { get; set; } // varchar(200)
+		[Column("type"),      Nullable] public sbyte? Type      { get; set; } // tinyint(2)
+		[Column("isVisible"), Nullable] public bool?  IsVisible { get; set; } // tinyint(1)
+		[Column("likes"),     Nullable] public string Likes     { get; set; } // text
+		[Column("noLikes"),   Nullable] public string NoLikes   { get; set; } // text
 	}
 
-	[Table(promocodes_new")]
+	[Table("promocodes_new")]
 	public partial class PromocodesNews
 	{
-		[Column(promo"),          PrimaryKey,  NotNull] public string  Promo          { get; set; } // varchar(50)
-		[Column(createdby"),         Nullable         ] public uint?   Createdby      { get; set; } // int(11) unsigned
-		[Column(used"),              Nullable         ] public ulong?  Used           { get; set; } // bigint(20) unsigned
-		[Column(rewardreceived"),    Nullable         ] public ulong?  Rewardreceived { get; set; } // bigint(20) unsigned
-		[Column(rewardlimit"),       Nullable         ] public ulong?  Rewardlimit    { get; set; } // bigint(20) unsigned
-		[Column(msg_r"),             Nullable         ] public string  MsgR           { get; set; } // varchar(400)
-		[Column(money_r"),           Nullable         ] public uint?   MoneyR         { get; set; } // int(11) unsigned
-		[Column(vip_r"),             Nullable         ] public byte?   VipR           { get; set; } // tinyint(2) unsigned
-		[Column(vipdays_r"),         Nullable         ] public ushort? VipdaysR       { get; set; } // smallint(5) unsigned
-		[Column(items_r"),           Nullable         ] public string  ItemsR         { get; set; } // varchar(4096)
-		[Column(don_r"),             Nullable         ] public double? DonR           { get; set; } // double
-		[Column(donlogin_r"),        Nullable         ] public string  DonloginR      { get; set; } // varchar(50)
-		[Column(donated"),           Nullable         ] public long?   Donated        { get; set; } // bigint(20)
-		[Column(donreceived"),       Nullable         ] public long?   Donreceived    { get; set; } // bigint(20)
+		[Column("promo"),          PrimaryKey,  NotNull] public string  Promo          { get; set; } // varchar(50)
+		[Column("createdby"),         Nullable         ] public uint?   Createdby      { get; set; } // int(11) unsigned
+		[Column("used"),              Nullable         ] public ulong?  Used           { get; set; } // bigint(20) unsigned
+		[Column("rewardreceived"),    Nullable         ] public ulong?  Rewardreceived { get; set; } // bigint(20) unsigned
+		[Column("rewardlimit"),       Nullable         ] public ulong?  Rewardlimit    { get; set; } // bigint(20) unsigned
+		[Column("msg_r"),             Nullable         ] public string  MsgR           { get; set; } // varchar(400)
+		[Column("money_r"),           Nullable         ] public uint?   MoneyR         { get; set; } // int(11) unsigned
+		[Column("vip_r"),             Nullable         ] public byte?   VipR           { get; set; } // tinyint(2) unsigned
+		[Column("vipdays_r"),         Nullable         ] public ushort? VipdaysR       { get; set; } // smallint(5) unsigned
+		[Column("items_r"),           Nullable         ] public string  ItemsR         { get; set; } // varchar(4096)
+		[Column("don_r"),             Nullable         ] public double? DonR           { get; set; } // double
+		[Column("donlogin_r"),        Nullable         ] public string  DonloginR      { get; set; } // varchar(50)
+		[Column("donated"),           Nullable         ] public long?   Donated        { get; set; } // bigint(20)
+		[Column("donreceived"),       Nullable         ] public long?   Donreceived    { get; set; } // bigint(20)
 	}
 
-	[Table(promo_timing")]
+	[Table("promo_timing")]
 	public partial class PromoTimings
 	{
-		[Column(id"),    NotNull] public int      Id    { get; set; } // int(11)
-		[Column(promo"), NotNull] public string   Promo { get; set; } // varchar(100)
-		[Column(used"),  NotNull] public int      Used  { get; set; } // int(11)
-		[Column(date"),  NotNull] public DateTime Date  { get; set; } // date
-		[Column(added"), NotNull] public int      Added { get; set; } // int(11)
+		[Column("id"),    NotNull] public int      Id    { get; set; } // int(11)
+		[Column("promo"), NotNull] public string   Promo { get; set; } // varchar(100)
+		[Column("used"),  NotNull] public int      Used  { get; set; } // int(11)
+		[Column("date"),  NotNull] public DateTime Date  { get; set; } // date
+		[Column("added"), NotNull] public int      Added { get; set; } // int(11)
 	}
 
-	[Table(questions")]
+	[Table("questions")]
 	public partial class Questions
 	{
 		[PrimaryKey, Identity   ] public uint      ID         { get; set; } // int(12) unsigned
@@ -958,132 +958,132 @@ namespace Database
 		[Column,        Nullable] public sbyte?    Status     { get; set; } // tinyint(4)
 	}
 
-	[Table(questschar")]
+	[Table("questschar")]
 	public partial class Questschars
 	{
-		[Column(q_auto_id"),    PrimaryKey, Identity] public int      QAutoId    { get; set; } // int(11)
-		[Column(q_actor_name"), NotNull             ] public string   QActorName { get; set; } // varchar(42)
-		[Column(q_line"),       NotNull             ] public short    QLine      { get; set; } // smallint(6)
-		[Column(q_status"),     NotNull             ] public sbyte    QStatus    { get; set; } // tinyint(3)
-		[Column(q_time"),       NotNull             ] public DateTime QTime      { get; set; } // datetime
-		[Column(char_id"),      NotNull             ] public int      CharId     { get; set; } // int(11)
-		[Column(q_complete"),   NotNull             ] public bool     QComplete  { get; set; } // tinyint(1)
+		[Column("q_auto_id"),    PrimaryKey, Identity] public int      QAutoId    { get; set; } // int(11)
+		[Column("q_actor_name"), NotNull             ] public string   QActorName { get; set; } // varchar(42)
+		[Column("q_line"),       NotNull             ] public short    QLine      { get; set; } // smallint(6)
+		[Column("q_status"),     NotNull             ] public sbyte    QStatus    { get; set; } // tinyint(3)
+		[Column("q_time"),       NotNull             ] public DateTime QTime      { get; set; } // datetime
+		[Column("char_id"),      NotNull             ] public int      CharId     { get; set; } // int(11)
+		[Column("q_complete"),   NotNull             ] public bool     QComplete  { get; set; } // tinyint(1)
 		/// <summary>
 		/// Сколько пройдено пунктов, нужно только для меню
 		/// </summary>
-		[Column(q_stage"),      NotNull             ] public sbyte    QStage     { get; set; } // tinyint(3)
-		[Column(q_data"),       NotNull             ] public string   QData      { get; set; } // varchar(50)
+		[Column("q_stage"),      NotNull             ] public sbyte    QStage     { get; set; } // tinyint(3)
+		[Column("q_data"),       NotNull             ] public string   QData      { get; set; } // varchar(50)
 		/// <summary>
 		/// Нуцжно для худа
 		/// </summary>
-		[Column(q_use"),        NotNull             ] public bool     QUse       { get; set; } // tinyint(1)
+		[Column("q_use"),        NotNull             ] public bool     QUse       { get; set; } // tinyint(1)
 	}
 
-	[Table(refferals")]
+	[Table("refferals")]
 	public partial class Refferals
 	{
-		[Column(uuid"),        Nullable] public int?      Uuid        { get; set; } // int(11)
-		[Column(name"),        Nullable] public string    Name        { get; set; } // varchar(64)
-		[Column(uuidref"),     Nullable] public int?      Uuidref     { get; set; } // int(11)
-		[Column(success"),     Nullable] public bool?     Success     { get; set; } // tinyint(1)
-		[Column(cost"),        Nullable] public short?    Cost        { get; set; } // smallint(6)
-		[Column(createdate"),  Nullable] public DateTime? Createdate  { get; set; } // datetime
-		[Column(successdate"), Nullable] public DateTime? Successdate { get; set; } // datetime
-		[Column(refcode"),     Nullable] public string    Refcode     { get; set; } // varchar(64)
+		[Column("uuid"),        Nullable] public int?      Uuid        { get; set; } // int(11)
+		[Column("name"),        Nullable] public string    Name        { get; set; } // varchar(64)
+		[Column("uuidref"),     Nullable] public int?      Uuidref     { get; set; } // int(11)
+		[Column("success"),     Nullable] public bool?     Success     { get; set; } // tinyint(1)
+		[Column("cost"),        Nullable] public short?    Cost        { get; set; } // smallint(6)
+		[Column("createdate"),  Nullable] public DateTime? Createdate  { get; set; } // datetime
+		[Column("successdate"), Nullable] public DateTime? Successdate { get; set; } // datetime
+		[Column("refcode"),     Nullable] public string    Refcode     { get; set; } // varchar(64)
 	}
 
-	[Table(safes")]
+	[Table("safes")]
 	public partial class Safes
 	{
-		[Column(id"),        PrimaryKey, Identity] public int    Id        { get; set; } // int(11)
-		[Column(minamount"), NotNull             ] public int    Minamount { get; set; } // int(11)
-		[Column(maxamount"), NotNull             ] public int    Maxamount { get; set; } // int(11)
-		[Column(pos"),       NotNull             ] public string Pos       { get; set; } // varchar(256)
-		[Column(rotation"),  NotNull             ] public float  Rotation  { get; set; } // float
-		[Column(address"),   NotNull             ] public string Address   { get; set; } // varchar(256)
+		[Column("id"),        PrimaryKey, Identity] public int    Id        { get; set; } // int(11)
+		[Column("minamount"), NotNull             ] public int    Minamount { get; set; } // int(11)
+		[Column("maxamount"), NotNull             ] public int    Maxamount { get; set; } // int(11)
+		[Column("pos"),       NotNull             ] public string Pos       { get; set; } // varchar(256)
+		[Column("rotation"),  NotNull             ] public float  Rotation  { get; set; } // float
+		[Column("address"),   NotNull             ] public string Address   { get; set; } // varchar(256)
 	}
 
-	[Table(sessions")]
+	[Table("sessions")]
 	public partial class Sessions
 	{
-		[Column(hash"),    PrimaryKey, NotNull] public string   Hash    { get; set; } // varchar(75)
-		[Column(login"),               NotNull] public string   Login   { get; set; } // varchar(50)
-		[Column(data"),                NotNull] public DateTime Data    { get; set; } // datetime
-		[Column(oneTime"),             NotNull] public bool     OneTime { get; set; } // tinyint(1)
+		[Column("hash"),    PrimaryKey, NotNull] public string   Hash    { get; set; } // varchar(75)
+		[Column("login"),               NotNull] public string   Login   { get; set; } // varchar(50)
+		[Column("data"),                NotNull] public DateTime Data    { get; set; } // datetime
+		[Column("oneTime"),             NotNull] public bool     OneTime { get; set; } // tinyint(1)
 	}
 
-	[Table(ticketlog")]
+	[Table("ticketlog")]
 	public partial class Ticketlogs
 	{
-		[Column(time"),   Nullable] public DateTime? Time   { get; set; } // datetime
-		[Column(player"), Nullable] public int?      Player { get; set; } // int(11)
-		[Column(target"), Nullable] public int?      Target { get; set; } // int(11)
-		[Column(sum"),    Nullable] public int?      Sum    { get; set; } // int(11)
-		[Column(reason"), Nullable] public string    Reason { get; set; } // varchar(100)
+		[Column("time"),   Nullable] public DateTime? Time   { get; set; } // datetime
+		[Column("player"), Nullable] public int?      Player { get; set; } // int(11)
+		[Column("target"), Nullable] public int?      Target { get; set; } // int(11)
+		[Column("sum"),    Nullable] public int?      Sum    { get; set; } // int(11)
+		[Column("reason"), Nullable] public string    Reason { get; set; } // varchar(100)
 	}
 
-	[Table(vehicles")]
+	[Table("vehicles")]
 	public partial class Vehicles
 	{
-		[Column(auto_id"),    PrimaryKey,  Identity] public int    AutoId     { get; set; } // int(11)
-		[Column(number"),     NotNull              ] public string Number     { get; set; } // varchar(8)
-		[Column(holder"),     NotNull              ] public string Holder     { get; set; } // varchar(256)
-		[Column(model"),      NotNull              ] public string Model      { get; set; } // varchar(64)
-		[Column(health"),     NotNull              ] public int    Health     { get; set; } // int(11)
-		[Column(fuel"),       NotNull              ] public int    Fuel       { get; set; } // int(11)
-		[Column(components"), NotNull              ] public string Components { get; set; } // varchar(2048)
-		[Column(position"),      Nullable          ] public string Position   { get; set; } // varchar(80)
-		[Column(rotation"),      Nullable          ] public string Rotation   { get; set; } // varchar(80)
-		[Column(keynum"),     NotNull              ] public int    Keynum     { get; set; } // int(11)
-		[Column(dirt"),       NotNull              ] public float  Dirt       { get; set; } // float
-		[Column(tag"),        NotNull              ] public string Tag        { get; set; } // varchar(11)
+		[Column("auto_id"),    PrimaryKey,  Identity] public int    AutoId     { get; set; } // int(11)
+		[Column("number"),     NotNull              ] public string Number     { get; set; } // varchar(8)
+		[Column("holder"),     NotNull              ] public string Holder     { get; set; } // varchar(256)
+		[Column("model"),      NotNull              ] public string Model      { get; set; } // varchar(64)
+		[Column("health"),     NotNull              ] public int    Health     { get; set; } // int(11)
+		[Column("fuel"),       NotNull              ] public int    Fuel       { get; set; } // int(11)
+		[Column("components"), NotNull              ] public string Components { get; set; } // varchar(2048)
+		[Column("position"),      Nullable          ] public string Position   { get; set; } // varchar(80)
+		[Column("rotation"),      Nullable          ] public string Rotation   { get; set; } // varchar(80)
+		[Column("keynum"),     NotNull              ] public int    Keynum     { get; set; } // int(11)
+		[Column("dirt"),       NotNull              ] public float  Dirt       { get; set; } // float
+		[Column("tag"),        NotNull              ] public string Tag        { get; set; } // varchar(11)
 	}
 
-	[Table(vehicleticket")]
+	[Table("vehicleticket")]
 	public partial class Vehicletickets
 	{
-		[Column(autoId"),       PrimaryKey, Identity] public int      AutoId       { get; set; } // int(11)
-		[Column(vehAutoId"),    NotNull             ] public int      VehAutoId    { get; set; } // int(11)
-		[Column(vehNumber"),    NotNull             ] public string   VehNumber    { get; set; } // varchar(15)
-		[Column(model"),        NotNull             ] public string   Model        { get; set; } // varchar(30)
-		[Column(holderAutoId"), NotNull             ] public int      HolderAutoId { get; set; } // int(11)
-		[Column(holderName"),   NotNull             ] public string   HolderName   { get; set; } // varchar(65)
-		[Column(policAutoId"),  NotNull             ] public int      PolicAutoId  { get; set; } // int(11)
-		[Column(policName"),    NotNull             ] public string   PolicName    { get; set; } // varchar(65)
-		[Column(text"),         NotNull             ] public string   Text         { get; set; } // varchar(50)
-		[Column(link"),         NotNull             ] public string   Link         { get; set; } // varchar(150)
-		[Column(time"),         NotNull             ] public DateTime Time         { get; set; } // datetime
-		[Column(price"),        NotNull             ] public int      Price        { get; set; } // int(11)
-		[Column(isEvac"),       NotNull             ] public bool     IsEvac       { get; set; } // tinyint(1)
-		[Column(toggled"),      NotNull             ] public bool     Toggled      { get; set; } // tinyint(1)
-		[Column(type"),         NotNull             ] public sbyte    Type         { get; set; } // tinyint(2)
+		[Column("autoId"),       PrimaryKey, Identity] public int      AutoId       { get; set; } // int(11)
+		[Column("vehAutoId"),    NotNull             ] public int      VehAutoId    { get; set; } // int(11)
+		[Column("vehNumber"),    NotNull             ] public string   VehNumber    { get; set; } // varchar(15)
+		[Column("model"),        NotNull             ] public string   Model        { get; set; } // varchar(30)
+		[Column("holderAutoId"), NotNull             ] public int      HolderAutoId { get; set; } // int(11)
+		[Column("holderName"),   NotNull             ] public string   HolderName   { get; set; } // varchar(65)
+		[Column("policAutoId"),  NotNull             ] public int      PolicAutoId  { get; set; } // int(11)
+		[Column("policName"),    NotNull             ] public string   PolicName    { get; set; } // varchar(65)
+		[Column("text"),         NotNull             ] public string   Text         { get; set; } // varchar(50)
+		[Column("link"),         NotNull             ] public string   Link         { get; set; } // varchar(150)
+		[Column("time"),         NotNull             ] public DateTime Time         { get; set; } // datetime
+		[Column("price"),        NotNull             ] public int      Price        { get; set; } // int(11)
+		[Column("isEvac"),       NotNull             ] public bool     IsEvac       { get; set; } // tinyint(1)
+		[Column("toggled"),      NotNull             ] public bool     Toggled      { get; set; } // tinyint(1)
+		[Column("type"),         NotNull             ] public sbyte    Type         { get; set; } // tinyint(2)
 	}
 
-	[Table(wars")]
+	[Table("wars")]
 	public partial class Wars
 	{
-		[Column(id"),              Nullable] public short?    Id              { get; set; } // smallint(6)
-		[Column(objectId"),        Nullable] public short?    ObjectId        { get; set; } // smallint(6)
-		[Column(type"),            Nullable] public sbyte?    Type            { get; set; } // tinyint(2)
-		[Column(attackingId"),     Nullable] public short?    AttackingId     { get; set; } // smallint(6)
-		[Column(protectingId"),    Nullable] public short?    ProtectingId    { get; set; } // smallint(6)
-		[Column(mapName"),         Nullable] public string    MapName         { get; set; } // varchar(65)
-		[Column(mapId"),           Nullable] public short?    MapId           { get; set; } // smallint(6)
-		[Column(position"),        Nullable] public string    Position        { get; set; } // varchar(75)
-		[Column(range"),           Nullable] public float?    Range           { get; set; } // float
-		[Column(gripType"),        Nullable] public sbyte?    GripType        { get; set; } // tinyint(2)
-		[Column(composition"),     Nullable] public sbyte?    Composition     { get; set; } // tinyint(2)
-		[Column(weaponsCategory"), Nullable] public sbyte?    WeaponsCategory { get; set; } // tinyint(2)
-		[Column(time"),            Nullable] public DateTime? Time            { get; set; } // datetime
+		[Column("id"),              Nullable] public short?    Id              { get; set; } // smallint(6)
+		[Column("objectId"),        Nullable] public short?    ObjectId        { get; set; } // smallint(6)
+		[Column("type"),            Nullable] public sbyte?    Type            { get; set; } // tinyint(2)
+		[Column("attackingId"),     Nullable] public short?    AttackingId     { get; set; } // smallint(6)
+		[Column("protectingId"),    Nullable] public short?    ProtectingId    { get; set; } // smallint(6)
+		[Column("mapName"),         Nullable] public string    MapName         { get; set; } // varchar(65)
+		[Column("mapId"),           Nullable] public short?    MapId           { get; set; } // smallint(6)
+		[Column("position"),        Nullable] public string    Position        { get; set; } // varchar(75)
+		[Column("range"),           Nullable] public float?    Range           { get; set; } // float
+		[Column("gripType"),        Nullable] public sbyte?    GripType        { get; set; } // tinyint(2)
+		[Column("composition"),     Nullable] public sbyte?    Composition     { get; set; } // tinyint(2)
+		[Column("weaponsCategory"), Nullable] public sbyte?    WeaponsCategory { get; set; } // tinyint(2)
+		[Column("time"),            Nullable] public DateTime? Time            { get; set; } // datetime
 	}
 
-	[Table(weapons")]
+	[Table("weapons")]
 	public partial class Weapons
 	{
-		[Column(id"),         PrimaryKey,  NotNull] public int    Id            { get; set; } // int(11)
-		[Column(name"),          Nullable         ] public string Name          { get; set; } // varchar(256)
-		[Column(weapons"),       Nullable         ] public string WeaponsColumn { get; set; } // varchar(8192)
-		[Column(lastserial"),              NotNull] public int    Lastserial    { get; set; } // int(11)
+		[Column("id"),         PrimaryKey,  NotNull] public int    Id            { get; set; } // int(11)
+		[Column("name"),          Nullable         ] public string Name          { get; set; } // varchar(256)
+		[Column("weapons"),       Nullable         ] public string WeaponsColumn { get; set; } // varchar(8192)
+		[Column("lastserial"),              NotNull] public int    Lastserial    { get; set; } // int(11)
 	}
 
 	public static partial class TableExtensions

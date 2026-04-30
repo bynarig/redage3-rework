@@ -2,11 +2,11 @@
 {
     public class OrganizationUpdateData
     {
-        public string type = "";
-        public string name = "";
         public string icon = "";
-        public bool isRb = false;
-        public int price = 0;
+        public bool isRb;
+        public string name = "";
+        public int price;
+        public string type = "";
 
         public OrganizationUpdateData(string type, string name, string icon, bool isRb, int price)
         {

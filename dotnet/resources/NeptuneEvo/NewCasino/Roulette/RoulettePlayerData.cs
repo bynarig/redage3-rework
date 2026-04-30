@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using Object = GTANetworkAPI.Object;
 
 namespace NeptuneEvo.NewCasino
 {
     public class RoulettePlayerData
     {
         public List<BetData> AllBets = new List<BetData>();
-        public int SelectedTable = -1;
-        public DateTime Time = DateTime.Now;
 
-        public GTANetworkAPI.Object FBetObject = null;
-        public GTANetworkAPI.Object SBetObject = null;
-        public GTANetworkAPI.Object TBetObject = null;
+        public Object FBetObject = null;
+        public Object SBetObject = null;
+        public int SelectedTable = -1;
+        public Object TBetObject = null;
+        public DateTime Time = DateTime.Now;
 
         public int WinMoney = 0;
 

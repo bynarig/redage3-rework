@@ -3,21 +3,21 @@
     public class ComponentData
     {
         public int Drawable;
-        public int Texture;
         public bool IsBlock;
+        public int Texture;
 
         public ComponentData(int drawable, int texture)
         {
-            this.Drawable = drawable;
-            this.Texture = texture;
-            this.IsBlock = false;
+            Drawable = drawable;
+            Texture = texture;
+            IsBlock = false;
         }
 
         public ComponentData(int drawable, int texture, bool isBlock)
         {
-            this.Drawable = drawable;
-            this.Texture = texture;
-            this.IsBlock = isBlock;
+            Drawable = drawable;
+            Texture = texture;
+            IsBlock = isBlock;
         }
     }
 }

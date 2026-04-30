@@ -1,26 +1,20 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
-using NeptuneEvo.Character;
-using NeptuneEvo.Chars;
-using NeptuneEvo.Functions;
-using NeptuneEvoSDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Localization;
+using GTANetworkAPI;
+using NeptuneEvo.Localization;
+using NeptuneEvo.Character;
+using NeptuneEvo.Handles;
+using NeptuneEvo.Players;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Core
 {
-    class SeatingArrangements : Script
+    internal class SeatingArrangements : Script
     {
-      
         private static readonly nLog Log = new nLog("Core.SeatingArrangements");
-        private static Dictionary<ExtPlayer, Vector3> LandingData = new Dictionary<ExtPlayer, Vector3>();
-         
+        private static readonly Dictionary<ExtPlayer, Vector3> LandingData = new Dictionary<ExtPlayer, Vector3>();
+
         [RemoteEvent("server.landing.sit")]
         public static void LandingSit(ExtPlayer player, float posX, float posY, float posZ, float heading)
         {
@@ -34,51 +28,59 @@ namespace NeptuneEvo.Core
                 var position = new Vector3(posX, posY, posZ);
                 if (LandingData.Values.Any(p => p.DistanceTo2D(position) < 0.5))
                 {
-                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter, LangFunc.GetText(LangType.Ru, DataName.CantSitNear), 3000);
+                    Notify.Send(player, NotifyType.Error, NotifyPosition.BottomCenter,
+                        LangFunc.GetText(LangType.Ru, DataName.CantSitNear), 3000);
                     return;
                 }
 
                 LandingData[player] = position;
-                
-                //Trigger.ClientEventInRange(sitdata.Item1, 250f, setClientRotation", player.Value, sitdata.Item2.Z);                
+
+                //Trigger.ClientEventInRange(sitdata.Item1, 250f, "setClientRotation", player.Value, sitdata.Item2.Z);                
                 //player.Rotation = position;
                 //player.Rotation = new Vector3(0, 0, heading);
                 //BattlePass.Repository.UpdateReward(player, 71);
                 Trigger.ClientEvent(player, "client.seat.yes", posX, posY, posZ, heading);
                 Trigger.StopAnimation(player);
-                player.SetSharedData(AnimToKey", $sit");
+                player.SetSharedData("AnimToKey", "sit");
             }
             catch (Exception e)
             {
-                Log.Write($"PlayerFinishedMining Exception: {e.ToString()}");
+                Log.Write($"PlayerFinishedMining Exception: {e}");
             }
         }
+
         [RemoteEvent("server.landing.end")]
         public static void LandingEnd(ExtPlayer player)
         {
             try
             {
-                if (!player.IsCharacterData()) 
+                if (!player.IsCharacterData())
                     return;
-                
+
                 if (!LandingData.ContainsKey(player))
                     return;
-                
+
                 LandingData.Remove(player);
-                
-                player.SetSharedData(AnimToKey", 0);
+
+                player.SetSharedData("AnimToKey", 0);
             }
             catch (Exception e)
             {
-                Log.Write($"PlayerFinishedMining Exception: {e.ToString()}");
+                Log.Write($"PlayerFinishedMining Exception: {e}");
             }
         }
 
         [ServerEvent(Event.PlayerDeath)]
-        public void onPlayerDeathHandler(ExtPlayer player, ExtPlayer entityKiller, uint weapon) => LandingEnd(player);
-        
+        public void onPlayerDeathHandler(ExtPlayer player, ExtPlayer entityKiller, uint weapon)
+        {
+            LandingEnd(player);
+        }
+
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(ExtPlayer player, DisconnectionType type, string reason) => LandingEnd(player);
+        public void OnPlayerDisconnected(ExtPlayer player, DisconnectionType type, string reason)
+        {
+            LandingEnd(player);
+        }
 
 
         /*private static readonly nLog Log = new nLog("Core.SeatingArrangements");
@@ -213,7 +215,7 @@ namespace NeptuneEvo.Core
             (new Vector3(257.2032, 212.0639, 106.3724), new Vector3(0, 0, 68.07445), 0.7f, 1),
             (new Vector3(240.5251, 217.5032, 106.3733), new Vector3(0, 0, 296.1818), 0.7f, 1),
             (new Vector3(239.2035, 220.3922, 106.3661), new Vector3(0, 0, 302.7957), 0.7f, 1), // Инта мэрии
-            (new Vector3(972.6113, 77.45037, 116.9423), new Vector3(0, 0, 141.3944), 0.7f, 2), // Penthouse казино Diamond 
+            (new Vector3(972.6113, 77.45037, 116.9423), new Vector3(0, 0, 141.3944), 0.7f, 2), // Penthouse казино Diamond
             (new Vector3(971.2979, 78.09745, 116.9423), new Vector3(0, 0, 142.4414), 0.7f, 2),
             (new Vector3(969.4558, 79.28532, 116.2437), new Vector3(0, 0, 240.179), 0.7f, 1),
             (new Vector3(970.5175, 80.98527, 116.241), new Vector3(0, 0, 237.5208), 0.7f, 1),
@@ -237,7 +239,7 @@ namespace NeptuneEvo.Core
             (new Vector3(954.9444, 33.18817, 116.2442), new Vector3(0, 0, 237.2384), 0.4f, 1),
             (new Vector3(955.8591, 34.67036, 116.2442), new Vector3(0, 0, 237.4069), 0.4f, 1),
             (new Vector3(947.8051, 24.1959, 116.2442), new Vector3(0, 0, 326.9961), 0.4f, 1),
-            (new Vector3(946.3718, 25.09615, 116.2442), new Vector3(0, 0, 328.7419), 0.4f, 1), // Penthouse казино Diamond 
+            (new Vector3(946.3718, 25.09615, 116.2442), new Vector3(0, 0, 328.7419), 0.4f, 1), // Penthouse казино Diamond
             (new Vector3(-2024.161, -1039.781, 5.656947), new Vector3(0, 0, 354.3705), 0.7f, 1), // Корабль на пляже
             (new Vector3(-2022.277, -1038.568, 5.661452), new Vector3(0, 0, 78.84772), 0.7f, 1),
             (new Vector3(-2023.159, -1036.303, 5.659049), new Vector3(0, 0, 155.3187), 0.7f, 1),
@@ -264,7 +266,7 @@ namespace NeptuneEvo.Core
             (new Vector3(-2064.157, -1026.019, 11.98835), new Vector3(0, 0, 345.3992), 0.4f, 1),
             (new Vector3(-2066.417, -1027.246, 11.9889), new Vector3(0, 0, 68.68312), 0.4f, 1),
             (new Vector3(-2069.016, -1027.228, 11.98793), new Vector3(0, 0, 342.0817), 0.4f, 1), // Корабль на пляже
-            (new Vector3(1968.757, 3816.947, 34.09149), new Vector3(0, 0, 31.47821), 0.7f, 2), // Интерьер Trailer 
+            (new Vector3(1968.757, 3816.947, 34.09149), new Vector3(0, 0, 31.47821), 0.7f, 2), // Интерьер Trailer
             (new Vector3(154.2344, -1002.779, -99.02), new Vector3(0, 0, 108.9226), 0.7f, 1), // Интерьер дома Econom
             (new Vector3(154.2024, -1005.229, -98.33931), new Vector3(0, 0, 264.799), 0.7f, 2), // Интерьер дома Econom
             (new Vector3(260.5116, -996.6968, -99.0287), new Vector3(0, 0, 96.64272), 0.7f, 1), // Интерьер дома Econom+
@@ -403,39 +405,39 @@ namespace NeptuneEvo.Core
             (new Vector3(-527.9317, -242.51056, 35.842697), new Vector3(0, 0, 123.09466), 1f, 1), // Мэрия
             (new Vector3(-520.35876, -237.71443, 35.853596), new Vector3(0, 0, -43.81939), 1f, 1), // Мэрия
             (new Vector3(-517.90356, -242.17949, 35.799976), new Vector3(0, 0, -43.81939), 1f, 1), // Мэрия
-            
+
             (new Vector3(245.63101, -1095.6752, 29.294406), new Vector3(0, 0, 178.59708), 1f, 1), // Суд
             (new Vector3(247.37993, -1095.6162, 29.294092), new Vector3(0, 0, 178.59708), 1f, 1), // Суд
             (new Vector3(245.51399, -1097.6045, 29.272692), new Vector3(0, 0, 178.59708), 1f, 1), // Суд
             (new Vector3(247.4201, -1097.6577, 29.294062), new Vector3(0, 0, 178.59708), 1f, 1), // Суд
-            
+
             (new Vector3(253.73897, -1095.6892, 29.294054), new Vector3(0, 0, 178.63147), 1f, 1), // Суд
             (new Vector3(255.5613, -1095.6162, 29.294054), new Vector3(0, 0, 178.63147), 1f, 1), // Суд
             (new Vector3(255.45453, -1097.5977, 29.33004), new Vector3(0, 0, 178.63147), 1f, 1), // Суд
             (new Vector3(253.75241, -1097.686, 29.294046), new Vector3(0, 0, 178.63147), 1f, 1), // Суд
-            
+
             (new Vector3(258.78708, -1098.5331, 29.62799), new Vector3(0, 0, 89.59381), 1f, 1), // Суд
             (new Vector3(258.74976, -1100.292, 29.624151), new Vector3(0, 0, 89.59381), 1f, 1), // Суд
             (new Vector3(256.97693, -1100.337, 29.294052), new Vector3(0, 0, 89.59381), 1f, 1), // Суд
             (new Vector3(256.96606, -1098.6709, 29.294058), new Vector3(0, 0, 89.59381), 1f, 1), // Суд
-            
+
             (new Vector3(258.7765, -1104.2365, 29.62417), new Vector3(0, 0, 89.59381), 1f, 1), // Суд
             (new Vector3(258.77292, -1102.4226, 29.62417), new Vector3(0, 0, 89.59381), 1f, 1), // Суд
             (new Vector3(256.95359, -1102.3887, 29.294031), new Vector3(0, 0, 89.59381), 1f, 1), // Суд
             (new Vector3(256.97687, -1104.195, 29.294098), new Vector3(0, 0, 89.59381), 1f, 1), // Суд
-            
+
             (new Vector3(248.00903, -1099.4596, 29.294065), new Vector3(0, 0, 178.64291), 1f, 1), // Суд
             (new Vector3(246.63104, -1099.4838, 29.294065), new Vector3(0, 0, 177.12475), 1f, 1), // Суд
-            
+
             (new Vector3(253.2124, -1099.4165, 29.294052), new Vector3(0, 0, -175.3877), 1f, 1), // Суд
             (new Vector3(254.55447, -1099.4263, 29.294064), new Vector3(0, 0, -178.34415), 1f, 1), // Суд
-            
+
             (new Vector3(245.1042, -1104.775, 29.461792), new Vector3(0, 0, -94.9616), 1f, 1), // Суд
-            
+
             (new Vector3(250.26012, -1109.0529, 29.627295), new Vector3(0, 0, -3.0763717), 1f, 1), // Суд
             (new Vector3(252.59921, -1108.6757, 30.081997), new Vector3(0, 0, 19.710163), 1f, 1), // Суд
             (new Vector3(254.78953, -1108.837, 29.827332), new Vector3(0, 0, 1.570315), 1f, 1), // Суд
-            
+
             (new Vector3(-510.63446, -224.39435, 36.679146), new Vector3(0, 0, -101.304245), 1f, 1), // Мэрия
             (new Vector3(-510.8661, -225.701, 36.633587), new Vector3(0, 0, -100.80577), 1f, 1), // Мэрия
             (new Vector3(-510.10718, -228.32625, 36.529552), new Vector3(0, 0, -37.900745), 1f, 1), // Мэрия
@@ -444,7 +446,7 @@ namespace NeptuneEvo.Core
             (new Vector3(-505.6481, -228.4775, 36.489376), new Vector3(0, 0, 33.26634), 1f, 1), // Мэрия
             (new Vector3(-504.93524, -226.30446, 36.540863), new Vector3(0, 0, 105.20692), 1f, 1), // Мэрия
             (new Vector3(-505.1972, -225.0365, 36.556145), new Vector3(0, 0, 97.90744), 1f, 1), // Мэрия
-            
+
             (new Vector3(-1278.9905, -571.75714, 31.712172), new Vector3(0, 0, -48.070747), 1f, 1), // Новая Мэрия
             (new Vector3(-1277.9745, -573.0601, 31.712172), new Vector3(0, 0, -49.6521), 1f, 1), // Новая Мэрия
             (new Vector3(-1270.8517, -583.0032, 29.32755), new Vector3(0, 0, -38.794556), 1f, 1), // Новая Мэрия
@@ -455,7 +457,7 @@ namespace NeptuneEvo.Core
             (new Vector3(-1261.9701, -593.5378, 29.235434), new Vector3(0, 0, -55.83432), 1f, 1), // Новая Мэрия
             (new Vector3(-1256.639, -593.54755, 29.33059), new Vector3(0, 0, 128.81279), 1f, 1), // Новая Мэрия
             (new Vector3(-1255.5455, -594.87274, 29.302027), new Vector3(0, 0, 128.6065), 1f, 1), // Новая Мэрия
-            
+
             (new Vector3(-1288.768, -560.0561, 31.684565), new Vector3(0, 0, -57.805294), 1f, 1), // Новая Мэрия
             (new Vector3(-1289.8661, -558.6991, 31.712177), new Vector3(0, 0, -51.600163), 1f, 1), // Новая Мэрия
             (new Vector3(-1290.5563, -553.1663, 31.741482), new Vector3(0, 0, 141.95645), 1f, 1), // Новая Мэрия
@@ -503,77 +505,77 @@ namespace NeptuneEvo.Core
                     }
                     SitToPlayerId.Add(index, player.Value);
                     sessionData.SitPos = index;
-                    Trigger.ClientEventInRange(sitdata.Item1, 250f, setClientRotation", player.Value, sitdata.Item2.Z);
+                    Trigger.ClientEventInRange(sitdata.Item1, 250f, "setClientRotation", player.Value, sitdata.Item2.Z);
                     player.Rotation = sitdata.Item2;
-                    if (sittype == 6) Trigger.ClientEvent(player, freeze", true);
+                    if (sittype == 6) Trigger.ClientEvent(player, "freeze", true);
                     player.Position = sitdata.Item1;
                     Main.OnAntiAnim(player);
                     switch (sittype)
                     {
-                        case 1: // Сидеть облокотившись 
-                            Trigger.PlayAnimation(player, switch"@michael@sitting", idle", 39);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, sit");
-                            Trigger.ClientEvent(player, freeze", true);
+                        case 1: // Сидеть облокотившись
+                            Trigger.PlayAnimation(player, "switch@michael@sitting", "idle", 39);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "sit");
+                            Trigger.ClientEvent(player, "freeze", true);
                             break;
                         case 2: // Лежать
-                            Trigger.PlayAnimation(player, amb"@world_human_sunbathe@male@back@base", base", 39);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, lezhat");
-                            Trigger.ClientEvent(player, freeze", true);
+                            Trigger.PlayAnimation(player, "amb@world_human_sunbathe@male@back@base", "base", 39);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "lezhat");
+                            Trigger.ClientEvent(player, "freeze", true);
                             break;
                         case 3: // Лежать на операционном столе
-                            Trigger.PlayAnimation(player, missheistfbi3b_ig8_2", cower_loop_victim", 39);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, olezhat");
-                            Trigger.ClientEvent(player, freeze", true);
+                            Trigger.PlayAnimation(player, "missheistfbi3b_ig8_2", "cower_loop_victim", 39);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "olezhat");
+                            Trigger.ClientEvent(player, "freeze", true);
                             break;
                         case 4: // Играть на гитаре
-                            Commands.RPChat(sme", player, "играет на гитаре");
-                            Trigger.PlayAnimation(player, amb"@world_human_musician@guitar@male@base", base", 49);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, pguitar");
+                            Commands.RPChat("sme", player, "играет на гитаре");
+                            Trigger.PlayAnimation(player, "amb@world_human_musician@guitar@male@base", "base", 49);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "pguitar");
                             Attachments.AddAttachment(player, Attachments.AttachmentsName.Guitar);
-                            Trigger.ClientEvent(player, freeze", true);
+                            Trigger.ClientEvent(player, "freeze", true);
                             break;
                         case 5: // Играть на бонго
-                            Commands.RPChat(sme", player, "играет на бонго");
-                            Trigger.PlayAnimation(player, amb"@world_human_musician@bongos@male@base", base", 49);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, pbongo");
+                            Commands.RPChat("sme", player, "играет на бонго");
+                            Trigger.PlayAnimation(player, "amb@world_human_musician@bongos@male@base", "base", 49);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "pbongo");
                             Attachments.AddAttachment(player, Attachments.AttachmentsName.Bongo);
-                            Trigger.ClientEvent(player, freeze", true);
+                            Trigger.ClientEvent(player, "freeze", true);
                             break;
                         case 6: // Жим лёжа
-                            Trigger.PlayAnimation(player, amb"@prop_human_seat_muscle_bench_press@idle_a", idle_a", 39);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, jim");
+                            Trigger.PlayAnimation(player, "amb@prop_human_seat_muscle_bench_press@idle_a", "idle_a", 39);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "jim");
                             Attachments.AddAttachment(player, Attachments.AttachmentsName.Press1);
                             break;
                         case 7: // Подтягивание
-                            Trigger.PlayAnimation(player, amb"@prop_human_muscle_chin_ups@male@base", base", 39);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, tyag");
-                            Trigger.ClientEvent(player, fullblockMove", true);
+                            Trigger.PlayAnimation(player, "amb@prop_human_muscle_chin_ups@male@base", "base", 39);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "tyag");
+                            Trigger.ClientEvent(player, "fullblockMove", true);
                             break;
                         case 8: // Жим стоя
-                            Trigger.PlayAnimation(player, amb"@world_human_muscle_free_weights@male@barbell@base", base", 39);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, jimstoya");
+                            Trigger.PlayAnimation(player, "amb@world_human_muscle_free_weights@male@barbell@base", "base", 39);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "jimstoya");
                             Attachments.AddAttachment(player, Attachments.AttachmentsName.Press2);
-                            Trigger.ClientEvent(player, fullblockMove", true);
+                            Trigger.ClientEvent(player, "fullblockMove", true);
                             break;
                         case 9: // Качать пресс
-                            Trigger.PlayAnimation(player, amb"@world_human_sit_ups@male@base", base", 39);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, press");
-                            Trigger.ClientEvent(player, freeze", true);
+                            Trigger.PlayAnimation(player, "amb@world_human_sit_ups@male@base", "base", 39);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "press");
+                            Trigger.ClientEvent(player, "freeze", true);
                             break;
                         case 10: // Отжиматься
-                            Trigger.PlayAnimation(player, amb"@world_human_push_ups@male@base", base", 39);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, otjim");
-                            Trigger.ClientEvent(player, freeze", true);
+                            Trigger.PlayAnimation(player, "amb@world_human_push_ups@male@base", "base", 39);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "otjim");
+                            Trigger.ClientEvent(player, "freeze", true);
                             break;
                         case 11: // Играть на электрической гитаре
-                            Commands.RPChat(sme", player, "играет на электрогитаре");
-                            Trigger.PlayAnimation(player, amb"@world_human_musician@guitar@male@base", base", 49);
-                            // Trigger.ClientEventInRange(player.Position, 250f, PlayAnimToKey", player, false, playeguitar");
+                            Commands.RPChat("sme", player, "играет на электрогитаре");
+                            Trigger.PlayAnimation(player, "amb@world_human_musician@guitar@male@base", "base", 49);
+                            // Trigger.ClientEventInRange(player.Position, 250f, "PlayAnimToKey", player, false, "playeguitar");
                             Attachments.AddAttachment(player, Attachments.AttachmentsName.ElGuitar);
-                            Trigger.ClientEvent(player, freeze", true);
+                            Trigger.ClientEvent(player, "freeze", true);
                             break;
                         default:
-                            // Not supposed to end up here. 
+                            // Not supposed to end up here.
                             break;
                     }
                     if (sittype >= 6 && sittype <= 10)
@@ -612,15 +614,15 @@ namespace NeptuneEvo.Core
                             Attachments.RemoveAttachment(player, Attachments.AttachmentsName.ElGuitar);
                             break;
                         default:
-                            // Not supposed to end up here. 
+                            // Not supposed to end up here.
                             break;
                     }
                     SitToPlayerId.Remove(index);
                     sessionData.SitPos = -1;
                     player.Position = player.Position + new Vector3(0, 0, 0.5);
                     Trigger.StopAnimation(player);
-                    if (sittype == 7 || sittype == 8) Trigger.ClientEvent(player, fullblockMove", false);
-                    else Trigger.ClientEvent(player, freeze", false);
+                    if (sittype == 7 || sittype == 8) Trigger.ClientEvent(player, "fullblockMove", false);
+                    else Trigger.ClientEvent(player, "freeze", false);
                     if (sittype >= 6 && sittype <= 8)
                     {
                         if (sessionData.TimersData.HealTimer != null)
@@ -657,15 +659,15 @@ namespace NeptuneEvo.Core
                                     Attachments.RemoveAttachment(target, Attachments.AttachmentsName.ElGuitar);
                                     break;
                                 default:
-                                    // Not supposed to end up here. 
+                                    // Not supposed to end up here.
                                     break;
                             }
                             SitToPlayerId.Remove(index);
                             targetSessionData.SitPos = -1;
                             target.Position = player.Position + new Vector3(0, 0, 0.5);
                             Trigger.StopAnimation(target);
-                            if (sittype == 7 || sittype == 8) Trigger.ClientEvent(target, fullblockMove", false);
-                            else Trigger.ClientEvent(target, freeze", false);
+                            if (sittype == 7 || sittype == 8) Trigger.ClientEvent(target, "fullblockMove", false);
+                            else Trigger.ClientEvent(target, "freeze", false);
                             if (sittype >= 6 && sittype <= 8)
                             {
                                 if (targetSessionData != null && targetSessionData.TimersData.HealTimer != null)
@@ -675,7 +677,7 @@ namespace NeptuneEvo.Core
                                 }
                             }
                             Main.OffAntiAnim(target);
-                            Commands.RPChat(sme", player, "поднял {name} с места.", target);
+                            Commands.RPChat("sme", player, "поднял {name} с места.", target);
                             Notify.Send(target, NotifyType.Alert, NotifyPosition.BottomCenter, $"Человек ({player.Value}) поднял Вас с места.", 1000);
                             Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы подняли человека ({target.Value}) с места.", 1000);
                         }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using GTANetworkAPI;
+﻿using GTANetworkAPI;
 using NeptuneEvo.Handles;
 
 namespace NeptuneEvo.Inventory.Drop
@@ -11,13 +10,13 @@ namespace NeptuneEvo.Inventory.Drop
         {
             Repository.OnResourceStart();
         }
-        
+
         [RemoteEvent("server.raise")]
         private void OnRaise(ExtPlayer player, ExtObject obj)
         {
             Repository.ItemRaise(player, obj);
         }
-        
+
         [RemoteEvent("server.hookahManage")]
         private void OnHookah(ExtPlayer player, ExtObject obj)
         {

@@ -1,22 +1,19 @@
-﻿using GTANetworkAPI;
-using NeptuneEvo.Handles;
-using NeptuneEvo.Accounts;
-using NeptuneEvo.Players.Models;
-using NeptuneEvo.Players;
-using NeptuneEvo.Character.Models;
+﻿using System;
+using GTANetworkAPI;
 using NeptuneEvo.Character;
 using NeptuneEvo.Chars;
 using NeptuneEvo.Functions;
-using NeptuneEvoSDK;
-using System;
+using NeptuneEvo.Handles;
+using NeptuneEvo.Players;
+using NeptuneEvo.SDK;
 
 namespace NeptuneEvo.Core
 {
-    class AdminSP : Script
+    internal class AdminSP : Script
     {
         private static readonly nLog Log = new nLog("Core.AdminSP");
 
-        [RemoteEvent(SpectateSelect")]
+        [RemoteEvent("SpectateSelect")]
         public static void SpectatePrevNext(ExtPlayer player, bool state)
         {
             try
@@ -24,55 +21,57 @@ namespace NeptuneEvo.Core
                 if (!CommandsAccess.CanUseCmd(player, AdminCommands.Sp)) return;
                 var sessionData = player.GetSessionData();
                 if (sessionData == null) return;
-                int target = sessionData.AdminData.SPPlayer;
+                var target = sessionData.AdminData.SPPlayer;
                 if (target != -1)
                 {
                     int id;
                     if (!state)
                     {
-                        id = (target - 1);
+                        id = target - 1;
                         if (id == player.Value) id--;
                     }
                     else
                     {
-                        id = (target + 1);
+                        id = target + 1;
                         if (id == player.Value) id++;
                     }
+
                     Spectate(player, id);
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"SpectatePrevNext Exception: {e.ToString()}");
+                Log.Write($"SpectatePrevNext Exception: {e}");
             }
         }
-        
+
         public static void Spectate(ExtPlayer player, int id)
         {
             try
             {
                 if (!CommandsAccess.CanUseCmd(player, AdminCommands.Sp)) return;
-                ExtPlayer target = Main.GetPlayerByID(id);
+                var target = Main.GetPlayerByID(id);
                 if (!target.IsCharacterData())
                 {
                     Trigger.SendChatMessage(player, "Игрок под ID " + id + " отсутствует.");
                     return;
                 }
+
                 if (target == player) return;
                 var sessionData = player.GetSessionData();
-                if (sessionData == null) 
+                if (sessionData == null)
                     return;
 
                 var characterData = player.GetCharacterData();
-                if (characterData == null) 
+                if (characterData == null)
                     return;
 
                 var targetSessionData = target.GetSessionData();
-                if (targetSessionData == null) 
+                if (targetSessionData == null)
                     return;
 
                 var targetCharacterData = target.GetCharacterData();
-                if (targetCharacterData == null) 
+                if (targetCharacterData == null)
                     return;
 
                 if (!targetSessionData.AdminData.SpMode)
@@ -83,10 +82,12 @@ namespace NeptuneEvo.Core
                         if (targetAdminConfig.HideMe && characterData.AdminLVL < targetCharacterData.AdminLVL)
                         {
                             Trigger.SendChatMessage(player, "Игрок под ID " + id + " отсутствует.");
-                            Notify.Send(target, NotifyType.Alert, NotifyPosition.BottomCenter, $"{player.Name} ({player.Value}) попытался следить за Вами (/sp)", 3000);
+                            Notify.Send(target, NotifyType.Alert, NotifyPosition.BottomCenter,
+                                $"{player.Name} ({player.Value}) попытался следить за Вами (/sp)", 3000);
                             return;
                         }
                     }
+
                     var adminData = sessionData.AdminData;
                     if (!adminData.SpMode)
                     {
@@ -94,25 +95,31 @@ namespace NeptuneEvo.Core
                         adminData.SPDimension = UpdateData.GetPlayerDimension(player);
                         adminData.SpInvise = BasicSync.GetInvisible(player);
                     }
-                    else Trigger.ClientEvent(player, spmode", null, false);
+                    else
+                    {
+                        Trigger.ClientEvent(player, "spmode", null, false);
+                    }
+
                     player.Transparency = 0;
-                    player.Position = new Vector3(target.Position.X, target.Position.Y, (target.Position.Z - 10));
+                    player.Position = new Vector3(target.Position.X, target.Position.Y, target.Position.Z - 10);
                     Trigger.Dimension(player, UpdateData.GetPlayerDimension(target));
-                    player.SetSharedData(INVISIBLE", true);
-                    Admin.AdminLog(characterData.AdminLVL, $"{player.Name} ({player.Value}) начал слежение {target.Name} ({target.Value})");
+                    player.SetSharedData("INVISIBLE", true);
+                    Admin.AdminLog(characterData.AdminLVL,
+                        $"{player.Name} ({player.Value}) начал слежение {target.Name} ({target.Value})");
                     adminData.SpMode = true;
                     adminData.SPPlayer = target.Value;
-                    Trigger.ClientEvent(player, spmode", target, true);
-                    Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter, $"Вы наблюдаете за {target.Name} [ID: {target.Value}].", 1000);
+                    Trigger.ClientEvent(player, "spmode", target, true);
+                    Notify.Send(player, NotifyType.Success, NotifyPosition.BottomCenter,
+                        $"Вы наблюдаете за {target.Name} [ID: {target.Value}].", 1000);
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"Spectate Exception: {e.ToString()}");
+                Log.Write($"Spectate Exception: {e}");
             }
         }
 
-        [RemoteEvent(UnSpectate")]
+        [RemoteEvent("UnSpectate")]
         public static void RemoteUnSpectate(ExtPlayer player)
         {
             try
@@ -122,10 +129,10 @@ namespace NeptuneEvo.Core
             }
             catch (Exception e)
             {
-                Log.Write($"RemoteUnSpectate Exception: {e.ToString()}");
+                Log.Write($"RemoteUnSpectate Exception: {e}");
             }
         }
-        
+
         public static void UnSpectate(ExtPlayer player)
         {
             try
@@ -135,32 +142,37 @@ namespace NeptuneEvo.Core
                 var adminData = sessionData.AdminData;
                 if (adminData.SpMode)
                 {
-                    Trigger.ClientEvent(player, spmode", null, false);
+                    Trigger.ClientEvent(player, "spmode", null, false);
                     NAPI.Task.Run(() =>
                     {
                         try
                         {
                             var characterData = player.GetCharacterData();
                             if (characterData == null) return;
-                            player.Position = adminData.SPPosition; // Сначала возвращаем игрока на исходное местоположение, а только потом восстанавливаем прозрачность
+                            player.Position =
+                                adminData
+                                    .SPPosition; // Сначала возвращаем игрока на исходное местоположение, а только потом восстанавливаем прозрачность
                             Trigger.Dimension(player, adminData.SPDimension);
-                            player.Transparency = (adminData.SpInvise) ? 0 : 255;
-                            player.SetSharedData(INVISIBLE", adminData.SpInvise); // Включаем видимость ника и отключаем отображение хп всех игроков рядом
+                            player.Transparency = adminData.SpInvise ? 0 : 255;
+                            player.SetSharedData("INVISIBLE",
+                                adminData
+                                    .SpInvise); // Включаем видимость ника и отключаем отображение хп всех игроков рядом
                             adminData.SPPlayer = -1;
                             adminData.SpMode = false;
-                            Admin.AdminLog(characterData.AdminLVL, $"{player.Name} ({player.Value}) вышел из режима слежения");
+                            Admin.AdminLog(characterData.AdminLVL,
+                                $"{player.Name} ({player.Value}) вышел из режима слежения");
                             Trigger.SendChatMessage(player, "Вы вышли из режима наблюдателя.");
                         }
                         catch (Exception e)
                         {
-                            Log.Write($"UnSpectate Task Exception: {e.ToString()}");
+                            Log.Write($"UnSpectate Task Exception: {e}");
                         }
                     }, 400);
                 }
             }
             catch (Exception e)
             {
-                Log.Write($"UnSpectate Exception: {e.ToString()}");
+                Log.Write($"UnSpectate Exception: {e}");
             }
         }
     }

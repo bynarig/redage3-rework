@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using NeptuneEvo.Character;
+﻿using System.Collections.Generic;
 using NeptuneEvo.Chars;
-using NeptuneEvo.Core;
-using NeptuneEvo.Fractions.Models;
-using NeptuneEvo.GUI;
-using NeptuneEvo.Players;
-using Newtonsoft.Json;
 
 namespace NeptuneEvo.Fractions.Models
 {
     public class FractionClothingSetsData
     {
-        public static IReadOnlyList<ClothingSetData> AvailableSets = new List<ClothingSetData>()
+        public static IReadOnlyList<ClothingSetData> AvailableSets = new List<ClothingSetData>
         {
             //Male CITY
             new ClothingSetData(1, Fractions.CITY, ClothesComponent.Masks, 53, 0),
@@ -712,7 +703,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.EMS, ClothesComponent.Shoes, 1, 13),
             new ClothingSetData(1, Fractions.EMS, ClothesComponent.Shoes, 1, 14),
             new ClothingSetData(1, Fractions.EMS, ClothesComponent.Shoes, 1, 15),
-            new ClothingSetData(1, Fractions.EMS, ClothesComponent.Shoes, 7, 0 ),
+            new ClothingSetData(1, Fractions.EMS, ClothesComponent.Shoes, 7, 0),
             new ClothingSetData(1, Fractions.EMS, ClothesComponent.Shoes, 7, 1),
             new ClothingSetData(1, Fractions.EMS, ClothesComponent.Shoes, 7, 2),
             new ClothingSetData(1, Fractions.EMS, ClothesComponent.Shoes, 9, 0),
@@ -2487,16 +2478,16 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 10, 0),
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 10, 1),
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 10, 2),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 24,	0),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 24,	1),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 24,	2),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 31,	0),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 31,	2),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 33,	0),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 34,	0),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 78,	2),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 97,	1),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 97,	3),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 24, 0),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 24, 1),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 24, 2),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 31, 0),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 31, 2),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 33, 0),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 34, 0),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 78, 2),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 97, 1),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 97, 3),
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 121, 0),
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 123, 0),
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 124, 1),
@@ -2509,12 +2500,12 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 130, 1),
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Legs, 130, 3),
 
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Undershort, 43,	0),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 53,	0),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 61,	3),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 89,	0),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 89,	1),
-            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 89,	2),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Undershort, 43, 0),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 53, 0),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 61, 3),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 89, 0),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 89, 1),
+            new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 89, 2),
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 220, 20),
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 251, 1),
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Tops, 251, 3),
@@ -3492,9 +3483,9 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.LSNEWS, ClothesComponent.Glasses, 33, 9),
             new ClothingSetData(1, Fractions.LSNEWS, ClothesComponent.Glasses, 33, 10),
             new ClothingSetData(1, Fractions.LSNEWS, ClothesComponent.Glasses, 33, 11),
-        
+
             //Female LSNEWS
-        
+
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.None, 38, 0),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.None, 38, 1),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.None, 38, 2),
@@ -3559,7 +3550,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.None, 67, 3),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.None, 67, 4),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.None, 67, 5),
-        
+
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Shoes, 0, 0),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Shoes, 0, 1),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Shoes, 0, 2),
@@ -3650,7 +3641,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Shoes, 42, 9),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Shoes, 42, 10),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Shoes, 42, 11),
-        
+
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Legs, 6, 0),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Legs, 6, 1),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Legs, 7, 0),
@@ -3688,7 +3679,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Legs, 80, 5),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Legs, 80, 6),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Legs, 80, 7),
-        
+
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Accessories, 13, 0),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Accessories, 13, 1),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Accessories, 13, 2),
@@ -3745,7 +3736,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Accessories, 87, 7),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Accessories, 87, 8),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Accessories, 87, 9),
-        
+
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Tops, 57, 0),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Tops, 57, 1),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Tops, 57, 2),
@@ -3835,7 +3826,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Tops, 367, 17),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Tops, 367, 18),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Tops, 367, 19),
-        
+
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Hat, 13, 0),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Hat, 13, 1),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Hat, 13, 2),
@@ -3874,7 +3865,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Hat, 28, 5),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Hat, 28, 6),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Hat, 28, 7),
-        
+
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Glasses, 2, 0),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Glasses, 2, 1),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Glasses, 2, 2),
@@ -3934,9 +3925,9 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Glasses, 35, 9),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Glasses, 35, 10),
             new ClothingSetData(0, Fractions.LSNEWS, ClothesComponent.Glasses, 35, 11),
-        
+
             //Male SHERIFF
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Masks, 52, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Masks, 52, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Masks, 52, 2),
@@ -3969,7 +3960,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Masks, 169, 2),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Masks, 169, 12),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Masks, 101, 9),
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Undershort, 154, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Undershort, 58, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Undershort, 153, 0),
@@ -3979,7 +3970,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Undershort, 129, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Undershort, 144, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Undershort, 157, 0),
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Shoes, 1, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Shoes, 1, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Shoes, 1, 2),
@@ -4007,7 +3998,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Shoes, 24, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Shoes, 25, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Shoes, 53, 0),
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Legs, 0, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Legs, 0, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Legs, 0, 2),
@@ -4061,7 +4052,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Legs, 130, 2),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Legs, 130, 5),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Legs, 130, 6),
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Accessories, 10, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Accessories, 10, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Accessories, 10, 2),
@@ -4072,7 +4063,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Accessories, 36, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Accessories, 115, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Accessories, 115, 1),
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 49, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 49, 3),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 49, 4),
@@ -4111,11 +4102,11 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 324, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 324, 3),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 324, 5),
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Decals, 8, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Decals, 8, 2),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Decals, 8, 3),
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.BodyArmors, 1, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.BodyArmors, 1, 2),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.BodyArmors, 2, 1),
@@ -4136,7 +4127,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.BodyArmors, 16, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.BodyArmors, 16, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.BodyArmors, 16, 2),
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Hat, 5, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Hat, 5, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Hat, 39, 0),
@@ -4170,7 +4161,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Hat, 126, 0),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Hat, 126, 2),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Hat, 126, 3),
-        
+
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Glasses, 18, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Glasses, 18, 2),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Glasses, 18, 3),
@@ -4190,9 +4181,9 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Glasses, 5, 8),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Glasses, 5, 9),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Glasses, 5, 10),
-        
+
             //Female SHERIFF
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Masks, 52, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Masks, 52, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Masks, 52, 2),
@@ -4225,7 +4216,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Masks, 169, 2),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Masks, 169, 12),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Masks, 101, 9),
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 35, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.None, 75, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 152, 0),
@@ -4235,13 +4226,13 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 193, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 190, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 160, 0),
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Shoes, 24, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Shoes, 25, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Shoes, 27, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Shoes, 28, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Shoes, 54, 0),
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Legs, 1, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Legs, 1, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Legs, 1, 2),
@@ -4294,7 +4285,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Legs, 136, 2),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Legs, 136, 5),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Legs, 136, 6),
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Accessories, 21, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Accessories, 21, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Accessories, 21, 2),
@@ -4345,7 +4336,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Accessories, 87, 7),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Accessories, 87, 8),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Accessories, 87, 9),
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Tops, 42, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Tops, 42, 3),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Tops, 42, 4),
@@ -4384,11 +4375,11 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Tops, 336, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Tops, 336, 3),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Tops, 336, 5),
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Decals, 7, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Decals, 7, 2),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Decals, 7, 3),
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.BodyArmors, 1, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.BodyArmors, 1, 2),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.BodyArmors, 2, 1),
@@ -4413,7 +4404,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.BodyArmors, 18, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.BodyArmors, 18, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.BodyArmors, 18, 2),
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Hat, 12, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Hat, 38, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Hat, 38, 1),
@@ -4446,7 +4437,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Hat, 125, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Hat, 125, 2),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Hat, 125, 3),
-        
+
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 11, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 11, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 11, 2),
@@ -4474,9 +4465,9 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 20, 5),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 20, 6),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 20, 7),
-            
+
             // DLC
-            
+
             // MALE CITY
             new ClothingSetData(1, Fractions.CITY, ClothesComponent.Undershort, 197, 0),
             new ClothingSetData(1, Fractions.CITY, ClothesComponent.Undershort, 197, 1),
@@ -5368,11 +5359,11 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Hat, 188, 1),
             new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Hat, 188, 2),
 
-            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 37, 0), 
-            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 38, 0), 
-            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 39, 0), 
-            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 40, 0), 
-            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 41, 0), 
+            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 37, 0),
+            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 38, 0),
+            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 39, 0),
+            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 40, 0),
+            new ClothingSetData(1, Fractions.ARMY, ClothesComponent.Glasses, 41, 0),
 
             //FEMALE FIB
             new ClothingSetData(0, Fractions.ARMY, ClothesComponent.Undershort, 224, 0),
@@ -5640,49 +5631,49 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Accessories, 187, 1),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Accessories, 188, 0),
 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 0), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 2), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 4), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 5), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 6), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 0), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 2), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 4), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 5), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 6), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 416, 2), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 416, 3), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 0), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 2), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 4), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 5), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 7), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 8), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 10), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 11), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 12), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 16), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 421, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 421, 4), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 422, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 422, 3), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 423, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 424, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 429, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 429, 2), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 429, 4), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 433, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 433, 2), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 433, 3), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 433, 4), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 434, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 435, 3), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 435, 4), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 436, 1), 
-            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 436, 2), 
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 0),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 2),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 4),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 5),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 414, 6),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 0),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 2),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 4),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 5),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 415, 6),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 416, 2),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 416, 3),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 0),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 2),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 4),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 5),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 7),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 8),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 10),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 11),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 12),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 420, 16),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 421, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 421, 4),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 422, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 422, 3),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 423, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 424, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 429, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 429, 2),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 429, 4),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 433, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 433, 2),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 433, 3),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 433, 4),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 434, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 435, 3),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 435, 4),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 436, 1),
+            new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 436, 2),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Tops, 438, 2),
 
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Decals, 122, 0),
@@ -5906,8 +5897,8 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 37, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 38, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 39, 0),
-            new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 41, 0),//Male CITY
-            
+            new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Glasses, 41, 0), //Male CITY
+
             //
             new ClothingSetData(1, Fractions.CITY, ClothesComponent.Undershort, 0, 0),
             new ClothingSetData(1, Fractions.CITY, ClothesComponent.Undershort, 0, 1),
@@ -5957,9 +5948,7 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.POLICE, ClothesComponent.Undershort, 139, 5),
 
 
-
             //LSPD Female
-
 
 
             new ClothingSetData(0, Fractions.POLICE, ClothesComponent.Undershort, 73, 0),
@@ -6096,14 +6085,14 @@ namespace NeptuneEvo.Fractions.Models
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Undershort, 139, 3),
             new ClothingSetData(1, Fractions.SHERIFF, ClothesComponent.Undershort, 139, 5),
 
-             //FEMALE SHERIFF
+            //FEMALE SHERIFF
 
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 73, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 73, 1),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 73, 2),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 103, 0),
             new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 103, 3),
-            new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 103, 5),
+            new ClothingSetData(0, Fractions.SHERIFF, ClothesComponent.Undershort, 103, 5)
         };
     }
 }
