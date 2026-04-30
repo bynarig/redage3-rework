@@ -36,7 +36,7 @@ module.exports = {
             filename: './index.html',
             inject: false,
         }),
-        new MiniCssExtractPlugin({ 
+        new MiniCssExtractPlugin({
             filename: `build/bundle.css`
         })
     ],
@@ -97,12 +97,25 @@ module.exports = {
         ]
     },
     mode,
-    devtool: prod ? false: 'source-map',
+    devtool: prod ? false : 'source-map',
+    stats: prod ? 'normal' : {
+        all: false,
+        errors: true,
+        errorDetails: false,
+        errorStack: false,
+        moduleTrace: false,
+    },
+    infrastructureLogging: { level: prod ? 'info' : 'error' },
+    performance: { hints: false },
     devServer: {
         static: false,
         compress: true,
         port: 8888,
         hot: false,
         liveReload: true,
+        // client: {
+        //     logging: 'error',        // suppress HMR status messages in the browser console
+        //     overlay: { errors: true, warnings: false },
+        // },
     }
 }

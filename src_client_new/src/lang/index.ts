@@ -1,3 +1,6 @@
 // Localization — mirrors src_client/lang/index.js
+// Pass-through until the full i18n system is migrated.
 
-global.translateText = (text: string): string => text
+export function translateText(text: string): string {
+  return text
+}

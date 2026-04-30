@@ -1,6 +1,6 @@
-<mxfile host="Electron" pages="2">
+<mxfile host="Electron" pages="3">
   <diagram name="Main Architecture" id="v61CEVvjdBkH8QJg4fI9">
-    <mxGraphModel dx="1489" dy="1194" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1266" dy="1015" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -47,8 +47,8 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="P3hOEAloalX0IgEBrhO1" name="Database">
-    <mxGraphModel dx="2110" dy="1692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+  <diagram id="P3hOEAloalX0IgEBrhO1" name="Database Architecture">
+    <mxGraphModel dx="25320" dy="20300" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -8514,6 +8514,20 @@
           <mxGeometry height="30" width="250" x="30" as="geometry">
             <mxRectangle height="30" width="250" as="alternateBounds" />
           </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="EXUeoNmbEhIsl41DBIpX" name="CEF architecture">
+    <mxGraphModel dx="1266" dy="1015" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Ot69y2NSabGjMEfpm0Rj-4" parent="1" style="whiteSpace=wrap;html=1;aspect=fixed;" value="components" vertex="1">
+          <mxGeometry height="80" width="80" x="50" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="Ot69y2NSabGjMEfpm0Rj-6" parent="1" style="whiteSpace=wrap;html=1;aspect=fixed;" value="models" vertex="1">
+          <mxGeometry height="80" width="80" x="210" y="130" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

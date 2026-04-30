@@ -5,6 +5,10 @@ import { i18n } from './lang/index'
 import App from './App.vue'
 import router from './router'
 
+if (import.meta.env.DEV) {
+  await import('./dev/mp-mock')
+}
+
 const app = createApp(App)
 
 app.use(createPinia())

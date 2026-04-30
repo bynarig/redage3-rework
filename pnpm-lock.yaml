@@ -349,6 +349,9 @@ importers:
       '@ragempcommunity/types-client':
         specifier: ^2.1.9
         version: 2.1.9
+      '@types/node':
+        specifier: ^24.12.2
+        version: 24.12.2
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.0.0
         version: 8.59.1(@typescript-eslint/parser@8.59.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)

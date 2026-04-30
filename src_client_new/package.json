@@ -1,6 +1,6 @@
 {
-  "name": "client-side-new",
-  "version": "1.0.0",
+  "name": "redage4-client",
+  "version": "0.0.1-alpha",
   "description": "RAGE MP client-side scripts (TypeScript)",
   "type": "commonjs",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@ragempcommunity/types-client": "^2.1.9",
+    "@types/node": "^24.12.2",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.0.0",

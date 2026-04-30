@@ -1,6 +1,6 @@
 {
-  "name": "vue-project",
-  "version": "0.0.0",
+  "name": "redage4-cef",
+  "version": "0.0.1-alpha",
   "private": true,
   "type": "module",
   "scripts": {

@@ -8,7 +8,6 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // RAGE MP CEF build config:
-// src_cef outputs build/bundle.js (default/RU), buildru/, builden/
 // Mirror the same structure here so client_packages/interface stays consistent.
 const srcDir = fileURLToPath(new URL('./src', import.meta.url))
 // const locale = process.env.VITE_LOCALE ?? 'ru'
@@ -54,12 +53,15 @@ export default defineConfig(({ command }) => ({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'api': fileURLToPath(new URL('./src/api', import.meta.url)),
+      'lang': fileURLToPath(new URL('./src/lang', import.meta.url)),
     },
   },
 
   css: {
     preprocessorOptions: {
       scss: {
+        additionalData: `@use "${srcDir}/views/assets/styles/main" as *;\n`,
         importers: [
           {
             // Resolves @/ alias in SCSS @import / @use statements.
