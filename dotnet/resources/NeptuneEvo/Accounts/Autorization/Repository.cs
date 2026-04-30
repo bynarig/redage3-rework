@@ -136,7 +136,7 @@ namespace NeptuneEvo.Accounts.Autorization
                     ReceivedAwardWeek = account.ReceivedAwardWeek,
                     ReceivedAwardDonate = account.ReceivedAwardDonate,
 
-                    Unique = Donate.SetUnique(account.Unique),
+                    // Unique = Donate.SetUnique(account.Unique),
 
                     LastSelectCharUUID = account.LastSelectCharUUID,
 

@@ -12,11 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Localization\Localization.csproj"/>
-        <ProjectReference Include="..\NeptuneEvoSDK\NeptuneEvoSDK.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="client.pfx">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

@@ -124,7 +124,7 @@ namespace NeptuneEvo.Accounts.Registration
 
                 accountData.RedBucks = Main.MoneySettings.CreateAccountRedBucks;
                 accountData.PromoCodes.Add(promo_);
-                accountData.Unique = Donate.SetUnique(null);
+                // accountData.Unique = Donate.SetUnique(null);
                 player.SetAccountData(accountData);
 
                 Main.LoginToEmail[accountData.Login.ToLower()] = accountData.Email;
