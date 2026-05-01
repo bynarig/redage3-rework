@@ -1,6 +1,7 @@
 // @ts-check
 import tseslint from 'typescript-eslint'
 import eslint from '@eslint/js'
+import jsdoc from 'eslint-plugin-jsdoc'
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -282,4 +283,34 @@ export default tseslint.config(
     },
   },
   // ────────────────────────────────────────────────────────────────────────────
+
+  {
+    name: 'docs/jsdoc',
+    files: ['**/*.ts'],
+    ignores: ['**/*.d.ts', 'src/models/prisma/**'],
+    plugins: {
+      jsdoc,
+    },
+    rules: {
+      'jsdoc/check-alignment': 'warn',
+      'jsdoc/check-indentation': 'warn',
+      'jsdoc/require-description': 'warn',
+      'jsdoc/tag-lines': ['warn', 'any', 'never'],
+      'jsdoc/require-param': 'warn',
+      'jsdoc/require-returns': 'warn',
+      'jsdoc/require-returns-type': 'off',
+      'jsdoc/require-param-type': 'off',
+      'jsdoc/require-jsdoc': [
+        'warn',
+        {
+          require: {
+            FunctionDeclaration: true,
+            MethodDefinition: true,
+            ClassDeclaration: true,
+          },
+          contexts: ['TSPropertySignature'],
+        },
+      ],
+    },
+  },
 )

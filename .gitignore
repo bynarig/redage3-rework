@@ -24,6 +24,7 @@ client_packages/interface/build/bundle.css.map
 client_packages/interface/build/bundle.css
 client_packages/interface/index.html
 ragemp-server.exe
+ragemp-server
 dlcpacks/*
 client_packages/DISABLE_ENCRYPTION_LIST
 /bin/bt.dat
@@ -33,3 +34,5 @@ BugTrap-x64.dll
 
 dotnet/runtime
 dotnet/vehicleData.json
+
+to-remove

@@ -1,7 +1,33 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mock, when, instance, verify, anything } from 'ts-mockito'
-import { antiFlood, escapeHtml, wait, loadModel } from '@/src/utils/helpers'
+import { antiFlood, wait, loadModel, vdist3 } from '@/src/utils/helpers'
 import { mpStub } from '../setup/mp-globals'
+
+// ── vdist3 ────────────────────────────────────────────────────────────────────
+
+describe('vdist3', () => {
+  it('returns 0 for identical points', () => {
+    expect(vdist3({ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 })).toBe(0)
+  })
+
+  it('returns 1 for unit step on the x-axis', () => {
+    expect(vdist3({ x: 0, y: 0, z: 0 }, { x: 1, y: 0, z: 0 })).toBeCloseTo(1)
+  })
+
+  it('returns sqrt(3) for unit diagonal across all three axes', () => {
+    expect(vdist3({ x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1 })).toBeCloseTo(Math.sqrt(3))
+  })
+
+  it('is symmetric', () => {
+    const a = { x: 1, y: 2, z: 3 }
+    const b = { x: 4, y: 6, z: 8 }
+    expect(vdist3(a, b)).toBeCloseTo(vdist3(b, a))
+  })
+
+  it('handles negative coordinates', () => {
+    expect(vdist3({ x: -1, y: -1, z: -1 }, { x: 1, y: 1, z: 1 })).toBeCloseTo(Math.sqrt(12))
+  })
+})
 
 // ── antiFlood ────────────────────────────────────────────────────────────────
 
@@ -28,38 +54,6 @@ describe('antiFlood', () => {
   it('tracks keys independently', () => {
     antiFlood('a', 1000)
     expect(antiFlood('b', 1000)).toBe(true)
-  })
-})
-
-// ── escapeHtml ───────────────────────────────────────────────────────────────
-
-describe('escapeHtml', () => {
-  it.each([
-    ['&', '&amp;'],
-    ['<', '&lt;'],
-    ['>', '&gt;'],
-    ['"', '&quot;'],
-    ["'", '&#39;'],
-    ['`', '&#x60;'],
-    ['=', '&#x3D;'],
-    ['/', '&#x2F;'],
-  ])('escapes %s → %s', (input, expected) => {
-    expect(escapeHtml(input)).toBe(expected)
-  })
-
-  it('leaves safe characters unchanged', () => {
-    expect(escapeHtml('Hello world 123')).toBe('Hello world 123')
-  })
-
-  it('escapes a full XSS payload', () => {
-    expect(escapeHtml('<script>alert("xss")</script>')).toBe(
-      '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;',
-    )
-  })
-
-  it('coerces non-string values', () => {
-    expect(escapeHtml(42)).toBe('42')
-    expect(escapeHtml(null)).toBe('null')
   })
 })
 

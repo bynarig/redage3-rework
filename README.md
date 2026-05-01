@@ -1,5 +1,37 @@
 # RedAge Role Play V4 - Modern Rework (NeptuneEvo)
 
+## Development Setup (Quick Start)
+
+Full guide: `docs/development-setup.md`
+
+### Run from project root
+
+**macOS (Apple Silicon)**
+
+```bash
+chmod +x scripts/development/macos-arm-development-initialisation.sh
+./scripts/development/macos-arm-development-initialisation.sh
+```
+
+**Linux (x64)**
+
+```bash
+chmod +x scripts/development/linux-x64-development-initialisation.sh
+./scripts/development/linux-x64-development-initialisation.sh
+```
+
+**Windows (PowerShell)**
+
+Run PowerShell as Administrator, then execute:
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -Force
+Unblock-File -Path .scripts\development\windows-crossprocessor-development-initialisation.ps1
+.\scripts\development\windows-crossprocessor-development-initialisation.ps1
+```
+
+---
+
 This is an actively maintained and modernized version of the popular **RedAge V3** gamemode for **RAGE:MP (GTA V)**.
 
 The primary goal of this rework is to transition away from deprecated and difficult-to-maintain technologies, adopting a robust, modern web and backend stack. By introducing modern tooling, ORMs, and a structured monorepo environment, this project aims to deliver a vastly superior Developer Experience (DX) and better maintainability.

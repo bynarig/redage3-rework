@@ -14,11 +14,11 @@
 
 import { state } from '@/src/state'
 import { translateText } from '@/src/lang'
-import { Keys } from '@/src/modules/constants/keys'
-import { antiFlood, escapeHtml, loadModel, wait, RAYCASTING_FLAGS } from '@/src/utils/helpers'
+// import { Keys } from '@/src/modules/constants/keys'
+import { antiFlood, loadModel, wait, RAYCASTING_FLAGS } from '@/src/utils/helpers'
 
-// One-time startup side-effect carried over from legacy initialisation.
-state.localplayer.freezePosition(false)
+// One-time startup side-effect carried over from legacy initialization.
+state.localPlayer.freezePosition(false)
 
 // ─── Not yet migrated ──────────────────────────────────────────────────────────
 // The modules below exist as empty stubs (see src/modules/).
@@ -46,4 +46,4 @@ state.localplayer.freezePosition(false)
 // import '@/src/modules/phone'
 // import '@/src/modules/battlepass'
 
-export { state, translateText, Keys, antiFlood, escapeHtml, loadModel, wait, RAYCASTING_FLAGS }
+// export { state, translateText, antiFlood, loadModel, wait, RAYCASTING_FLAGS }
