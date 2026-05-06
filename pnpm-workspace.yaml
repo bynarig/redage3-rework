@@ -1,7 +1,0 @@
-packages:
-  - 'src_cef'
-  - 'src_cef_new'
-  - 'src_client'
-  - 'src_client_new'
-allowBuilds:
-  prisma: true

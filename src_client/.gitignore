@@ -1,8 +1,0 @@
-
-node_modules
-build
-build-client.bat
-/.vs/client/v17/.suo
-/.vs
-/public/main.js
-/buildtest.bat

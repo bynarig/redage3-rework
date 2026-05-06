@@ -1,2 +1,0 @@
-import './customScenario'
-import './customAnim'

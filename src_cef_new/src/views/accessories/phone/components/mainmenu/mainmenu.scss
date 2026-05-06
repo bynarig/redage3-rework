@@ -1,0 +1,92 @@
+.ios-springboard {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-color: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: white;
+    user-select: none;
+}
+
+.ios-home-grid {
+    position: absolute;
+    top: 60px;
+    left: 2.5%;
+    width: 95%;
+    height: calc(100% - 150px);
+    padding: 10px 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: min-content;
+    gap: 15px 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.ios-home-grid::-webkit-scrollbar { display: none; }
+
+.ios-app-icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.ios-app-icon-container:active { transform: scale(0.9); }
+
+.ios-app-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 13px;
+    background-color: #2c2c2e;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.ios-app-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ios-app-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 64px;
+    text-align: center;
+}
+
+.ios-dock {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    height: 72px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.ios-dock .ios-app-icon-container { gap: 0; }
+.ios-dock .ios-app-label { display: none; }
+
