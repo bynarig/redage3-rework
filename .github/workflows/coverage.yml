@@ -1,0 +1,35 @@
+name: Coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  coverage:
+    name: Vitest Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Coverage — CEF
+        working-directory: src_cef_new
+        run: pnpm exec vitest run --coverage
+
+      - name: Coverage — Client
+        working-directory: src_client_new
+        run: pnpm run test:coverage
+
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: src_cef_new/coverage/lcov.info,src_client_new/coverage/lcov.info
+          flags: cef,client
+          fail_ci_if_error: false

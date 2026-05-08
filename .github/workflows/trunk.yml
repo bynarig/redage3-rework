@@ -1,0 +1,44 @@
+name: Trunk
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  checks: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  trunk:
+    name: Trunk Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # check out the PR branch so auto-fix commits land on it
+          ref: ${{ github.head_ref || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - uses: trunk-io/trunk-action@v1
+        with:
+          trunk-token: ${{ secrets.TRUNK_TOKEN }}
+          arguments: --fix
+
+      - name: Commit auto-fixes
+        if: github.event_name == 'pull_request'
+        run: |
+          git config user.name "trunk-io[bot]"
+          git config user.email "trunk-io[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git commit -am "style: trunk auto-fix"
+            git push
+          fi

@@ -51,22 +51,22 @@ const textInfo = ref(true)
 </template>
 
 <style scoped>
-.fade-enter-active {
-    transition: opacity v-bind('`${inDuration}ms`') linear;
-}
-.fade-leave-active {
-    transition: opacity v-bind('`${outDuration}ms`') linear;
-}
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-.fade-info-leave-active {
-    transition: opacity v-bind('`${outDuration}ms`') linear;
-}
-.fade-info-leave-to {
-    opacity: 0;
-}
+//.fade-enter-active {
+//    transition: opacity v-bind('`${inDuration}ms`') linear;
+//}
+//.fade-leave-active {
+//    transition: opacity v-bind('`${outDuration}ms`') linear;
+//}
+//.fade-enter-from,
+//.fade-leave-to {
+//    opacity: 0;
+//}
+//.fade-info-leave-active {
+//    transition: opacity v-bind('`${outDuration}ms`') linear;
+//}
+//.fade-info-leave-to {
+//    opacity: 0;
+//}
 
 .loader-area {
     display: flex;

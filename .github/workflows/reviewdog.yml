@@ -1,0 +1,49 @@
+name: Reviewdog
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  eslint:
+    name: ESLint (inline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+
+      - name: ESLint — CEF
+        working-directory: src_cef_new
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm exec eslint . --format json 2>/dev/null \
+            | reviewdog -f=eslint \
+                -name="ESLint/cef" \
+                -reporter=github-pr-review \
+                -filter-mode=added \
+                -fail-on-error=false
+
+      - name: ESLint — Client
+        working-directory: src_client_new
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm exec eslint src --format json 2>/dev/null \
+            | reviewdog -f=eslint \
+                -name="ESLint/client" \
+                -reporter=github-pr-review \
+                -filter-mode=added \
+                -fail-on-error=false

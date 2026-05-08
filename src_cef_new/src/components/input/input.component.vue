@@ -254,16 +254,4 @@ defineExpose({
     color: var(--ui-destructive);
 }
 
-/* Message transition */
-.inp-msg-enter-active,
-.inp-msg-leave-active {
-    transition: opacity var(--ui-dur-fast) var(--ui-ease), transform var(--ui-dur-fast) var(--ui-ease);
-}
-.inp-msg-enter-from {
-    opacity: 0;
-    transform: translateY(-4px);
-}
-.inp-msg-leave-to {
-    opacity: 0;
-}
 </style>
