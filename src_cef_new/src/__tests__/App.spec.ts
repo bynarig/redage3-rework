@@ -3,7 +3,10 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 
 // Mock mp-mock.ts side-effects that require a real browser DOM
-vi.mock('@/dev/mp-mock', () => ({}))
+vi.mock('@/dev/mp-mock', () => ({
+    devReadView: () => '',
+    devReadPopup: () => '',
+}))
 
 import App from '../App.vue'
 

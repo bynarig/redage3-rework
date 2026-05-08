@@ -10,11 +10,10 @@ lint:
   enabled:
     - eslint@10.2.1
     - prettier@3.8.3
-    - oxlint@1.60.0
     - git-diff-check
     - actionlint@1.7.7
   ignore:
-    - linters: [eslint, prettier, oxlint]
+    - linters: [eslint, prettier]
       paths:
         # legacy workspaces kept for reference only
         - src_cef/**

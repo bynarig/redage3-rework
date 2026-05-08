@@ -24,7 +24,6 @@ import TinderApp from '../tinder/TinderApp.vue'
 import TruckerApp from '../trucker/TruckerApp.vue'
 import CameraApp from '../camera/CameraApp.vue'
 import SupportApp from '../support/SupportApp.vue'
-import BrowserApp from '@/views/accessories/shared/apps/BrowserApp.vue'
 
 import { useLaptopStore } from '@/stores/laptop'
 import type { Component } from 'vue'
@@ -49,7 +48,6 @@ const APP_MAP: Record<string, Component> = {
     tinder: TinderApp,
     trucker: TruckerApp,
     support: SupportApp,
-    browser: BrowserApp,
 }
 
 const APP_NAMES: Record<string, string> = {
@@ -153,24 +151,24 @@ const onOpenApp = (link: string | number) => {
     flex-shrink: 0;
 }
 
-.window-fade-enter-active,
-.window-fade-leave-active {
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.window-fade-enter-from,
-.window-fade-leave-to {
-    opacity: 0;
-    transform: scale(0.96);
-}
-
-.launchpad-fade-enter-active {
-    transition: opacity 0.25s ease;
-}
-.launchpad-fade-leave-active {
-    transition: opacity 0.2s ease;
-}
-.launchpad-fade-enter-from,
-.launchpad-fade-leave-to {
-    opacity: 0;
-}
+//.window-fade-enter-active,
+//.window-fade-leave-active {
+//    transition: opacity 0.2s ease, transform 0.2s ease;
+//}
+//.window-fade-enter-from,
+//.window-fade-leave-to {
+//    opacity: 0;
+//    transform: scale(0.96);
+//}
+//
+//.launchpad-fade-enter-active {
+//    transition: opacity 0.25s ease;
+//}
+//.launchpad-fade-leave-active {
+//    transition: opacity 0.2s ease;
+//}
+//.launchpad-fade-enter-from,
+//.launchpad-fade-leave-to {
+//    opacity: 0;
+//}
 </style>
