@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+option csharp_namespace = "Bridge.Contracts";
+
+package bridge;
+
+// ── Service ───────────────────────────────────────────────────────────────────
+
+service BridgeService {
+  // GameServer subscribes to receive real-time RAGE:MP events
+  rpc SubscribeEvents (SubscribeRequest) returns (stream GameEvent);
+
+  // Natives — GameServer calls these to drive RAGE:MP
+  rpc TriggerClientEvent (TriggerClientEventRequest) returns (BaseResponse);
+  rpc SetPlayerPosition  (SetPositionRequest)        returns (BaseResponse);
+  rpc SetPlayerDimension (SetDimensionRequest)       returns (BaseResponse);
+  rpc KickPlayer         (KickPlayerRequest)         returns (BaseResponse);
+  rpc SendNotification   (SendNotificationRequest)   returns (BaseResponse);
+  rpc CreateVehicle      (CreateVehicleRequest)      returns (CreateVehicleResponse);
+  rpc DestroyVehicle     (DestroyVehicleRequest)     returns (BaseResponse);
+  rpc BroadcastMessage   (BroadcastMessageRequest)   returns (BaseResponse);
+}
+
+// ── Subscription ──────────────────────────────────────────────────────────────
+
+message SubscribeRequest {
+  string subscriber_id = 1;
+}
+
+// ── Events ────────────────────────────────────────────────────────────────────
+
+message GameEvent {
+  string event_id = 1;
+  oneof payload {
+    PlayerConnectedEvent    player_connected    = 2;
+    PlayerDisconnectedEvent player_disconnected = 3;
+    PlayerSpawnedEvent      player_spawned      = 4;
+    PlayerDeathEvent        player_death        = 5;
+    PlayerChatEvent         player_chat         = 6;
+    PlayerCommandEvent      player_command      = 7;
+    PlayerKeyDownEvent      player_key_down     = 8;
+    ServerEventData         server_event        = 9;
+  }
+}
+
+message PlayerConnectedEvent    { PlayerInfo player  = 1; }
+message PlayerDisconnectedEvent { uint32 player_id   = 1; string reason = 2; }
+message PlayerSpawnedEvent      { uint32 player_id   = 1; }
+message PlayerDeathEvent        { uint32 player_id   = 1; uint32 killer_id = 2; uint32 weapon = 3; }
+message PlayerChatEvent         { uint32 player_id   = 1; string message = 2; }
+message PlayerCommandEvent      { uint32 player_id   = 1; string command = 2; string args_raw = 3; }
+message PlayerKeyDownEvent      { uint32 player_id   = 1; uint32 key = 2; }
+
+message ServerEventData {
+  uint32          player_id  = 1;
+  string          event_name = 2;
+  repeated string args       = 3;
+}
+
+message PlayerInfo {
+  uint32 id               = 1;
+  string name             = 2;
+  string social_club_name = 3;
+  string ip               = 4;
+}
+
+// ── Native call messages ──────────────────────────────────────────────────────
+
+message TriggerClientEventRequest {
+  uint32          player_id  = 1;
+  string          event_name = 2;
+  repeated string args       = 3;
+}
+
+message SetPositionRequest {
+  uint32 player_id = 1;
+  float  x         = 2;
+  float  y         = 3;
+  float  z         = 4;
+}
+
+message SetDimensionRequest {
+  uint32 player_id = 1;
+  uint32 dimension = 2;
+}
+
+message KickPlayerRequest {
+  uint32 player_id = 1;
+  string reason    = 2;
+}
+
+message SendNotificationRequest {
+  uint32 player_id = 1;
+  string message   = 2;
+}
+
+message CreateVehicleRequest {
+  uint32 model        = 1;
+  float  x            = 2;
+  float  y            = 3;
+  float  z            = 4;
+  float  heading      = 5;
+  uint32 dimension    = 6;
+  string number_plate = 7;
+}
+
+message CreateVehicleResponse {
+  bool   success    = 1;
+  uint32 vehicle_id = 2;
+  string error      = 3;
+}
+
+message DestroyVehicleRequest {
+  uint32 vehicle_id = 1;
+}
+
+message BroadcastMessageRequest {
+  string message = 1;
+  string color   = 2;
+}
+
+// ── Common ────────────────────────────────────────────────────────────────────
+
+message BaseResponse {
+  bool   success = 1;
+  string error   = 2;
+}
