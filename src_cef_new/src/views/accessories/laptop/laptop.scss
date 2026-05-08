@@ -1,0 +1,48 @@
+#newlaptop.laptop-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70vw;
+    //max-width: 1400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.laptop-frame {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.laptop-bezel {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: block;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.laptop-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 81.2%;
+    aspect-ratio: 3456 / 2234;
+    background-color: #ff0000;
+    overflow: hidden;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+}
+
+.laptop-screen::-webkit-scrollbar {
+    display: none;
+}

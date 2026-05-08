@@ -1,0 +1,58 @@
+#newtablet.tablet-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60vw;
+    max-width: 1100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+.tablet-frame {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+}
+.tablet-bezel {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: block;
+    z-index: 10;
+    pointer-events: none;
+}
+.tablet-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 92%;
+    aspect-ratio: 2752 / 2064;
+    background-color: rgb(0 80 200 / 0.98);
+    overflow: hidden;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+}
+.tablet-screen::-webkit-scrollbar {
+    display: none;
+}
+
+.tablet-home-indicator {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 4px;
+    background-color: white;
+    border-radius: 3px;
+    opacity: 0.9;
+    z-index: 100;
+    cursor: pointer;
+}

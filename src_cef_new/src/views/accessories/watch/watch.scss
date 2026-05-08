@@ -1,0 +1,84 @@
+@font-face {
+    font-family: 'SFProRounded';
+    src: url('../shared/assets/fonts/SF-Pro/SF-Pro-Rounded-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SFProRounded';
+    src: url('../shared/assets/fonts/SF-Pro/SF-Pro-Rounded-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SFProRounded';
+    src: url('../shared/assets/fonts/SF-Pro/SF-Pro-Rounded-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+#newwatch.watch-container {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    width: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.watch-frame {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.watch-bezel {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: block;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.watch-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 71%;
+    aspect-ratio: 410 / 502;
+    background-color: #000;
+    border-radius: 45px;
+    overflow: hidden;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+}
+
+.watch-screen::-webkit-scrollbar {
+    display: none;
+}
+
+/* Page switch transition */
+.aw-switch-enter-active {
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.aw-switch-leave-active {
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.aw-switch-enter-from {
+    opacity: 0;
+    transform: scale(1.06);
+}
+.aw-switch-leave-to {
+    opacity: 0;
+    transform: scale(0.94);
+}

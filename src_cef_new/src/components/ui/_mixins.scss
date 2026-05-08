@@ -1,0 +1,38 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// UI SCSS Mixins — injected globally via vite.config.ts additionalData.
+// Only @mixin / @function definitions here — no CSS output.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Frosted glass — Chrome 80 compatible (webkit prefix required)
+@mixin ui-glass($blur: 20px, $saturation: 180%) {
+    -webkit-backdrop-filter: blur(#{$blur}) saturate(#{$saturation});
+    backdrop-filter: blur(#{$blur}) saturate(#{$saturation});
+}
+
+// Accessible focus ring
+@mixin ui-focus-ring($color: var(--ui-accent), $width: 2px, $offset: 2px) {
+    &:focus-visible {
+        outline: #{$width} solid #{$color};
+        outline-offset: #{$offset};
+    }
+}
+
+// Single-line text truncation
+@mixin ui-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Visually hidden but accessible to screen readers
+@mixin ui-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}

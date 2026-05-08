@@ -56,26 +56,26 @@ const closeWindow = () => {
 }
 
 .mac-titlebar {
-    height: 30px;
+    height: clamp(22px, 2vw, 36px);
     background: linear-gradient(to bottom, #f0f0f0 0%, #e4e4e4 100%);
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     display: flex;
     align-items: center;
-    padding: 0 12px;
+    padding: 0 clamp(8px, 0.8vw, 16px);
     user-select: none;
     flex-shrink: 0;
 }
 
 .traffic-lights {
     display: flex;
-    gap: 7px;
-    width: 56px;
+    gap: clamp(5px, 0.5vw, 9px);
+    width: clamp(40px, 4vw, 68px);
     align-items: center;
 }
 
 .light {
-    width: 11px;
-    height: 11px;
+    width: clamp(9px, 0.85vw, 14px);
+    height: clamp(9px, 0.85vw, 14px);
     border-radius: 50%;
     cursor: pointer;
     position: relative;
@@ -90,8 +90,8 @@ const closeWindow = () => {
 }
 
 .light-icon {
-    width: 8px;
-    height: 8px;
+    width: clamp(6px, 0.6vw, 10px);
+    height: clamp(6px, 0.6vw, 10px);
     opacity: 0;
     transition: opacity 0.15s;
     position: absolute;
@@ -123,14 +123,14 @@ const closeWindow = () => {
 .window-title {
     flex: 1;
     text-align: center;
-    font-size: 12px;
+    font-size: clamp(10px, 0.78vw, 14px);
     font-weight: 600;
     color: #3c3c3c;
     letter-spacing: 0.1px;
 }
 
 .title-spacer {
-    width: 56px;
+    width: clamp(40px, 4vw, 68px);
 }
 
 .mac-window-content {
@@ -141,7 +141,7 @@ const closeWindow = () => {
 }
 
 .mac-window-content::-webkit-scrollbar {
-    width: 6px;
+    width: clamp(4px, 0.4vw, 8px);
 }
 
 .mac-window-content::-webkit-scrollbar-track {

@@ -43,10 +43,12 @@ const allApps = [
     { name: 'Forbes', icon: ForbesIcon, link: 'forbes' },
     { name: 'Аукцион', icon: AuctionIcon, link: 'auction' },
     { name: 'Weather', icon: WeatherIcon, link: 'weather' },
+    { name: 'Браузер', icon: BrowserIcon, link: 'browser' },
     { name: 'Radio', icon: BrowserIcon, link: 'radio' },
     { name: 'Авто', icon: AppStoreIcon, link: 'cars' },
     { name: 'Tinder', icon: AppStoreIcon, link: 'tinder' },
     { name: 'Настройки', icon: SettingsIcon, link: 'settings' },
+    { name: 'iFruit Support', icon: SupportIcon, link: 'support' },
     { name: 'Подарок', icon: AppStoreIcon, link: 101 as number | string },
 ]
 
@@ -75,6 +77,11 @@ const visibleApps = computed(() => {
     if (isSearching.value) return filteredApps.value
     return pages.value[currentPage.value] ?? []
 })
+
+const onEnterSearch = () => {
+    const first = filteredApps.value[0]
+    if (first) onAppClick(first.link)
+}
 
 const onAppClick = (link: number | string) => {
     if (link === 'camera') {
@@ -125,6 +132,7 @@ onMounted(() => {
                     placeholder="Поиск"
                     ref="searchInput"
                     @keyup.esc="searchQuery ? (searchQuery = '') : emit('close')"
+                    @keyup.enter="onEnterSearch"
                 />
                 <button v-if="searchQuery" class="search-clear" @click.stop="searchQuery = ''">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
@@ -182,7 +190,7 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     padding-top: 3%;
-    padding-bottom: 100px;
+    padding-bottom: 7vw;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Helvetica, Arial, sans-serif;
     color: white;
     user-select: none;
@@ -199,21 +207,21 @@ onMounted(() => {
 
 .search-box {
     position: relative;
-    width: 220px;
-    height: 28px;
+    width: clamp(150px, 14.5vw, 240px);
+    height: clamp(22px, 2vw, 34px);
     background: rgba(255, 255, 255, 0.14);
     border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 14px;
+    border-radius: 9999px;
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 clamp(8px, 0.7vw, 12px);
     transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
-    gap: 6px;
+    gap: clamp(4px, 0.4vw, 8px);
 }
 
 .search-box.is-focused,
 .search-box:focus-within {
-    width: 280px;
+    width: clamp(190px, 18vw, 300px);
     background: rgba(255, 255, 255, 0.22);
     border-color: rgba(255, 255, 255, 0.3);
 }
@@ -228,7 +236,7 @@ onMounted(() => {
     border: none;
     outline: none;
     color: white;
-    font-size: 13px;
+    font-size: clamp(10px, 0.9vw, 14px);
     width: 100%;
     font-family: inherit;
 }
@@ -241,8 +249,8 @@ onMounted(() => {
     background: rgba(255, 255, 255, 0.3);
     border: none;
     border-radius: 50%;
-    width: 16px;
-    height: 16px;
+    width: clamp(13px, 1.1vw, 20px);
+    height: clamp(13px, 1.1vw, 20px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -259,15 +267,15 @@ onMounted(() => {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
+    padding-top: 10px;
 }
 
 .launchpad-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 3% 2%;
-    width: 78%;
-    max-width: 900px;
+    gap: 2.2vw 0;
+    width: 82%;
     align-items: start;
     justify-items: center;
 }
@@ -276,15 +284,15 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: clamp(4px, 0.45vw, 8px);
     cursor: pointer;
-    width: 80px;
+    width: clamp(52px, 5.6vw, 90px);
 }
 
 .app-icon-wrap {
-    width: 64px;
-    height: 64px;
-    border-radius: 14px;
+    width: clamp(44px, 4.6vw, 76px);
+    height: clamp(44px, 4.6vw, 76px);
+    border-radius: clamp(10px, 1.1vw, 17px);
     overflow: hidden;
     transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275),
                 filter 0.15s ease;
@@ -308,13 +316,13 @@ onMounted(() => {
 }
 
 .app-name {
-    font-size: 11px;
+    font-size: clamp(9px, 0.78vw, 13px);
     font-weight: 500;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     text-align: center;
     letter-spacing: 0.1px;
     line-height: 1.2;
-    max-width: 80px;
+    max-width: clamp(52px, 5.6vw, 90px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -323,14 +331,14 @@ onMounted(() => {
 /* Page dots */
 .page-dots {
     display: flex;
-    gap: 6px;
-    padding: 12px 0;
+    gap: clamp(4px, 0.4vw, 8px);
+    padding: clamp(8px, 0.8vw, 16px) 0;
     flex-shrink: 0;
 }
 
 .dot {
-    width: 7px;
-    height: 7px;
+    width: clamp(5px, 0.5vw, 9px);
+    height: clamp(5px, 0.5vw, 9px);
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.4);
     border: none;
@@ -361,9 +369,9 @@ onMounted(() => {
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    font-size: 20px;
+    width: clamp(24px, 2.2vw, 40px);
+    height: clamp(24px, 2.2vw, 40px);
+    font-size: clamp(14px, 1.4vw, 24px);
     color: white;
     cursor: pointer;
     display: flex;

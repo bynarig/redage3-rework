@@ -10,8 +10,6 @@ import BrowserIcon from '../../../shared/assets/icons/apps/browser/light.png'
 
 import {useLaptopStore} from '@/stores/laptop'
 import {executeClientAsyncToGroup} from '@/api/rage'
-import {GlassContainer} from "@wxperia/liquid-glass-vue";
-
 const laptopStore = useLaptopStore()
 
 const emit = defineEmits<{
@@ -112,7 +110,7 @@ const isActive = (app: typeof dockApps[0]) => {
 <style scoped>
 .mac-dock-container {
 	position: absolute;
-	bottom: 10px;
+	bottom: clamp(6px, 0.7vw, 14px);
 	width: 100%;
 	display: flex;
 	justify-content: center;
@@ -133,19 +131,26 @@ const isActive = (app: typeof dockApps[0]) => {
 .mac-dock {
 	display: flex;
 	align-items: flex-end;
-	gap: 4px;
+	gap: clamp(2px, 0.3vw, 6px);
+	pointer-events: all;
+	background: rgba(255, 255, 255, 0.18);
+	-webkit-backdrop-filter: blur(20px) saturate(160%);
+	backdrop-filter: blur(20px) saturate(160%);
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	border-radius: clamp(12px, 1.2vw, 20px);
+	padding: clamp(4px, 0.45vw, 8px) clamp(6px, 0.6vw, 12px);
 }
 
 .dock-item {
 	position: relative;
-	width: 36px;
-	height: 36px;
+	width: clamp(28px, 3vw, 50px);
+	height: clamp(28px, 3vw, 50px);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
-	border-radius: 10px;
+	border-radius: clamp(8px, 0.8vw, 13px);
 	transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -171,16 +176,17 @@ const isActive = (app: typeof dockApps[0]) => {
 
 .dock-label {
 	position: absolute;
-	bottom: calc(100% + 8px);
+	bottom: calc(100% + clamp(4px, 0.5vw, 10px));
 	left: 50%;
 	transform: translateX(-50%) translateY(4px);
 	background: rgba(30, 30, 30, 0.85);
+	-webkit-backdrop-filter: blur(8px);
 	backdrop-filter: blur(8px);
 	color: white;
-	font-size: 10px;
+	font-size: clamp(8px, 0.7vw, 12px);
 	font-weight: 500;
-	padding: 3px 7px;
-	border-radius: 5px;
+	padding: clamp(2px, 0.2vw, 4px) clamp(5px, 0.5vw, 9px);
+	border-radius: clamp(4px, 0.4vw, 7px);
 	white-space: nowrap;
 	opacity: 0;
 	pointer-events: none;
@@ -190,11 +196,11 @@ const isActive = (app: typeof dockApps[0]) => {
 
 .active-dot {
 	position: absolute;
-	bottom: -5px;
+	bottom: clamp(-5px, -0.4vw, -3px);
 	left: 50%;
 	transform: translateX(-50%);
-	width: 3px;
-	height: 3px;
+	width: clamp(3px, 0.25vw, 5px);
+	height: clamp(3px, 0.25vw, 5px);
 	background: rgba(255, 255, 255, 0.7);
 	border-radius: 50%;
 }

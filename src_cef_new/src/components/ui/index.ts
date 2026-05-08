@@ -1,0 +1,51 @@
+import "./theme.scss"
+
+// ── Nuxt UI wrapper components ────────────────────────────────────────────────
+export { default as UiButton } from './UiButton.vue'
+export { default as UiInput } from './UiInput.vue'
+export { default as UiTextarea } from './UiTextarea.vue'
+export { default as UiSelect } from './UiSelect.vue'
+export { default as UiBadge } from './UiBadge.vue'
+export { default as UiCard } from './UiCard.vue'
+export { default as UiModal } from './UiModal.vue'
+export { default as UiCheckbox } from './UiCheckbox.vue'
+export { default as UiToggle } from './UiToggle.vue'
+export { default as UiTabs } from './UiTabs.vue'
+export { default as UiAlert } from './UiAlert.vue'
+export { default as UiAvatar } from './UiAvatar.vue'
+export { default as UiSeparator } from './UiSeparator.vue'
+export { default as UiTooltip } from './UiTooltip.vue'
+
+// ── iOS-style custom components ───────────────────────────────────────────────
+export { default as IosCard } from './IosCard.vue'
+export { default as IosCheckbox } from './IosCheckbox.vue'
+export { default as IosListItem } from './IosListItem.vue'
+export { default as IosSegmentedControl } from './IosSegmentedControl.vue'
+export { default as IosProgressBar } from './IosProgressBar.vue'
+export { default as IosSearchField } from './IosSearchField.vue'
+export { default as IosStepper } from './IosStepper.vue'
+export { default as IosGroupSection } from './IosGroupSection.vue'
+export { default as IosTag } from './IosTag.vue'
+export { default as LiquidGlass } from './LiquidGlass.vue'
+
+// Re-export shared App* components under the Ios* alias expected by UiShowcase
+export { default as IosButton } from '@/views/accessories/shared/components/AppButton.vue'
+
+// ── Type re-exports ───────────────────────────────────────────────────────────
+export type { UiButtonColor, UiButtonVariant, UiButtonSize } from './UiButton.vue'
+export type { UiInputColor, UiInputVariant, UiInputSize } from './UiInput.vue'
+export type { UiTextareaColor, UiTextareaVariant, UiTextareaSize } from './UiTextarea.vue'
+export type { UiSelectColor, UiSelectVariant, UiSelectSize } from './UiSelect.vue'
+export type { UiBadgeColor, UiBadgeVariant, UiBadgeSize } from './UiBadge.vue'
+export type { UiCheckboxColor, UiCheckboxSize } from './UiCheckbox.vue'
+export type { UiToggleColor, UiToggleSize } from './UiToggle.vue'
+export type { UiTabsColor, UiTabsVariant, UiTabsSize, UiTabsOrientation, UiTabItem } from './UiTabs.vue'
+export type { UiAlertColor, UiAlertVariant, UiAlertOrientation } from './UiAlert.vue'
+export type { UiAvatarSize, UiAvatarChipPosition, UiAvatarChipColor } from './UiAvatar.vue'
+export type { UiSeparatorColor, UiSeparatorType, UiSeparatorSize, UiSeparatorOrientation } from './UiSeparator.vue'
+export type { IosSegmentedItem, IosSegmentedSize } from './IosSegmentedControl.vue'
+export type { IosProgressColor, IosProgressSize } from './IosProgressBar.vue'
+export type { IosSearchSize } from './IosSearchField.vue'
+export type { IosStepperSize } from './IosStepper.vue'
+export type { IosTagColor, IosTagSize } from './IosTag.vue'
+export type { LiquidGlassTint, LiquidGlassVariant } from './LiquidGlass.vue'

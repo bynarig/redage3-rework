@@ -64,7 +64,7 @@ onUnmounted(() => {
 <style scoped>
 .mac-menu-bar {
     width: 100%;
-    height: 1.1vw;
+    height: 1.07vw;
     background: rgb(255 255 255 / 0.29);
     backdrop-filter: blur(20px);
     display: flex;

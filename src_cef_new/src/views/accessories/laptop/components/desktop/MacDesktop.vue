@@ -23,6 +23,8 @@ import AuctionApp from '../auction/AuctionApp.vue'
 import TinderApp from '../tinder/TinderApp.vue'
 import TruckerApp from '../trucker/TruckerApp.vue'
 import CameraApp from '../camera/CameraApp.vue'
+import SupportApp from '../support/SupportApp.vue'
+import BrowserApp from '@/views/accessories/shared/apps/BrowserApp.vue'
 
 import { useLaptopStore } from '@/stores/laptop'
 import type { Component } from 'vue'
@@ -46,6 +48,8 @@ const APP_MAP: Record<string, Component> = {
     auction: AuctionApp,
     tinder: TinderApp,
     trucker: TruckerApp,
+    support: SupportApp,
+    browser: BrowserApp,
 }
 
 const APP_NAMES: Record<string, string> = {
@@ -66,6 +70,8 @@ const APP_NAMES: Record<string, string> = {
     radio: 'Radio',
     cars: 'Cars',
     tinder: 'Tinder',
+    support: 'iFruit Support',
+    browser: 'Браузер',
 }
 
 const currentApp = computed(() => {

@@ -1,0 +1,33 @@
+{
+	"files": [],
+	"references": [
+		{
+			"path": "./tsconfig.node.json"
+		},
+		{
+			"path": "./tsconfig.app.json"
+		},
+		{
+			"path": "./tsconfig.vitest.json"
+		}
+	],
+	"compilerOptions": {
+		"paths": {
+			"@/*": [
+				"src/*"
+			],
+			"api": [
+				"src/api"
+			],
+			"api/*": [
+				"src/api/*"
+			],
+			"lang": [
+				"src/lang"
+			],
+			"lang/*": [
+				"src/lang/*"
+			]
+		}
+	}
+}
