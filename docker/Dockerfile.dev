@@ -1,0 +1,31 @@
+# syntax=docker/dockerfile:1.7
+#
+# Dev image. Single image used by both auth-service-dev and player-service-dev
+# (and any future *-service-dev). The actual entrypoint is set in compose.
+#
+# Strategy: install deps and generate Prisma client at image build time.
+# Compose bind-mounts only source directories — node_modules trees stay
+# intact from the image layer, so symlinks resolve correctly.
+
+ARG NODE_VERSION=20.19.0
+
+FROM node:${NODE_VERSION}-alpine
+WORKDIR /app
+
+RUN apk add --no-cache python3 make g++ libc6-compat openssl curl
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
+COPY libs ./libs
+COPY services ./services
+COPY server ./server
+COPY database ./database
+COPY tsconfig.base.json ./
+
+RUN --mount=type=cache,id=pnpm-dev,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+RUN pnpm prisma:generate
+
+# Compose overrides CMD per service. This default is just a hint.
+CMD ["sh", "-c", "echo 'set a command in docker-compose.dev.yml' && sleep 5"]

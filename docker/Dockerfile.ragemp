@@ -1,0 +1,77 @@
+# syntax=docker/dockerfile:1.7
+#
+# RAGE:MP server image. Runs the `ragemp-server` ELF binary alongside the
+# compiled gateway resource. The gateway loads at boot via packages/gateway/index.mjs
+# and connects to Kafka over the compose network.
+#
+# Build from repo root:
+#   docker build -f docker/Dockerfile.ragemp -t redage/ragemp:latest .
+
+ARG NODE_VERSION=20.19.0
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Build stage — compile gateway + transitive workspace deps.
+# `--platform=linux/amd64` is critical: ragemp-server is an x86_64 ELF binary
+# with no arm64 release, so the entire image must be amd64. On Apple Silicon,
+# Docker Desktop runs this via Rosetta translation (slower, but functional).
+FROM --platform=linux/amd64 node:${NODE_VERSION}-bookworm-slim AS build
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      python3 make g++ openssl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
+COPY libs ./libs
+COPY services ./services
+COPY server ./server
+COPY database ./database
+COPY tsconfig.base.json ./
+
+RUN --mount=type=cache,id=pnpm-ragemp,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+RUN pnpm prisma:generate
+RUN pnpm --filter @redage/gateway... build
+# Note: we don't prune dev deps. `pnpm install --prod` is non-interactive-hostile
+# in pnpm 10 and the workspace symlinks make `pnpm deploy` awkward for a non-leaf
+# package like the gateway. The ~50 MB savings isn't meaningful here — this image
+# already ships the 62 MB ragemp-server binary.
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Runtime stage — Node.js + ragemp-server binary + everything it loads.
+FROM --platform=linux/amd64 node:${NODE_VERSION}-bookworm-slim
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates openssl tini libstdc++6 libatomic1 libgcc-s1 procps \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --shell /bin/bash redage
+
+# Workspace artifacts from build stage. We copy the whole /app to preserve
+# the pnpm workspace layout (symlinks under node_modules resolve into libs/).
+COPY --from=build --chown=redage:redage /app /app
+
+# RAGE:MP runtime: server binary, loader, config, resources, client bundles.
+COPY --chown=redage:redage ragemp-server ./
+COPY --chown=redage:redage bin ./bin
+COPY --chown=redage:redage conf.json ./
+COPY --chown=redage:redage packages ./packages
+COPY --chown=redage:redage client_packages ./client_packages
+# Settings JSON is read by legacy modules; harmless if unused.
+COPY --chown=redage:redage settings ./settings
+
+RUN chmod +x ./ragemp-server \
+ && mkdir -p /app/maps /app/logs \
+ && chown -R redage:redage /app
+
+# UDP 22005 = game traffic; TCP 22005 = command channel; TCP 22006 = HTTP asset server.
+EXPOSE 22005/udp 22005/tcp 22006/tcp
+
+ENV NODE_ENV=production
+ENV LOG_LEVEL=info
+
+USER redage
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["./ragemp-server"]

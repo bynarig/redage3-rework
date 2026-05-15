@@ -1,9 +1,11 @@
 {
-	"maxplayers" : 100,
+	"maxplayers" : 2000,
 	"name" : "RedAge Roleplay Rework",
 	"gamemode" : "roleplay",
 	"stream-distance" : 500.0,
 	"announce" : false,
-	"csharp" : "enabled",
-	"port": 22005
+	"csharp" : "disabled",
+	"port": 22005,
+	"enable-nodejs": true,
+	"language": "en"
 }

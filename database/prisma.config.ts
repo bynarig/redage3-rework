@@ -13,6 +13,6 @@ export default defineConfig({
     path: "database/prisma/migrations",
   },
   datasource: {
-    url: "postgresql://bynarig:bynarig@localhost:5432/tempdb?schema=public",
+    url: "postgresql://bynarig:bynarig@localhost:5433/redage3?schema=public",
   },
 });

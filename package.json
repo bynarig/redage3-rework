@@ -9,29 +9,50 @@
   },
   "scripts": {
     "build": "pnpm -r --parallel build",
-    "build:cef": "pnpm --filter svelte-app build",
-    "build:cef-new": "pnpm --filter vue-project build",
-    "build:client": "pnpm --filter client-side build",
-    "build:client-new": "pnpm --filter client-side-new build",
-    "dev:cef": "pnpm --filter svelte-app dev",
-    "dev:cef-new": "pnpm --filter vue-project dev",
-    "dev:client-new": "pnpm --filter client-side-new dev",
+    "build:cef": "pnpm --filter redage4-cef build",
+    "build:client": "pnpm --filter redage4-client build",
+    "build:gateway": "pnpm --filter @redage/gateway build",
+    "build:libs": "pnpm --filter \"./libs/*\" --parallel build && pnpm --filter @redage/shared build",
+    "build:services": "pnpm --filter \"@redage/auth-service\" --filter \"@redage/player-service\" --parallel build",
+    "build:server": "pnpm build:libs && pnpm build:gateway && pnpm build:services",
+
+    "dev:cef": "pnpm --filter redage4-cef dev",
+    "dev:client": "pnpm --filter redage4-client dev",
+    "dev:gateway": "pnpm --filter @redage/gateway dev",
+    "dev:service:auth": "pnpm --filter @redage/auth-service dev",
+    "dev:service:player": "pnpm --filter @redage/player-service dev",
+    "dev:libs:watch": "pnpm --filter @redage/auth-service exec tsc -b ../auth ../player ../shared ../../libs/contracts ../../libs/kafka ../../libs/logger ../../libs/service-runtime ../../server/gateway --watch --preserveWatchOutput",
+
     "type-check": "pnpm -r --parallel --if-present type-check",
     "lint": "pnpm -r --parallel --if-present lint",
     "test": "pnpm -r --parallel --if-present test:unit",
+
+    "infra:up": "docker compose -f docker/docker-compose.yml up -d",
+    "infra:down": "docker compose -f docker/docker-compose.yml down",
+    "infra:logs": "docker compose -f docker/docker-compose.yml logs -f",
+
+    "dev:up": "docker compose -f docker/docker-compose.dev.yml up --build",
+    "dev:up:detached": "docker compose -f docker/docker-compose.dev.yml up --build -d",
+    "dev:down": "docker compose -f docker/docker-compose.dev.yml down",
+    "dev:logs": "docker compose -f docker/docker-compose.dev.yml logs -f",
+    "dev:rebuild": "docker compose -f docker/docker-compose.dev.yml build --no-cache",
+
+    "prod:build": "docker compose --env-file docker/.env -f docker/docker-compose.prod.yml build",
+    "prod:up": "docker compose --env-file docker/.env -f docker/docker-compose.prod.yml up -d",
+    "prod:down": "docker compose --env-file docker/.env -f docker/docker-compose.prod.yml down",
+    "prod:logs": "docker compose --env-file docker/.env -f docker/docker-compose.prod.yml logs -f",
+    "prod:ps": "docker compose --env-file docker/.env -f docker/docker-compose.prod.yml ps",
+
+    "kafka:topics": "bash docker/kafka/create-topics.sh",
     "prisma:update-models": "prisma db execute --config ./database/prisma.config.ts --file ./database/main_drop.sql && prisma db execute --config ./database/prisma.config.ts --file ./database/main_rework.sql && prisma db pull --schema=./database/prisma/schema.prisma --config ./database/prisma.config.ts --force && pnpm run prisma:generate",
     "prisma:generate": "prisma generate --schema=./database/prisma/schema.prisma"
   },
   "devDependencies": {
-    "prisma": "^7.8.0"
+    "prisma": "^7.8.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "@prisma/client": "^7.8.0"
-  },
-  "workspaces": [
-    "src_cef",
-    "src_cef_new",
-    "src_client",
-    "src_client_new"
-  ]
+  }
 }

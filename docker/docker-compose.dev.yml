@@ -1,0 +1,241 @@
+name: redage-dev
+
+# Dev stack with hot reload. Run from repo root:
+#   docker compose -f docker/docker-compose.dev.yml up
+#
+# Hot reload model:
+#   - libs-watcher runs `tsc -b --watch` for all @redage/* libs + shared.
+#     It writes to libs/*/dist and services/shared/dist on the bind-mounted
+#     volumes, which the service containers see in real time.
+#   - Each service container runs `tsx watch src/index.ts`. tsx auto-restarts
+#     when src/* or imported lib dist/* changes.
+#
+# Mount strategy: bind individual source / dist dirs, NOT the whole repo, so
+# the image's node_modules layer stays intact and symlinks resolve.
+
+x-source-mounts: &source_mounts
+  # libs source + dist (libs-watcher writes here, services read here)
+  - type: bind
+    source: ../libs
+    target: /app/libs
+  # services/shared (Prisma client lives here)
+  - type: bind
+    source: ../services/shared/src
+    target: /app/services/shared/src
+  - type: bind
+    source: ../services/shared/prisma
+    target: /app/services/shared/prisma
+  # service source
+  - type: bind
+    source: ../services/auth/src
+    target: /app/services/auth/src
+  - type: bind
+    source: ../services/player/src
+    target: /app/services/player/src
+  # gateway source (so tsc -b can rebuild it too)
+  - type: bind
+    source: ../server/gateway/src
+    target: /app/server/gateway/src
+  # tsconfig & prisma schema (so regenerate works inside container)
+  - type: bind
+    source: ../tsconfig.base.json
+    target: /app/tsconfig.base.json
+  - type: bind
+    source: ../database/prisma
+    target: /app/database/prisma
+
+x-dev-env: &dev_env
+  NODE_ENV: development
+  LOG_LEVEL: ${LOG_LEVEL:-debug}
+  PRISMA_LOG: "1"
+  KAFKA_BROKERS: kafka:9094
+  DATABASE_URL: postgresql://redage:redage@postgres:5432/redage?schema=public
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: redage-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: redage
+      POSTGRES_USER: redage
+      POSTGRES_PASSWORD: redage
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+      - ../database/main_rework.sql:/docker-entrypoint-initdb.d/01-main_rework.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U redage -d redage"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: redage-kafka-dev
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: controller,broker
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_LISTENERS: PLAINTEXT://:9092,INTERNAL://:9094,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,INTERNAL://kafka:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "1"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      CLUSTER_ID: "redage-dev-cluster-0001"
+    volumes:
+      - kafka-dev-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # One-shot: creates topics the services subscribe to, then exits.
+  kafka-init:
+    image: apache/kafka:3.8.0
+    container_name: redage-kafka-init-dev
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: "no"
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -e
+        BROKER=kafka:9094
+        for entry in \
+          "game.events.player:12" \
+          "game.events.vehicle:12" \
+          "game.events.inventory:12" \
+          "game.events.economy:6" \
+          "game.events.world:6" \
+          "game.commands.auth:6" \
+          "game.commands.player:12" \
+          "game.commands.inventory:12" \
+          "game.commands.economy:6" \
+          "game.replies.gateway:6"; do
+          topic="$${entry%%:*}"
+          parts="$${entry##*:}"
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server "$$BROKER" \
+            --create --if-not-exists --topic "$$topic" \
+            --partitions "$$parts" --replication-factor 1
+        done
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: redage-kafka-ui-dev
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: redage-dev
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9094
+
+  # ────────────────────────────────────────────────────────────────────
+  # libs-watcher: rebuilds @redage/* libs whenever their src changes.
+  # Service containers see the updated dist/ files instantly through the
+  # bind mount, and tsx watch in each service restarts the process.
+  # ────────────────────────────────────────────────────────────────────
+  libs-watcher:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: redage-libs-watcher
+    init: true
+    environment:
+      <<: *dev_env
+    volumes:
+      - type: bind
+        source: ../libs
+        target: /app/libs
+      - type: bind
+        source: ../services/shared/src
+        target: /app/services/shared/src
+      - type: bind
+        source: ../services/shared/prisma
+        target: /app/services/shared/prisma
+      - type: bind
+        source: ../services/auth/src
+        target: /app/services/auth/src
+      - type: bind
+        source: ../services/player/src
+        target: /app/services/player/src
+      - type: bind
+        source: ../server/gateway/src
+        target: /app/server/gateway/src
+      - type: bind
+        source: ../tsconfig.base.json
+        target: /app/tsconfig.base.json
+      - type: bind
+        source: ../database/prisma
+        target: /app/database/prisma
+      - type: bind
+        source: ../docker/dev/watch-libs.sh
+        target: /usr/local/bin/watch-libs.sh
+    working_dir: /app
+    command: sh /usr/local/bin/watch-libs.sh
+
+  auth-service-dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: redage-auth-dev
+    init: true
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+      libs-watcher:
+        condition: service_started
+    environment:
+      <<: *dev_env
+      HEALTH_PORT: "8081"
+    ports:
+      - "8081:8081"
+    volumes: *source_mounts
+    working_dir: /app/services/auth
+    command: pnpm exec tsx watch --clear-screen=false src/index.ts
+
+  player-service-dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: redage-player-dev
+    init: true
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+      libs-watcher:
+        condition: service_started
+    environment:
+      <<: *dev_env
+      HEALTH_PORT: "8082"
+    ports:
+      - "8082:8082"
+    volumes: *source_mounts
+    working_dir: /app/services/player
+    command: pnpm exec tsx watch --clear-screen=false src/index.ts
+
+volumes:
+  postgres-dev-data:
+  kafka-dev-data:

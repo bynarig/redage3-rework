@@ -14,10 +14,10 @@ CREATE TABLE IF NOT EXISTS accounts
     character1                 integer      NOT NULL,
     character2                 integer      NOT NULL,
     character3                 integer      NOT NULL,
---     characters                 varchar(100) NOT NULL DEFAULT '[-2,-2,-2,-2,-2,-2]',
---     present                    smallint     NOT NULL DEFAULT 0,
---     ref_present                smallint     NOT NULL DEFAULT 0,
---     "case"                     varchar(100) NOT NULL DEFAULT '[0,0,0]',
+    characters                 varchar(100) NOT NULL DEFAULT '[-2,-2,-2,-2,-2,-2]',
+    present                    smallint     NOT NULL DEFAULT 0,
+    ref_present                smallint     NOT NULL DEFAULT 0,
+    "case"                     varchar(100) NOT NULL DEFAULT '[0,0,0]',
     referral_id                integer      NOT NULL DEFAULT 0,
     is_subscribed              smallint     NOT NULL DEFAULT 0,
     subscribed_end_time        timestamp    NOT NULL DEFAULT current_timestamp,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS accounts
     received_award             varchar(75)  NOT NULL DEFAULT '[0,0,0,0,0,0,0,0,1]',
     received_award_week        integer      NOT NULL DEFAULT 0,
     received_award_donate      integer      NOT NULL DEFAULT 0,
---     "Unique"                   varchar(16)  NOT NULL DEFAULT '',
+    "Unique"                   varchar(16)  NOT NULL DEFAULT '',
     last_select_character_uuid integer      NOT NULL DEFAULT 0,
     exit_date                  timestamp    NOT NULL DEFAULT current_timestamp,
     ga                         varchar(25)  NOT NULL DEFAULT '',
@@ -105,15 +105,15 @@ CREATE TABLE IF NOT EXISTS characters
 );
 
 ALTER TABLE characters
-    ADD CONSTRAINT CK_HEALTH_LIMIT CHECK (0 <= health <= 100);
+    ADD CONSTRAINT CK_HEALTH_LIMIT CHECK (health >= 0 AND health <= 100);
 ALTER TABLE characters
-    ADD CONSTRAINT CK_ARMOR_LIMIT CHECK (0 <= armor <= 100);
+    ADD CONSTRAINT CK_ARMOR_LIMIT CHECK (armor >= 0 AND armor <= 100);
 ALTER TABLE characters
-    ADD CONSTRAINT CK_DRUG_ADDICTION_LIMIT CHECK (0 <= drug_addiction <= 100);
+    ADD CONSTRAINT CK_DRUG_ADDICTION_LIMIT CHECK (drug_addiction >= 0 AND drug_addiction <= 100);
 ALTER TABLE characters
-    ADD CONSTRAINT CK_WANTED_LVL_LIMIT CHECK (0 <= wanted_lvl <= 5);
+    ADD CONSTRAINT CK_WANTED_LVL_LIMIT CHECK (wanted_lvl >= 0 AND wanted_lvl <= 5);
 ALTER TABLE characters
-    ADD CONSTRAINT CK_DIMENSION_LIMIT CHECK (0 <= dimension < 4294967295); -- RAGE MP DIMENSION LIMIT
+    ADD CONSTRAINT CK_DIMENSION_LIMIT CHECK (dimension >= 0 AND dimension < 4294967295); -- RAGE MP DIMENSION LIMIT
 
 ALTER TABLE characters
     ADD CONSTRAINT CK_MONEY_MIN CHECK (0 <= money);
@@ -523,7 +523,7 @@ VALUES (3),
 -- Дамп структуры для таблица main.e_candidates
 CREATE TABLE IF NOT EXISTS e_candidates
 (
-    ID       SERIAL PRIMARY KEY,
+    ID       SERIAL,
     Election integer      NOT NULL,
     Name     varchar(100) NOT NULL,
     Votes    smallint     NOT NULL DEFAULT 0,
@@ -535,7 +535,7 @@ CREATE TABLE IF NOT EXISTS e_candidates
 -- Дамп структуры для таблицы main.e_points
 CREATE TABLE IF NOT EXISTS e_points
 (
-    ID        SERIAL PRIMARY KEY,
+    ID        SERIAL,
     Election  integer  NOT NULL DEFAULT 0,
     X         real     NOT NULL DEFAULT 0,
     Y         real     NOT NULL DEFAULT 0,
@@ -550,7 +550,7 @@ CREATE TABLE IF NOT EXISTS e_points
 -- Дамп структуры для таблицы main.e_voters
 CREATE TABLE IF NOT EXISTS e_voters
 (
-    ID        SERIAL PRIMARY KEY,
+    ID        SERIAL,
     Election  integer      DEFAULT NULL,
     Login     varchar(50)  DEFAULT NULL,
     TimeVoted timestamp    DEFAULT NULL,
@@ -602,7 +602,7 @@ CREATE TABLE IF NOT EXISTS fractionaccess
 
 CREATE TABLE IF NOT EXISTS fractionlogs
 (
-    auto_id  SERIAL PRIMARY KEY,
+    auto_id  SERIAL,
     fraction smallint     NOT NULL DEFAULT 0,
     name     varchar(100) NOT NULL,
     uuid     integer      NOT NULL DEFAULT -1,
@@ -670,7 +670,7 @@ CREATE TABLE IF NOT EXISTS fractions
 -- Dumping structure for table ra3_main.fractionvehicles
 CREATE TABLE IF NOT EXISTS "fractionvehicles"
 (
-    "id"          SERIAL PRIMARY KEY,
+    "id"          SERIAL,
     "fraction"    integer       NOT NULL,
     "number"      text          NOT NULL DEFAULT 'null',
     "model"       text          NOT NULL,
@@ -707,7 +707,7 @@ CREATE TABLE IF NOT EXISTS "fractionvehiclesbackup"
 -- Дамп структуры для таблицы main.fraction_clothing_sets
 CREATE TABLE IF NOT EXISTS "fraction_clothing_sets"
 (
-    "id"             SERIAL PRIMARY KEY,
+    "id"             SERIAL,
     "fraction"       integer  DEFAULT 0,
     "rank"           integer  DEFAULT 1,
     "gender"         smallint DEFAULT 1,
@@ -719,12 +719,12 @@ CREATE TABLE IF NOT EXISTS "fraction_clothing_sets"
 -- Экспортируемые данные не выделены.
 
 -- Дамп структуры для таблицы main.friends
-CREATE TABLE IF NOT EXISTS "friends"
-(
-    "first"    varchar(50) NOT NULL,
-    "second"   varchar(50) NOT NULL,
-    "fullname" smallint    NOT NULL DEFAULT 0
-);
+-- CREATE TABLE IF NOT EXISTS "friends"
+-- (
+--     "first"    varchar(50) NOT NULL,
+--     "second"   varchar(50) NOT NULL,
+--     "fullname" smallint    NOT NULL DEFAULT 0
+-- );
 
 -- Экспортируемые данные не выделены.
 
@@ -741,7 +741,7 @@ CREATE TABLE IF NOT EXISTS "furniture"
 -- Дамп структуры для таблицы main.gangspoints
 CREATE TABLE IF NOT EXISTS "gangspoints"
 (
-    "id"     SERIAL PRIMARY KEY,
+    "id"     SERIAL,
     "gangid" smallint NOT NULL,
     PRIMARY KEY ("id")
 );
@@ -807,7 +807,7 @@ $$;
 -- Дамп структуры для таблицы main.items_data
 CREATE TABLE IF NOT EXISTS "items_data"
 (
-    "auto_id"    SERIAL PRIMARY KEY,
+    "auto_id"    SERIAL,
     "data_id"    varchar(32) DEFAULT '-1_-1_True',
     "item_id"    smallint    DEFAULT NULL,
     "item_count" integer     DEFAULT NULL,
@@ -851,7 +851,7 @@ CREATE TABLE IF NOT EXISTS "lottery_players"
 -- Дамп структуры для таблицы main.mine_stocks
 CREATE TABLE IF NOT EXISTS "mine_stocks"
 (
-    "id"      SERIAL PRIMARY KEY,
+    "id"      SERIAL,
     "coal"    integer NOT NULL DEFAULT 0,
     "iron"    integer NOT NULL DEFAULT 0,
     "gold"    integer NOT NULL DEFAULT 0,
@@ -869,7 +869,7 @@ VALUES (1, 0, 0, 0, 0, 0, 0),
 -- Дамп структуры для таблицы main.money
 CREATE TABLE IF NOT EXISTS "money"
 (
-    "id"      SERIAL PRIMARY KEY,
+    "id"      SERIAL,
     "type"    smallint     NOT NULL,
     "holder"  varchar(256) NOT NULL,
     "balance" integer      NOT NULL,
@@ -891,7 +891,7 @@ CREATE TABLE IF NOT EXISTS "notes"
 -- Дамп структуры для таблицы main.orders
 CREATE TABLE IF NOT EXISTS "orders"
 (
-    "id"       SERIAL PRIMARY KEY,
+    "id"       SERIAL,
     "bizid"    integer      NOT NULL,
     "prodname" varchar(256) NOT NULL,
     "amount"   integer      NOT NULL,
@@ -903,7 +903,7 @@ CREATE TABLE IF NOT EXISTS "orders"
 -- Дамп структуры для таблицы main.organizations
 CREATE TABLE IF NOT EXISTS "organizations"
 (
-    "Organization"              SERIAL PRIMARY KEY,
+    "Organization"              SERIAL,
     "OwnerUUID"                 integer NOT NULL DEFAULT -1,
     "Name"                      varchar(30)      DEFAULT NULL,
     "OfficeUP"                  smallint         DEFAULT 0,
@@ -952,7 +952,7 @@ CREATE TABLE IF NOT EXISTS "organizations"
 -- Дамп структуры для таблицы main.orglogs
 CREATE TABLE IF NOT EXISTS "orglogs"
 (
-    "auto_id"      SERIAL PRIMARY KEY,
+    "auto_id"      SERIAL,
     "organization" smallint     NOT NULL DEFAULT 0,
     "name"         varchar(100) NOT NULL,
     "uuid"         integer      NOT NULL DEFAULT -1,
@@ -1020,7 +1020,7 @@ CREATE TABLE IF NOT EXISTS "othervehicles"
 -- Дамп структуры для таблицы main.pet
 CREATE TABLE IF NOT EXISTS "pet"
 (
-    "AutoId"    SERIAL PRIMARY KEY,
+    "AutoId"    SERIAL,
     "Name"      varchar(50) NOT NULL DEFAULT '',
     "OwnerUUID" integer     NOT NULL,
     "Model"     bigint      NOT NULL DEFAULT 0,
@@ -1053,7 +1053,7 @@ CREATE TABLE IF NOT EXISTS "phoneinfo"
 -- Дамп структуры для таблицы main.phonemessage
 CREATE TABLE IF NOT EXISTS "phonemessage"
 (
-    "autoId"     SERIAL PRIMARY KEY,
+    "autoId"     SERIAL,
     "fromUuid"   integer   NOT NULL DEFAULT 0,
     "fromPhone"  integer   NOT NULL DEFAULT 0,
     "toUuid"     integer   NOT NULL DEFAULT 0,
@@ -1119,7 +1119,7 @@ CREATE TABLE IF NOT EXISTS "promo_timing"
 -- Дамп структуры для таблицы main.questions
 CREATE TABLE IF NOT EXISTS "questions"
 (
-    "ID"         SERIAL PRIMARY KEY,
+    "ID"         SERIAL,
     "Author"     varchar(50)  NOT NULL,
     "Question"   varchar(150) NOT NULL,
     "Respondent" varchar(50) DEFAULT NULL,
@@ -1135,7 +1135,7 @@ CREATE TABLE IF NOT EXISTS "questions"
 -- Дамп структуры для таблицы main.questschar
 CREATE TABLE IF NOT EXISTS "questschar"
 (
-    "q_auto_id"    SERIAL PRIMARY KEY,
+    "q_auto_id"    SERIAL,
     "q_actor_name" varchar(42) NOT NULL,
     "q_line"       smallint    NOT NULL,
     "q_status"     smallint    NOT NULL DEFAULT 0,
@@ -1168,7 +1168,7 @@ CREATE TABLE IF NOT EXISTS "refferals"
 -- Дамп структуры для таблицы main.safes
 CREATE TABLE IF NOT EXISTS "safes"
 (
-    "id"        SERIAL PRIMARY KEY,
+    "id"        SERIAL,
     "minamount" integer      NOT NULL,
     "maxamount" integer      NOT NULL,
     "pos"       varchar(256) NOT NULL,
@@ -1246,7 +1246,7 @@ $$;
 -- Дамп структуры для таблицы main.vehicles
 CREATE TABLE IF NOT EXISTS "vehicles"
 (
-    "auto_id"    SERIAL PRIMARY KEY,
+    "auto_id"    SERIAL,
     "number"     varchar(8)    NOT NULL,
     "holder"     varchar(256)  NOT NULL,
     "model"      varchar(64)   NOT NULL,
@@ -1266,7 +1266,7 @@ CREATE TABLE IF NOT EXISTS "vehicles"
 -- Дамп структуры для таблицы main.vehicleticket
 CREATE TABLE IF NOT EXISTS "vehicleticket"
 (
-    "autoId"       SERIAL PRIMARY KEY,
+    "autoId"       SERIAL,
     "vehAutoId"    integer      NOT NULL DEFAULT 0,
     "vehNumber"    varchar(15)  NOT NULL,
     "model"        varchar(30)  NOT NULL,
@@ -1344,9 +1344,9 @@ CREATE INDEX IF NOT EXISTS idx_fraction_clothing_sets_fraction ON fraction_cloth
 CREATE INDEX IF NOT EXISTS idx_fraction_clothing_sets_rank ON fraction_clothing_sets (rank);
 
 -- Friends
-CREATE INDEX IF NOT EXISTS idx_friends_first ON friends (first);
-CREATE INDEX IF NOT EXISTS idx_friends_second ON friends (second);
-CREATE UNIQUE INDEX IF NOT EXISTS uq_friends_pair ON friends (first, second);
+-- CREATE INDEX IF NOT EXISTS idx_friends_first ON friends (first);
+-- CREATE INDEX IF NOT EXISTS idx_friends_second ON friends (second);
+-- CREATE UNIQUE INDEX IF NOT EXISTS uq_friends_pair ON friends (first, second);
 
 -- Furniture
 CREATE INDEX IF NOT EXISTS idx_furniture_uuid ON furniture (uuid);

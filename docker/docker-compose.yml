@@ -1,0 +1,69 @@
+name: redage-infra
+
+services:
+  # KRaft-mode Kafka — no Zookeeper required.
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: redage-kafka
+    ports:
+      - "9092:9092"   # PLAINTEXT for host clients
+      - "9094:9094"   # internal listener (containers)
+    environment:
+      # KRaft single-node controller+broker.
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: controller,broker
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_LISTENERS: PLAINTEXT://:9092,INTERNAL://:9094,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,INTERNAL://kafka:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "1"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      CLUSTER_ID: "redage-cluster-0001"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: redage-kafka-ui
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: redage
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9094
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: redage-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: redage
+      POSTGRES_USER: redage
+      POSTGRES_PASSWORD: redage
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../database/main_rework.sql:/docker-entrypoint-initdb.d/01-main_rework.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U redage -d redage"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  kafka-data:
+  postgres-data:

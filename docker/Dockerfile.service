@@ -1,0 +1,63 @@
+# syntax=docker/dockerfile:1.7
+#
+# Multi-stage build for any @redage/* service. Pass the workspace package name
+# as a build arg, e.g.:
+#
+#   docker build --build-arg SERVICE=@redage/auth-service \
+#                -f docker/Dockerfile.service -t redage/auth:latest .
+#
+# Stages:
+#   deps    -> install ALL workspace deps once (cached unless lockfile changes)
+#   build   -> generate Prisma client, tsc -b across project refs, pnpm deploy
+#   runtime -> minimal alpine image with deployed self-contained service
+
+ARG NODE_VERSION=20.19.0
+
+# ──────────────────────────────────────────────────────────────────────────────
+FROM node:${NODE_VERSION}-alpine AS deps
+WORKDIR /app
+
+RUN apk add --no-cache python3 make g++ libc6-compat openssl
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+# Copy lockfile + workspace metadata first so deps install is cached.
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY .npmrc ./
+COPY libs ./libs
+COPY services ./services
+COPY server ./server
+COPY database ./database
+COPY tsconfig.base.json ./
+
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+# ──────────────────────────────────────────────────────────────────────────────
+FROM deps AS build
+ARG SERVICE
+
+# Generate Prisma client into services/shared/prisma.
+RUN pnpm prisma:generate
+
+# Build the service and its workspace deps (tsc -b walks project references).
+RUN pnpm --filter "${SERVICE}..." build
+
+# Produce a self-contained, production-pruned deploy tree at /deploy.
+# pnpm 10 requires --legacy unless workspaces opt into inject-workspace-packages.
+RUN pnpm --filter "${SERVICE}" deploy --prod --legacy /deploy
+
+# ──────────────────────────────────────────────────────────────────────────────
+FROM node:${NODE_VERSION}-alpine AS runtime
+WORKDIR /app
+
+RUN apk add --no-cache libc6-compat openssl tini && \
+    addgroup -S app && adduser -S app -G app
+
+COPY --from=build --chown=app:app /deploy /app
+
+ENV NODE_ENV=production
+ENV LOG_LEVEL=info
+
+USER app
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["node", "dist/index.js"]
