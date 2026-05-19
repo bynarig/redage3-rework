@@ -5,8 +5,8 @@ name: redage-dev
 #
 # Hot reload model:
 #   - libs-watcher runs `tsc -b --watch` for all @redage/* libs + shared.
-#     It writes to libs/*/dist and services/shared/dist on the bind-mounted
-#     volumes, which the service containers see in real time.
+#     It writes to src/backend/libs/*/dist and src/backend/services/shared/dist
+#     on the bind-mounted volumes, which the service containers see in real time.
 #   - Each service container runs `tsx watch src/index.ts`. tsx auto-restarts
 #     when src/* or imported lib dist/* changes.
 #
@@ -16,33 +16,33 @@ name: redage-dev
 x-source-mounts: &source_mounts
   # libs source + dist (libs-watcher writes here, services read here)
   - type: bind
-    source: ../libs
-    target: /app/libs
+    source: ../src/backend/libs
+    target: /app/src/backend/libs
   # services/shared (Prisma client lives here)
   - type: bind
-    source: ../services/shared/src
-    target: /app/services/shared/src
+    source: ../src/backend/services/shared/src
+    target: /app/src/backend/services/shared/src
   - type: bind
-    source: ../services/shared/prisma
-    target: /app/services/shared/prisma
+    source: ../src/backend/services/shared/prisma
+    target: /app/src/backend/services/shared/prisma
   # service source
   - type: bind
-    source: ../services/auth/src
-    target: /app/services/auth/src
+    source: ../src/backend/services/auth/src
+    target: /app/src/backend/services/auth/src
   - type: bind
-    source: ../services/player/src
-    target: /app/services/player/src
+    source: ../src/backend/services/player/src
+    target: /app/src/backend/services/player/src
   # gateway source (so tsc -b can rebuild it too)
   - type: bind
-    source: ../server/gateway/src
-    target: /app/server/gateway/src
+    source: ../src/backend/server/gateway/src
+    target: /app/src/backend/server/gateway/src
   # tsconfig & prisma schema (so regenerate works inside container)
   - type: bind
     source: ../tsconfig.base.json
     target: /app/tsconfig.base.json
   - type: bind
-    source: ../database/prisma
-    target: /app/database/prisma
+    source: ../src/backend/database/prisma
+    target: /app/src/backend/database/prisma
 
 x-dev-env: &dev_env
   NODE_ENV: development
@@ -63,7 +63,7 @@ services:
       POSTGRES_PASSWORD: redage
     volumes:
       - postgres-dev-data:/var/lib/postgresql/data
-      - ../database/main_rework.sql:/docker-entrypoint-initdb.d/01-main_rework.sql:ro
+      - ../src/backend/database/main_rework.sql:/docker-entrypoint-initdb.d/01-main_rework.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U redage -d redage"]
       interval: 5s
@@ -159,29 +159,29 @@ services:
       <<: *dev_env
     volumes:
       - type: bind
-        source: ../libs
-        target: /app/libs
+        source: ../src/backend/libs
+        target: /app/src/backend/libs
       - type: bind
-        source: ../services/shared/src
-        target: /app/services/shared/src
+        source: ../src/backend/services/shared/src
+        target: /app/src/backend/services/shared/src
       - type: bind
-        source: ../services/shared/prisma
-        target: /app/services/shared/prisma
+        source: ../src/backend/services/shared/prisma
+        target: /app/src/backend/services/shared/prisma
       - type: bind
-        source: ../services/auth/src
-        target: /app/services/auth/src
+        source: ../src/backend/services/auth/src
+        target: /app/src/backend/services/auth/src
       - type: bind
-        source: ../services/player/src
-        target: /app/services/player/src
+        source: ../src/backend/services/player/src
+        target: /app/src/backend/services/player/src
       - type: bind
-        source: ../server/gateway/src
-        target: /app/server/gateway/src
+        source: ../src/backend/server/gateway/src
+        target: /app/src/backend/server/gateway/src
       - type: bind
         source: ../tsconfig.base.json
         target: /app/tsconfig.base.json
       - type: bind
-        source: ../database/prisma
-        target: /app/database/prisma
+        source: ../src/backend/database/prisma
+        target: /app/src/backend/database/prisma
       - type: bind
         source: ../docker/dev/watch-libs.sh
         target: /usr/local/bin/watch-libs.sh
@@ -209,7 +209,7 @@ services:
     ports:
       - "8081:8081"
     volumes: *source_mounts
-    working_dir: /app/services/auth
+    working_dir: /app/src/backend/services/auth
     command: pnpm exec tsx watch --clear-screen=false src/index.ts
 
   player-service-dev:
@@ -233,7 +233,7 @@ services:
     ports:
       - "8082:8082"
     volumes: *source_mounts
-    working_dir: /app/services/player
+    working_dir: /app/src/backend/services/player
     command: pnpm exec tsx watch --clear-screen=false src/index.ts
 
 volumes:

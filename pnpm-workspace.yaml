@@ -1,8 +1,8 @@
 packages:
-  - 'src_cef'
-  - 'src_client'
-  - 'server/*'
-  - 'services/*'
-  - 'libs/*'
+  - 'src/frontend/cef'
+  - 'src/frontend/client'
+  - 'src/backend/server/*'
+  - 'src/backend/services/*'
+  - 'src/backend/libs/*'
 allowBuilds:
   prisma: true

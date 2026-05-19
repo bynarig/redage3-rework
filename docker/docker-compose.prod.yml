@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-redage}
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ../database/main_rework.sql:/docker-entrypoint-initdb.d/01-main_rework.sql:ro
+      - ../src/backend/database/main_rework.sql:/docker-entrypoint-initdb.d/01-main_rework.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-redage} -d ${POSTGRES_DB:-redage}"]
       interval: 10s

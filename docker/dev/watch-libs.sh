@@ -6,12 +6,12 @@
 set -e
 cd /app
 exec pnpm exec tsc -b \
-  libs/contracts \
-  libs/logger \
-  libs/service-runtime \
-  libs/kafka \
-  services/shared \
-  server/gateway \
-  services/auth \
-  services/player \
+  src/backend/libs/contracts \
+  src/backend/libs/logger \
+  src/backend/libs/service-runtime \
+  src/backend/libs/kafka \
+  src/backend/services/shared \
+  src/backend/server/gateway \
+  src/backend/services/auth \
+  src/backend/services/player \
   --watch --preserveWatchOutput

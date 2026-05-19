@@ -4,7 +4,7 @@
 // `index.js` (CommonJS) or `index.mjs` (ESM). We're ESM, so this file is
 // `.mjs`.
 //
-// All real code lives at server/gateway/ (workspace package @redage/gateway).
+// All real code lives at src/backend/server/gateway/ (workspace package @redage/gateway).
 // Build it first with `pnpm build:gateway`, then RAGE:MP can load this shim.
 
 import { createRequire } from 'module';
@@ -13,7 +13,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const built = path.resolve(__dirname, '../../server/gateway/dist/index.js');
+const built = path.resolve(__dirname, '../../src/backend/server/gateway/dist/index.js');
 
 if (!fs.existsSync(built)) {
   console.error(

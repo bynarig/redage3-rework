@@ -7,7 +7,7 @@
 # Build from repo root:
 #   docker build -f docker/Dockerfile.ragemp -t redage/ragemp:latest .
 
-ARG NODE_VERSION=20.19.0
+ARG NODE_VERSION=24.15.0
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Build stage — compile gateway + transitive workspace deps.
@@ -23,10 +23,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
-COPY libs ./libs
-COPY services ./services
-COPY server ./server
-COPY database ./database
+COPY src/backend/libs ./src/backend/libs
+COPY src/backend/services ./src/backend/services
+COPY src/backend/server ./src/backend/server
+COPY src/backend/database ./src/backend/database
 COPY tsconfig.base.json ./
 
 RUN --mount=type=cache,id=pnpm-ragemp,target=/root/.local/share/pnpm/store \
@@ -50,7 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && useradd --create-home --shell /bin/bash redage
 
 # Workspace artifacts from build stage. We copy the whole /app to preserve
-# the pnpm workspace layout (symlinks under node_modules resolve into libs/).
+# the pnpm workspace layout (symlinks under node_modules resolve into src/backend/libs/).
 COPY --from=build --chown=redage:redage /app /app
 
 # RAGE:MP runtime: server binary, loader, config, resources, client bundles.
