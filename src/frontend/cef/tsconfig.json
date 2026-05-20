@@ -16,6 +16,9 @@
 			"@/*": [
 				"src/*"
 			],
+			"@components/*": [
+				"./src/views/components/*"
+			],
 			"api": [
 				"src/api"
 			],

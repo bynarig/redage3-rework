@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import './main.scss'
 import { ref } from 'vue'
-import { IosProgressBar } from '@/components/ui'
+import { IosProgressBar } from '@/views/components/ui'
 
 const props = withDefaults(defineProps<{
     loadingText?: string

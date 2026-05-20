@@ -2,7 +2,7 @@
 import {executeClient} from 'api/rage'
 import {translateText} from 'lang'
 import {onMounted, onBeforeUnmount} from 'vue'
-
+import {UiButton} from "@components/ui";
 
 const props = withDefaults(defineProps<{
 	popupData?: { title: string; text: string } | null
@@ -30,14 +30,19 @@ onBeforeUnmount(() => window.removeEventListener('keyup', handleKeyUp))
 			{{ props.popupData.text }}
 		</div>
 		<div class="popup-confirm-buttons">
-			<Button class="popup-confirm_button-true"
-			        @click="executeClient('client:OnDialogCallback', true)">
-				{{ translateText('popups', 'confirm', 'Confirm') }}
-			</Button>
-			<Button class="popup-confirm_button-false"
-			        @click="executeClient('client:OnDialogCallback', false)">
-				{{ translateText('popups', 'confirm', 'Cancel') }}
-			</Button>
+
+			<UiButton :label="translateText('popups', 'confirm', 'Confirm')"
+			        @click="executeClient('client:OnDialogCallback', true)"
+			          :size="'xl'"
+			:color="'success'"/>
+			<UiButton :label="translateText('popups', 'confirm', 'Cancel')"
+			          @click="executeClient('client:OnDialogCallback', false)"
+			          :size="'xl'"
+			          :color="'warning'"/>
+<!--			<Button class="popup-confirm_button-false"-->
+<!--			        @click="executeClient('client:OnDialogCallback', false)">-->
+<!--				{{ translateText('popups', 'confirm', 'Cancel') }}-->
+<!--			</Button>-->
 		</div>
 	</div>
 </template>

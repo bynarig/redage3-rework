@@ -45,6 +45,7 @@ interface MpRouter {
 
 export const DEV_VIEW_KEY = 'dev:view'
 export const DEV_POPUP_KEY = 'dev:popup'
+export const DEV_HUD_KEY = 'dev:hud'
 
 export function devReadView(): string {
   const hash = new URLSearchParams(location.hash.startsWith('#') ? location.hash.slice(1) : '')
@@ -55,9 +56,14 @@ export function devReadPopup(): string {
   return sessionStorage.getItem(DEV_POPUP_KEY) ?? ''
 }
 
+export function devReadHud(): boolean {
+  return sessionStorage.getItem(DEV_HUD_KEY) === '1'
+}
+
 function devSetView(name: string) {
   sessionStorage.setItem(DEV_VIEW_KEY, name)
   sessionStorage.removeItem(DEV_POPUP_KEY)
+  sessionStorage.removeItem(DEV_HUD_KEY)
   history.replaceState(null, '', `#view=${encodeURIComponent(name)}`)
   window.router.setView(name)
 }
@@ -67,9 +73,25 @@ function devOpenPopup(name: string, data?: unknown) {
   window.router.setPopUp(name, data)
 }
 
+function devToggleHud() {
+  const next = !devReadHud()
+  if (next) {
+    sessionStorage.setItem(DEV_HUD_KEY, '1')
+    sessionStorage.removeItem(DEV_VIEW_KEY)
+    sessionStorage.removeItem(DEV_POPUP_KEY)
+    history.replaceState(null, '', '#hud=1')
+    window.router.setHud('PlayerHud')
+  } else {
+    sessionStorage.removeItem(DEV_HUD_KEY)
+    history.replaceState(null, '', location.pathname)
+    window.router.close()
+  }
+}
+
 function devClose() {
   sessionStorage.removeItem(DEV_VIEW_KEY)
   sessionStorage.removeItem(DEV_POPUP_KEY)
+  sessionStorage.removeItem(DEV_HUD_KEY)
   history.replaceState(null, '', location.pathname)
   window.router.close()
 }
@@ -162,6 +184,18 @@ const VIEWS = [
   { label: '💻 Laptop', name: 'PlayerLaptop' },
   { label: '📋 Tablet', name: 'PlayerTablet' },
   { label: '⌚ Watch',  name: 'PlayerWatch' },
+  { label: '🆕 Creation',     name: 'PlayerCreation' },
+  { label: '🎨 Customization', name: 'PlayerCustomization' },
+] as const
+
+// Static overlays — toggled via setHud / updateStatic rather than setView.
+const STATICS = [
+  { label: '🎯 HUD', name: 'PlayerHud' },
+] as const
+
+// Dev-only views — never shipped to RAGE:MP, only reachable through this panel.
+const DEV_VIEWS = [
+  { label: '🧪 UI Showcase', name: 'UiShowcase' },
 ] as const
 
 const POPUPS: { label: string; name: string; data?: unknown }[] = [
@@ -192,6 +226,14 @@ function mountDevPanel() {
     (v) => `<button class="__mpView" data-name="${v.name}" style="${btnStyle('#1a1a2e', '#00ff88')}">${v.label}</button>`
   ).join('')
 
+  const staticButtons = STATICS.map(
+    (s) => `<button class="__mpStatic" data-name="${s.name}" style="${btnStyle('#1a1a2e', '#aaffaa')}">${s.label}</button>`
+  ).join('')
+
+  const devViewButtons = DEV_VIEWS.map(
+    (v) => `<button class="__mpView" data-name="${v.name}" style="${btnStyle('#1a1a2e', '#ffcc66')}">${v.label}</button>`
+  ).join('')
+
   const popupButtons = POPUPS.map(
     (p, i) => `<button class="__mpPopup" data-name="${p.name}" data-idx="${i}" style="${btnStyle('#1a1a2e', '#88aaff')}">${p.label}</button>`
   ).join('')
@@ -206,6 +248,10 @@ function mountDevPanel() {
     <div id="__mpBody" style="display:flex;flex-direction:column;gap:6px">
       <div style="font-size:9px;opacity:.6;margin-bottom:2px">VIEWS</div>
       <div style="display:flex;gap:4px;flex-wrap:wrap">${viewButtons}</div>
+      <div style="font-size:9px;opacity:.6;margin-top:4px;margin-bottom:2px;color:#aaffaa">STATIC OVERLAYS</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">${staticButtons}</div>
+      <div style="font-size:9px;opacity:.6;margin-top:4px;margin-bottom:2px;color:#ffcc66">DEV TOOLS</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">${devViewButtons}</div>
       <div style="font-size:9px;opacity:.6;margin-top:4px;margin-bottom:2px">POPUPS</div>
       <div style="display:flex;gap:4px;flex-wrap:wrap">${popupButtons}</div>
       <button id="__closeView" style="${btnStyle('#1a1a2e', '#ff8888')};width:100%;margin-top:2px">✕ Close all</button>
@@ -250,6 +296,13 @@ function mountDevPanel() {
   // ── View buttons ─────────────────────────────────────────────────────────────
   el.querySelectorAll<HTMLElement>('.__mpView').forEach((btn) => {
     btn.addEventListener('click', () => devSetView(btn.dataset.name!))
+  })
+
+  // ── Static overlay buttons (HUD etc.) ────────────────────────────────────────
+  el.querySelectorAll<HTMLElement>('.__mpStatic').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.name === 'PlayerHud') devToggleHud()
+    })
   })
 
   // ── Popup buttons ────────────────────────────────────────────────────────────

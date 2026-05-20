@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { IosSegmentedControl, IosGroupSection, IosListItem } from '@/components/ui'
+import { IosSegmentedControl, IosGroupSection, IosListItem } from '@/views/components/ui'
 
 type DeviceTab = 'laptop' | 'phone' | 'tablet' | 'watch'
 

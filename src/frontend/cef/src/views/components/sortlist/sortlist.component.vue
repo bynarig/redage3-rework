@@ -2,7 +2,7 @@
 import './main.scss'
 import { ref, computed, watchEffect } from 'vue'
 import { z } from 'zod'
-import { IosSearchField, IosProgressBar, UiAlert } from '@/components/ui'
+import { IosSearchField, IosProgressBar, UiAlert } from '@/views/components/ui'
 
 const ColumnSchema = z.object({
     key: z.string().min(1),

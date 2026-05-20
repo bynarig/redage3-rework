@@ -67,6 +67,7 @@ export default defineConfig(({ command }) => ({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@components': fileURLToPath(new URL('./src/views/components', import.meta.url)),
       'api': fileURLToPath(new URL('./src/api', import.meta.url)),
       'lang': fileURLToPath(new URL('./src/lang', import.meta.url)),
     },
@@ -75,7 +76,7 @@ export default defineConfig(({ command }) => ({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "${srcDir}/views/assets/styles/main" as *;`,
+        // additionalData: `@use "${srcDir}/views/assets/styles/main" as *;`,
         importers: [
           {
             // Resolves @/ alias in SCSS @import / @use statements.

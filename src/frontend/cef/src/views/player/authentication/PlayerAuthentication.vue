@@ -102,7 +102,7 @@ function openCreation() {
 
                 <label v-if="mode === 'register'">
                     Email
-                    <input v-model="email" autocomplete="email" maxlength="100" type="email" />
+                    <input v-model="email" autocomplete="email" maxlength="254" type="email" />
                     <small v-if="fieldErrors.email" class="player-auth__field-error">{{ fieldErrors.email }}</small>
                 </label>
 

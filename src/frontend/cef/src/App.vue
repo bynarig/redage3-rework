@@ -5,11 +5,11 @@ import {defineComponent, h} from 'vue'
 import type {Component} from 'vue'
 import {useRouterStore} from '@/stores/router'
 import {useNotificationStore} from '@/stores/notification'
-// import FadecontainerComponent from '@/views/components/fadecontainer/fadecontainer.component.vue'
-// import ViewcontainerComponent from '@/views/components/viewcontainer/viewcontainer.component.vue'
-// import PopupsContainerComponent from '@/views/components/popuscontainer/popups.container.component.vue'
+import FadecontainerComponent from '@/views/components/fadecontainer/fadecontainer.component.vue'
+import ViewcontainerComponent from '@/views/components/viewcontainer/viewcontainer.component.vue'
+import PopupsContainerComponent from '@/views/components/popuscontainer/popups.container.component.vue'
 // // ── Popups ─────────────────────────────────────────────────────────────────────
-// import PopupConfirmPopup from '@/views/popups/confirm/confirm.popup.vue'
+import PopupConfirmPopup from '@/views/popups/confirm/confirm.popup.vue'
 // import HospitalConfirmPopup from '@/views/popups/confirm/hospital.confirm.popup.vue'
 // import PopupInputPopup from '@/views/popups/input/input.popup.vue'
 // import PopupDeathPopup from '@/views/popups/death/death.popup.vue'
@@ -48,6 +48,9 @@ const VIEW_LOADERS: Record<string, () => Promise<{ default: Component }>> = {
 	PlayerLaptop: () => import('@/views/accessories/laptop/Laptop.vue'),
 	PlayerTablet: () => import('@/views/accessories/tablet/Tablet.vue'),
 	PlayerWatch: () => import('@/views/accessories/watch/Watch.vue'),
+	// ── Dev-only views ───────────────────────────────────────────────────────
+	// Open at: http://localhost:5173/#view=UiShowcase
+	UiShowcase: () => import('@/views/dev/UiShowcase.vue'),
 }
 
 // Pre-build async-component wrappers once so computed doesn't recreate them.
@@ -61,7 +64,7 @@ const OVERLAY_HUD = PlayerHud
 
 // ── Popup registry ─────────────────────────────────────────────────────────────
 const POPUPS: Record<string, Component> = {
-	// PopupConfirm: PopupConfirmPopup,
+	PopupConfirm: PopupConfirmPopup,
 	// HospitalPopupConfirm: HospitalConfirmPopup,
 	// PopupInput: PopupInputPopup,
 	// PopupDeath: PopupDeathPopup,
@@ -112,10 +115,12 @@ onMounted(async () => {
 	if (!isMultiplayer) {
 		;(window as any).FadeScreen?.(false, 0)
 		// Restore last view/popup across HMR — import lazily so it tree-shakes from prod.
-		const {devReadView, devReadPopup} = await import('./dev/mp-mock')
+		const {devReadView, devReadPopup, devReadHud} = await import('./dev/mp-mock')
 		const savedView = devReadView()
 		const savedPopup = devReadPopup()
-		if (savedView) routerStore.setView(savedView)
+		const savedHud = devReadHud()
+		if (savedHud) routerStore.setHud('PlayerHud')
+		else if (savedView) routerStore.setView(savedView)
 		if (savedPopup) routerStore.setPopUp(savedPopup)
 	} else {
 		routerStore.setView('PlayerAuthentication')

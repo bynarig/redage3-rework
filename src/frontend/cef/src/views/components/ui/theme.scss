@@ -215,6 +215,131 @@
 	--ui-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.70), 0 0 0 0.5px rgba(255, 255, 255, 0.07);
 }
 
+// ─── Glassmorphism tokens ────────────────────────────────────────────────────
+// Consumed by every non-iOS Ui* primitive. Swap themes by toggling a class on
+// the wrapper element: .ui-theme-glass-light (default), .ui-theme-glass-dark.
+//
+// Design intent: surfaces are translucent panes with a hard rim and a soft
+// top-edge highlight that mimics light refracting through frosted glass. The
+// `*-strong` variants are for elements that need contrast (buttons, badges);
+// the `*-pane` variants are for containers (cards, modals, alerts).
+:root,
+.ui-theme-glass-light {
+	--glass-tint-r: 255;
+	--glass-tint-g: 255;
+	--glass-tint-b: 255;
+
+	--glass-pane-bg:        rgba(255, 255, 255, 0.42);
+	--glass-pane-bg-hover:  rgba(255, 255, 255, 0.56);
+	--glass-strong-bg:      rgba(255, 255, 255, 0.72);
+	--glass-recessed-bg:    rgba(255, 255, 255, 0.18);
+
+	--glass-border:         rgba(255, 255, 255, 0.55);
+	--glass-border-soft:    rgba(255, 255, 255, 0.28);
+	--glass-rim-top:        rgba(255, 255, 255, 0.85);
+	--glass-rim-bottom:     rgba(15, 23, 42, 0.06);
+
+	--glass-text:           #0b0f1a;
+	--glass-text-muted:     rgba(11, 15, 26, 0.62);
+	--glass-text-subtle:    rgba(11, 15, 26, 0.42);
+	--glass-text-on-tint:   #ffffff;
+
+	--glass-accent:         #0066ff;
+	--glass-accent-soft:    rgba(0, 102, 255, 0.16);
+	--glass-success:        #2fb574;
+	--glass-success-soft:   rgba(47, 181, 116, 0.16);
+	--glass-warning:        #f59e0b;
+	--glass-warning-soft:   rgba(245, 158, 11, 0.18);
+	--glass-danger:         #ef4444;
+	--glass-danger-soft:    rgba(239, 68, 68, 0.16);
+	--glass-info:           #06b6d4;
+	--glass-info-soft:      rgba(6, 182, 212, 0.18);
+
+	--glass-blur:           20px;
+	--glass-saturation:     180%;
+
+	--glass-shadow-sm:      0 4px 14px rgba(15, 23, 42, 0.08), 0 1px 0 rgba(255, 255, 255, 0.45) inset;
+	--glass-shadow:         0 10px 30px rgba(15, 23, 42, 0.16), 0 1px 0 rgba(255, 255, 255, 0.55) inset;
+	--glass-shadow-lg:      0 26px 60px rgba(15, 23, 42, 0.24), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	--glass-ring:           0 0 0 3px rgba(0, 102, 255, 0.32);
+
+	--glass-radius-sm:      8px;
+	--glass-radius:         14px;
+	--glass-radius-lg:      22px;
+	--glass-radius-pill:    999px;
+}
+
+.ui-theme-glass-dark,
+[data-glass-theme='dark'] {
+	--glass-tint-r: 12;
+	--glass-tint-g: 16;
+	--glass-tint-b: 28;
+
+	--glass-pane-bg:        rgba(18, 24, 38, 0.48);
+	--glass-pane-bg-hover:  rgba(28, 36, 56, 0.58);
+	--glass-strong-bg:      rgba(28, 36, 56, 0.74);
+	--glass-recessed-bg:    rgba(10, 14, 24, 0.55);
+
+	--glass-border:         rgba(255, 255, 255, 0.18);
+	--glass-border-soft:    rgba(255, 255, 255, 0.10);
+	--glass-rim-top:        rgba(255, 255, 255, 0.28);
+	--glass-rim-bottom:     rgba(0, 0, 0, 0.35);
+
+	--glass-text:           #f5f6fb;
+	--glass-text-muted:     rgba(245, 246, 251, 0.66);
+	--glass-text-subtle:    rgba(245, 246, 251, 0.42);
+	--glass-text-on-tint:   #06080f;
+
+	--glass-accent:         #5b9dff;
+	--glass-accent-soft:    rgba(91, 157, 255, 0.22);
+	--glass-success:        #4ade80;
+	--glass-success-soft:   rgba(74, 222, 128, 0.20);
+	--glass-warning:        #fbbf24;
+	--glass-warning-soft:   rgba(251, 191, 36, 0.22);
+	--glass-danger:         #fb7185;
+	--glass-danger-soft:    rgba(251, 113, 133, 0.22);
+	--glass-info:           #22d3ee;
+	--glass-info-soft:      rgba(34, 211, 238, 0.22);
+
+	--glass-shadow-sm:      0 4px 14px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.10) inset;
+	--glass-shadow:         0 14px 38px rgba(0, 0, 0, 0.50), 0 1px 0 rgba(255, 255, 255, 0.14) inset;
+	--glass-shadow-lg:      0 28px 70px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+	--glass-ring:           0 0 0 3px rgba(91, 157, 255, 0.40);
+}
+
+// Surface helper — mirrors the look across every Ui* primitive consistently.
+// Use it like: @include glass-surface; or @include glass-surface($strong: true);
+@mixin glass-surface($strong: false, $radius: var(--glass-radius)) {
+	position: relative;
+	@if $strong {
+		background: var(--glass-strong-bg);
+	} @else {
+		background: var(--glass-pane-bg);
+	}
+	backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+	-webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+	border: 1px solid var(--glass-border);
+	border-radius: $radius;
+	box-shadow: var(--glass-shadow);
+	color: var(--glass-text);
+
+	// Hairline top-edge highlight — the "glint" that sells the glass.
+	&::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		border-radius: inherit;
+		background: linear-gradient(180deg,
+			var(--glass-rim-top) 0%,
+			transparent 24%,
+			transparent 76%,
+			var(--glass-rim-bottom) 100%);
+		mix-blend-mode: overlay;
+		opacity: 0.65;
+	}
+}
+
 * {
 	font-family: var(--ui-font);
 }

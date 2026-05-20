@@ -1,42 +1,41 @@
 CREATE TABLE IF NOT EXISTS accounts
 (
-    login                      varchar(50)  NOT NULL,
-    email                      varchar(100) NOT NULL,
-    password                   varchar(256) NOT NULL,
-    hwid                       varchar(256) NOT NULL,
-    ip                         varchar(256) NOT NULL,
-    social_club                varchar(50)  NOT NULL,
-    donut_currency             integer      NOT NULL DEFAULT 0,
-    vip_lvl                    integer      NOT NULL,
-    vip_date                   timestamp    NOT NULL,
-    promo_codes                varchar(256) NOT NULL,
-    bonus_codes                text         NOT NULL,
-    character1                 integer      NOT NULL,
-    character2                 integer      NOT NULL,
-    character3                 integer      NOT NULL,
-    characters                 varchar(100) NOT NULL DEFAULT '[-2,-2,-2,-2,-2,-2]',
-    present                    smallint     NOT NULL DEFAULT 0,
-    ref_present                smallint     NOT NULL DEFAULT 0,
-    "case"                     varchar(100) NOT NULL DEFAULT '[0,0,0]',
-    referral_id                integer      NOT NULL DEFAULT 0,
-    is_subscribed              smallint     NOT NULL DEFAULT 0,
-    subscribed_end_time        timestamp    NOT NULL DEFAULT current_timestamp,
-    subscribe_time             timestamp    NOT NULL DEFAULT current_timestamp,
-    collection_gifts           varchar(500) NOT NULL DEFAULT '[]',
-    received_award             varchar(75)  NOT NULL DEFAULT '[0,0,0,0,0,0,0,0,1]',
-    received_award_week        integer      NOT NULL DEFAULT 0,
-    received_award_donate      integer      NOT NULL DEFAULT 0,
-    "Unique"                   varchar(16)  NOT NULL DEFAULT '',
-    last_select_character_uuid integer      NOT NULL DEFAULT 0,
-    exit_date                  timestamp    NOT NULL DEFAULT current_timestamp,
-    ga                         varchar(25)  NOT NULL DEFAULT '',
-    PRIMARY KEY (login, email, social_club)
+    account_id                 SERIAL PRIMARY KEY,
+    login                      varchar(20) UNIQUE  NOT NULL,
+    email                      varchar(254) UNIQUE NOT NULL,
+    password                   varchar(50)        NOT NULL,
+    ip                         varchar(256)        NOT NULL,
+    social_club                varchar(50) UNIQUE  NOT NULL,
+    donut_currency             integer             NOT NULL DEFAULT 0,
+    vip_lvl                    integer             NOT NULL,
+    vip_date                   timestamp           NOT NULL,
+    promo_codes                varchar(256)        NOT NULL,
+--     bonus_codes                text                NOT NULL,
+    character1                 integer PRIMARY KEY REFERENCES characters (uuid) ON DELETE NO ACTION ON UPDATE CASCADE DEFAULT NULL,
+    character2                 integer PRIMARY KEY REFERENCES characters (uuid) ON DELETE NO ACTION ON UPDATE CASCADE DEFAULT NULL,
+    character3                 integer PRIMARY KEY REFERENCES characters (uuid) ON DELETE NO ACTION ON UPDATE CASCADE DEFAULT NULL,
+--     characters                 varchar(100)        NOT NULL DEFAULT '[-2,-2,-2,-2,-2,-2]',
+--     present                    smallint            NOT NULL DEFAULT 0,
+--     ref_present                smallint            NOT NULL DEFAULT 0,
+--     "case"                     varchar(100)        NOT NULL DEFAULT '[0,0,0]',
+    referral_login             integer             NOT NULL DEFAULT 0,
+    is_subscribed              smallint            NOT NULL DEFAULT 0,
+    subscribed_end_time        timestamp           NOT NULL DEFAULT current_timestamp,
+    subscribe_time             timestamp           NOT NULL DEFAULT current_timestamp,
+--     collection_gifts           varchar(500)        NOT NULL DEFAULT '[]',
+--     received_award             varchar(75)         NOT NULL DEFAULT '[0,0,0,0,0,0,0,0,1]',
+--     received_award_week        integer             NOT NULL DEFAULT 0,
+--     received_award_donate      integer             NOT NULL DEFAULT 0,
+--     "Unique"                   varchar(16)         NOT NULL DEFAULT '',
+    last_select_character_uuid integer             NOT NULL DEFAULT 0,
+    exit_date                  timestamp           NOT NULL DEFAULT current_timestamp
+--     ga                         varchar(25)         NOT NULL DEFAULT '',
 );
 
 CREATE TYPE character_gender AS ENUM (
     'MALE',
     'FEMALE',
-    'UNKNOWN'
+    'OTHER'
     );
 
 CREATE TABLE IF NOT EXISTS characters
@@ -733,17 +732,17 @@ CREATE TABLE IF NOT EXISTS "garages"
 -- Дамп структуры для таблицы main.houses
 CREATE TABLE IF NOT EXISTS "houses"
 (
-    "id"        varchar(64)   NOT NULL,
+    "id"         varchar(64)   NOT NULL,
     "owner_uuid" integer REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE DEFAULT NULL,
-    "type"      integer       NOT NULL DEFAULT 0,
-    "position"  varchar(80)   NOT NULL DEFAULT '',
-    "price"     integer       NOT NULL DEFAULT 1000000,
-    "locked"    smallint      NOT NULL DEFAULT 0,
-    "garage"    integer       NOT NULL DEFAULT 0,
-    "bank"      integer       NOT NULL DEFAULT 0,
-    "healkit"   smallint               DEFAULT 0,
-    "roommates" varchar(2024) NOT NULL DEFAULT '{}',
-    "alarm"     smallint      NOT NULL DEFAULT 0,
+    "type"       integer       NOT NULL                                                    DEFAULT 0,
+    "position"   varchar(80)   NOT NULL                                                    DEFAULT '',
+    "price"      integer       NOT NULL                                                    DEFAULT 1000000,
+    "locked"     smallint      NOT NULL                                                    DEFAULT 0,
+    "garage"     integer       NOT NULL                                                    DEFAULT 0,
+    "bank"       integer       NOT NULL                                                    DEFAULT 0,
+    "healkit"    smallint                                                                  DEFAULT 0,
+    "roommates"  varchar(2024) NOT NULL                                                    DEFAULT '{}',
+    "alarm"      smallint      NOT NULL                                                    DEFAULT 0,
     PRIMARY KEY ("id")
 );
 
@@ -1216,18 +1215,18 @@ $$;
 -- Дамп структуры для таблицы main.vehicles
 CREATE TABLE IF NOT EXISTS "vehicles"
 (
-    "auto_id"    SERIAL,
-    "number"     varchar(8)    NOT NULL,
+    "auto_id"     SERIAL,
+    "number"      varchar(8)    NOT NULL,
     "holder_uuid" integer REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE DEFAULT NULL,
-    "model"      varchar(64)   NOT NULL,
-    "health"     integer       NOT NULL,
-    "fuel"       integer       NOT NULL DEFAULT 0,
-    "components" varchar(2048) NOT NULL DEFAULT '{}',
-    "position"   varchar(80)            DEFAULT NULL,
-    "rotation"   varchar(80)            DEFAULT NULL,
-    "keynum"     integer       NOT NULL DEFAULT 0,
-    "dirt"       real          NOT NULL DEFAULT 0,
-    "tag"        varchar(11)   NOT NULL DEFAULT 'null',
+    "model"       varchar(64)   NOT NULL,
+    "health"      integer       NOT NULL,
+    "fuel"        integer       NOT NULL                                                    DEFAULT 0,
+    "components"  varchar(2048) NOT NULL                                                    DEFAULT '{}',
+    "position"    varchar(80)                                                               DEFAULT NULL,
+    "rotation"    varchar(80)                                                               DEFAULT NULL,
+    "keynum"      integer       NOT NULL                                                    DEFAULT 0,
+    "dirt"        real          NOT NULL                                                    DEFAULT 0,
+    "tag"         varchar(11)   NOT NULL                                                    DEFAULT 'null',
     PRIMARY KEY ("auto_id")
 );
 
@@ -1476,108 +1475,159 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_phone_threads_pair ON phone_threads (partic
 -- ============================================
 
 -- characters → characters (pet ownership)
-DELETE FROM "pet" WHERE "OwnerUUID" NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "pet"
+WHERE "OwnerUUID" NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "pet"
     ADD CONSTRAINT fk_pet_owner
-    FOREIGN KEY ("OwnerUUID") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
+        FOREIGN KEY ("OwnerUUID") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- phone subsystem
-DELETE FROM "phonemessage" WHERE "fromUuid" NOT IN (SELECT uuid FROM characters);
-DELETE FROM "phonemessage" WHERE "toUuid"   NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "phonemessage"
+WHERE "fromUuid" NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "phonemessage"
+WHERE "toUuid" NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "phonemessage"
     ADD CONSTRAINT fk_phonemessage_from
-    FOREIGN KEY ("fromUuid") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY ("fromUuid") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
     ADD CONSTRAINT fk_phonemessage_to
-    FOREIGN KEY ("toUuid")   REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
+        FOREIGN KEY ("toUuid") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
 
-DELETE FROM "phoneinfo" WHERE "uuid" NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "phoneinfo"
+WHERE "uuid" NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "phoneinfo"
     ADD CONSTRAINT fk_phoneinfo_character
-    FOREIGN KEY ("uuid") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
+        FOREIGN KEY ("uuid") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
 
-DELETE FROM phone_threads WHERE participant_a NOT IN (SELECT uuid FROM characters);
-DELETE FROM phone_threads WHERE participant_b NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM phone_threads
+WHERE participant_a NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM phone_threads
+WHERE participant_b NOT IN (SELECT uuid FROM characters);
 ALTER TABLE phone_threads
     ADD CONSTRAINT fk_phone_threads_a
-    FOREIGN KEY (participant_a) REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (participant_a) REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
     ADD CONSTRAINT fk_phone_threads_b
-    FOREIGN KEY (participant_b) REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (participant_b) REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
     ADD CONSTRAINT ck_phone_threads_pair_ordered
-    CHECK (participant_a < participant_b);
+        CHECK (participant_a < participant_b);
 
 -- character-owned auxiliary tables
-DELETE FROM "furniture"   WHERE "uuid"     NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "furniture"
+WHERE "uuid" NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "furniture"
     ADD CONSTRAINT fk_furniture_character
-    FOREIGN KEY ("uuid") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
+        FOREIGN KEY ("uuid") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
 
-DELETE FROM "questschar"  WHERE "char_id"  NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "questschar"
+WHERE "char_id" NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "questschar"
     ADD CONSTRAINT fk_questschar_character
-    FOREIGN KEY ("char_id") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
+        FOREIGN KEY ("char_id") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- compensation.UUID was declared unquoted, so Postgres stores it lowercase.
-DELETE FROM "compensation" WHERE uuid NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "compensation"
+WHERE uuid NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "compensation"
     ADD CONSTRAINT fk_compensation_character
-    FOREIGN KEY (uuid) REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
+        FOREIGN KEY (uuid) REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ticketlog / referrals: SET NULL because rows are historical audit data
-DELETE FROM "ticketlog" WHERE "player" IS NOT NULL AND "player" NOT IN (SELECT uuid FROM characters);
-DELETE FROM "ticketlog" WHERE "target" IS NOT NULL AND "target" NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "ticketlog"
+WHERE "player" IS NOT NULL
+  AND "player" NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "ticketlog"
+WHERE "target" IS NOT NULL
+  AND "target" NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "ticketlog"
     ADD CONSTRAINT fk_ticketlog_player
-    FOREIGN KEY ("player") REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE,
+        FOREIGN KEY ("player") REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_ticketlog_target
-    FOREIGN KEY ("target") REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE;
+        FOREIGN KEY ("target") REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE;
 
-DELETE FROM "refferals" WHERE "uuid"    IS NOT NULL AND "uuid"    NOT IN (SELECT uuid FROM characters);
-DELETE FROM "refferals" WHERE "uuidref" IS NOT NULL AND "uuidref" NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "refferals"
+WHERE "uuid" IS NOT NULL
+  AND "uuid" NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "refferals"
+WHERE "uuidref" IS NOT NULL
+  AND "uuidref" NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "refferals"
     ADD CONSTRAINT fk_refferals_uuid
-    FOREIGN KEY ("uuid")    REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE,
+        FOREIGN KEY ("uuid") REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_refferals_uuidref
-    FOREIGN KEY ("uuidref") REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE;
+        FOREIGN KEY ("uuidref") REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- vehicle ticket (cross-table references)
-DELETE FROM "vehicleticket" WHERE "vehAutoId"    > 0 AND "vehAutoId"    NOT IN (SELECT auto_id FROM vehicles);
-DELETE FROM "vehicleticket" WHERE "holderAutoId" > 0 AND "holderAutoId" NOT IN (SELECT uuid FROM characters);
-DELETE FROM "vehicleticket" WHERE "policAutoId"  > 0 AND "policAutoId"  NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "vehicleticket"
+WHERE "vehAutoId" > 0
+  AND "vehAutoId" NOT IN (SELECT auto_id FROM vehicles);
+DELETE
+FROM "vehicleticket"
+WHERE "holderAutoId" > 0
+  AND "holderAutoId" NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "vehicleticket"
+WHERE "policAutoId" > 0
+  AND "policAutoId" NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "vehicleticket"
     ADD CONSTRAINT fk_vehicleticket_vehicle
-    FOREIGN KEY ("vehAutoId")    REFERENCES vehicles  (auto_id) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY ("vehAutoId") REFERENCES vehicles (auto_id) ON DELETE CASCADE ON UPDATE CASCADE,
     ADD CONSTRAINT fk_vehicleticket_holder
-    FOREIGN KEY ("holderAutoId") REFERENCES characters (uuid)   ON DELETE SET NULL ON UPDATE CASCADE,
+        FOREIGN KEY ("holderAutoId") REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE,
     ADD CONSTRAINT fk_vehicleticket_police
-    FOREIGN KEY ("policAutoId")  REFERENCES characters (uuid)   ON DELETE SET NULL ON UPDATE CASCADE;
+        FOREIGN KEY ("policAutoId") REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- lottery
-DELETE FROM "lottery_players" WHERE "player" NOT IN (SELECT uuid FROM characters);
+DELETE
+FROM "lottery_players"
+WHERE "player" NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "lottery_players"
     ADD CONSTRAINT fk_lottery_players_player
-    FOREIGN KEY ("player") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
+        FOREIGN KEY ("player") REFERENCES characters (uuid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- business orders → businesses
-DELETE FROM "orders" WHERE "bizid" NOT IN (SELECT business_id FROM businesses);
+DELETE
+FROM "orders"
+WHERE "bizid" NOT IN (SELECT business_id FROM businesses);
 ALTER TABLE "orders"
     ADD CONSTRAINT fk_orders_business
-    FOREIGN KEY ("bizid") REFERENCES businesses (business_id) ON DELETE CASCADE ON UPDATE CASCADE;
+        FOREIGN KEY ("bizid") REFERENCES businesses (business_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- log tables — keep rows on character delete (audit trail), so SET NULL not CASCADE.
 -- Order matters: drop NOT NULL/DEFAULT first, THEN nullify orphans, THEN add FK.
-ALTER TABLE "fractionlogs" ALTER COLUMN uuid DROP NOT NULL;
-ALTER TABLE "fractionlogs" ALTER COLUMN uuid DROP DEFAULT;
-UPDATE "fractionlogs" SET uuid = NULL WHERE uuid NOT IN (SELECT uuid FROM characters);
+ALTER TABLE "fractionlogs"
+    ALTER COLUMN uuid DROP NOT NULL;
+ALTER TABLE "fractionlogs"
+    ALTER COLUMN uuid DROP DEFAULT;
+UPDATE "fractionlogs"
+SET uuid = NULL
+WHERE uuid NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "fractionlogs"
     ADD CONSTRAINT fk_fractionlogs_character
-    FOREIGN KEY (uuid) REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE;
+        FOREIGN KEY (uuid) REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE;
 
-ALTER TABLE "orglogs" ALTER COLUMN uuid DROP NOT NULL;
-ALTER TABLE "orglogs" ALTER COLUMN uuid DROP DEFAULT;
-UPDATE "orglogs" SET uuid = NULL WHERE uuid NOT IN (SELECT uuid FROM characters);
+ALTER TABLE "orglogs"
+    ALTER COLUMN uuid DROP NOT NULL;
+ALTER TABLE "orglogs"
+    ALTER COLUMN uuid DROP DEFAULT;
+UPDATE "orglogs"
+SET uuid = NULL
+WHERE uuid NOT IN (SELECT uuid FROM characters);
 ALTER TABLE "orglogs"
     ADD CONSTRAINT fk_orglogs_character
-    FOREIGN KEY (uuid) REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE;
+        FOREIGN KEY (uuid) REFERENCES characters (uuid) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- character_time_stats / character_achievements were declared with FK already; nothing to add.
 

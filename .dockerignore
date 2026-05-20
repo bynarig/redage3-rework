@@ -1,0 +1,51 @@
+# VCS / IDE
+.git
+.idea
+.vscode
+.trunk
+
+# Build outputs
+**/dist
+**/.next
+**/.cache
+**/.turbo
+**/tsconfig.tsbuildinfo
+
+# Test/coverage
+**/coverage
+**/.nyc_output
+**/__tests__
+**/*.test.ts
+**/*.spec.ts
+
+# Node
+**/node_modules
+**/npm-debug.log
+**/.npm
+
+# Windows-only files (linux RAGE:MP image doesn't need them).
+ragemp-server.exe
+BugTrap-x64.dll
+
+# NOTE: ragemp-server, bin/, conf.json, packages/, client_packages/, settings/
+# are intentionally NOT excluded — Dockerfile.ragemp pulls them in. Each service
+# image (Dockerfile.service) doesn't need them but COPYing them adds a few MB
+# of unused context, which is acceptable.
+
+# Deprecated C# server
+src_deprecated
+
+# Front-end workspaces — services don't need them
+src/frontend
+
+# Local docker volumes / artifacts
+docker/.data
+docker/volumes
+
+# Logs
+**/*.log
+
+# Local env (we pass env explicitly via compose)
+**/.env
+**/.env.*
+!**/.env.example
